@@ -1,827 +1,3357 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dungeon Explorer</title>
-<style>
-:root{--bg:#0a0c10;--p1:#141722;--p2:#1d2130;--border:#333a52;--accent:#6366f1;--gold:#f59e0b;--hp:#ef4444;--exp:#06b6d4;--c-com:#94a3b8;--c-unc:#22c55e;--c-rar:#3b82f6;--c-epi:#a855f7;--c-leg:#f59e0b;--ff:'Cinzel',Georgia,serif;--ui:system-ui,-apple-system,sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:radial-gradient(circle at 50% 15%,rgba(99,102,241,0.12) 0%,transparent 60%),linear-gradient(180deg,#07090e 0%,#0d1017 100%);color:#f8fafc;font-family:var(--ui);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 10px 30px;}
-#wrap{width:100%;max-width:860px;display:flex;flex-direction:column;position:relative;}
-#hud{background:linear-gradient(135deg,var(--p1),#10121a);border:2px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none;}
-.hud-r{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
-.p-name{font-family:var(--ff);font-size:1.15rem;font-weight:bold;color:#ffd700;text-shadow:0 0 8px rgba(245,158,11,0.4);}
-.pill{background:#312e81;border:1px solid #6366f1;color:#c7d2fe;padding:2px 8px;border-radius:5px;font-size:0.75rem;font-weight:bold;}
-.btn-sm{background:var(--p2);border:1px solid var(--border);color:#cbd5e1;padding:4px 10px;border-radius:6px;font-size:0.78rem;cursor:pointer;}
-.btn-sm:hover{background:#272d42;color:#fff;border-color:var(--accent);}
-.bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
-@media(max-width:550px){.bars{grid-template-columns:1fr;}}
-.b-box{background:#090a10;border:1px solid #24293a;border-radius:6px;padding:4px 8px;}
-.b-hdr{display:flex;justify-content:space-between;font-size:0.72rem;font-weight:bold;margin-bottom:3px;}
-.track{height:9px;background:#151824;border-radius:4px;overflow:hidden;}
-.fill-hp{height:100%;background:linear-gradient(90deg,#dc2626,#ef4444);width:100%;transition:width .3s;}
-.fill-exp{height:100%;background:linear-gradient(90deg,#0284c7,#06b6d4);width:0%;transition:width .3s;}
-.stats-bar{display:flex;justify-content:space-between;align-items:center;background:#090b12;border:1px solid #202434;border-radius:6px;padding:6px 10px;font-size:0.8rem;flex-wrap:wrap;gap:8px;}
-.scr{display:none;flex-direction:column;width:100%;}
-.scr.active{display:flex;animation:pop .2s ease-out;}
-@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.panel{background:var(--p1);border:2px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,0.7);position:relative;}
-.btn{background:linear-gradient(180deg,#262a3c,#181b27);border:1px solid #434a65;color:#f8fafc;padding:11px 16px;border-radius:8px;font-family:var(--ff);font-size:0.95rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
-.btn:hover:not(:disabled){background:linear-gradient(180deg,#373d56,#24293a);border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,0.35);color:#fff;}
-.btn:disabled{opacity:.35;cursor:not-allowed;}
-.btn-gold{background:linear-gradient(180deg,#b45309,#78350f);border-color:#d97706;}
-.btn-gold:hover:not(:disabled){background:linear-gradient(180deg,#d97706,#92400e);border-color:var(--gold);}
-.btn-danger{background:linear-gradient(180deg,#991b1b,#7f1d1d);border-color:#dc2626;}
-.btn-danger:hover:not(:disabled){background:linear-gradient(180deg,#b91c1c,#991b1b);border-color:#ef4444;}
-.btn-purple{background:linear-gradient(180deg,#6b21a8,#4c1d95);border-color:#a855f7;}
-.btn-purple:hover:not(:disabled){background:linear-gradient(180deg,#9333ea,#6b21a8);border-color:#c084fc;}
-.grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
-.act-card{background:var(--p2);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:all .15s;}
-.act-card:hover{background:#272d42;border-color:var(--accent);transform:translateY(-2px);}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-@media(max-width:550px){.grid-3{grid-template-columns:1fr;}}
-.c-box{background:#090b12;border:2px solid #2c324a;border-radius:10px;padding:14px;display:flex;align-items:center;gap:14px;}
-.c-box.elite{border-color:#a855f7;box-shadow:0 0 20px rgba(168,85,247,0.35);}
-.c-box.boss{border-color:#ef4444;box-shadow:0 0 25px rgba(239,68,68,0.45);}
-.avatar{width:90px;height:90px;background:#141724;border:1px solid #3b4260;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.log{background:#07080d;border:1px solid #202434;border-radius:6px;height:140px;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:4px;font-family:monospace;font-size:0.82rem;}
-.log-p{color:#4ade80;} .log-c{color:#fbbf24;font-weight:bold;} .log-e{color:#f87171;} .log-s{color:#c084fc;font-weight:bold;} .log-h{color:#38bdf8;font-weight:bold;} .log-r{color:#f59e0b;font-weight:bold;} .log-i{color:#94a3b8;}
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:12px;}
-.modal.active{display:flex;}
-.m-win{background:var(--p1);border:2px solid var(--border);border-radius:12px;width:100%;max-width:580px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
-.m-top{padding:12px 16px;background:#0f111a;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.m-body{padding:14px;overflow-y:auto;flex:1;}
-.m-bot{padding:10px 16px;background:#0f111a;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
-.tabs{display:flex;gap:6px;margin-bottom:12px;border-bottom:1px solid #282d42;padding-bottom:6px;overflow-x:auto;}
-.t-btn{background:#171a27;border:1px solid #282d42;color:#94a3b8;padding:5px 12px;border-radius:5px;font-size:0.8rem;cursor:pointer;}
-.t-btn.active{background:#312e81;border-color:#6366f1;color:#fff;font-weight:bold;}
-.item-card{background:#0a0c14;border:1px solid #24293d;border-radius:6px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;}
-.rarity-common{color:var(--c-com);} .rarity-uncommon{color:var(--c-unc);} .rarity-rare{color:var(--c-rar);} .rarity-epic{color:var(--c-epi);} .rarity-legendary{color:var(--c-leg);font-weight:bold;}
-.shake{animation:shk .3s cubic-bezier(.36,.07,.19,.97) both;}
-@keyframes shk{10%,90%{transform:translate3d(-2px,0,0)}30%,70%{transform:translate3d(-4px,0,0)}20%,80%{transform:translate3d(3px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
-.input{width:100%;background:#090b12;border:1px solid #333a52;color:#fff;padding:10px 14px;border-radius:6px;font-size:0.95rem;margin-bottom:14px;outline:none;}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(50px);background:#181b2a;border:1px solid #6366f1;color:#fff;padding:8px 18px;border-radius:24px;font-size:0.84rem;font-weight:bold;z-index:350;opacity:0;pointer-events:none;transition:all .25s;}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dungeon Explorer</title>
+  <style>
+    /* ============================================================
+       THEME & DESIGN SYSTEM (DARK FANTASY / DUNGEON AESTHETICS)
+       ============================================================ */
+    :root {
+      --bg-dark: #0a0c10;
+      --bg-panel: #141722;
+      --bg-panel-secondary: #1d2130;
+      --bg-panel-dark: #090b11;
+      --bg-hover: #272d42;
+      --border-color: #333a52;
+      --border-accent: #6366f1;
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.4);
+      --hp-red: #ef4444;
+      --hp-glow: rgba(239, 68, 68, 0.4);
+      --exp-cyan: #06b6d4;
+      --exp-glow: rgba(6, 182, 212, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dark: #64748b;
+
+      /* Rarity Colors */
+      --rarity-common: #94a3b8;
+      --rarity-uncommon: #22c55e;
+      --rarity-rare: #3b82f6;
+      --rarity-epic: #a855f7;
+      --rarity-legendary: #f59e0b;
+
+      --font-fantasy: 'Cinzel', 'Georgia', 'Palatino', serif;
+      --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+        linear-gradient(180deg, #07090e 0%, #0d1017 100%);
+    }
+
+    .dungeon-vignette {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 110px rgba(0, 0, 0, 0.88);
+      z-index: 99;
+    }
+
+    #game-wrapper {
+      width: 100%;
+      max-width: 900px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 12px;
+      padding-bottom: 30px;
+    }
+
+    /* TOP HUD */
+    #top-hud {
+      background: linear-gradient(135deg, var(--bg-panel) 0%, #10121a 100%);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      display: none;
+    }
+
+    .hud-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .player-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player-name-text {
+      font-family: var(--font-fantasy);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffd700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .player-lvl-pill {
+      background: #312e81;
+      border: 1px solid #6366f1;
+      color: #c7d2fe;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .hud-quick-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-hud-sm {
+      background: var(--bg-panel-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-hud-sm:hover {
+      background: var(--bg-hover);
+      color: #fff;
+      border-color: var(--border-accent);
+    }
+
+    .bars-container-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .bars-container-grid { grid-template-columns: 1fr; }
+    }
+
+    .bar-box {
+      background: #090a10;
+      border: 1px solid #24293a;
+      border-radius: 8px;
+      padding: 5px 8px;
+    }
+
+    .bar-text-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-track {
+      height: 10px;
+      background: #151824;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill-hp {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      width: 100%;
+      border-radius: 5px;
+      transition: width 0.35s ease;
+      box-shadow: 0 0 10px var(--hp-glow);
+    }
+
+    .progress-fill-exp {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7 0%, #06b6d4 100%);
+      width: 0%;
+      border-radius: 5px;
+      transition: width 0.35s ease;
+      box-shadow: 0 0 10px var(--exp-glow);
+    }
+
+    .stats-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #090b12;
+      border: 1px solid #202434;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.84rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-number {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .gold-indicator {
+      color: var(--gold);
+      font-weight: 700;
+      text-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    /* SCREENS & PANELS */
+    .game-screen {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      animation: fadeIn 0.22s ease-out;
+    }
+
+    .game-screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-box {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      position: relative;
+    }
+
+    .btn {
+      background: linear-gradient(180deg, #262a3c 0%, #181b27 100%);
+      border: 1px solid #434a65;
+      color: var(--text-main);
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-family: var(--font-fantasy);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-shadow: 0 1px 3px #000;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: linear-gradient(180deg, #373d56 0%, #24293a 100%);
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+      color: #fff;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: #242838;
+    }
+
+    .btn-gold {
+      background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+      border-color: #d97706;
+      color: #fff;
+    }
+
+    .btn-gold:hover:not(:disabled) {
+      background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+      border-color: #f59e0b;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+    }
+
+    .btn-danger {
+      background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%);
+      border-color: #dc2626;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%);
+      border-color: #ef4444;
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    }
+
+    /* MAIN MENU */
+    .menu-center-wrapper {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+    }
+
+    .main-title {
+      font-family: var(--font-fantasy);
+      font-size: 3rem;
+      font-weight: 900;
+      color: #f8fafc;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-shadow: 
+        0 0 12px rgba(99, 102, 241, 0.6),
+        0 0 30px rgba(245, 158, 11, 0.4),
+        0 4px 15px #000;
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .main-subtitle {
+      color: #cbd5e1;
+      font-family: var(--font-fantasy);
+      font-size: 1rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 26px;
+      opacity: 0.9;
+    }
+
+    .hero-art-box {
+      width: 100%;
+      max-width: 480px;
+      height: 220px;
+      background: #080910;
+      border: 2px solid #2c3248;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      box-shadow: inset 0 0 40px #000, 0 10px 30px rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .menu-buttons-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    /* TOWN HUB */
+    .hub-title-head {
+      font-family: var(--font-fantasy);
+      font-size: 1.6rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .hub-desc-head {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .hub-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .hub-action-card {
+      background: var(--bg-panel-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hub-action-card:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+
+    .hub-card-icon {
+      font-size: 2rem;
+    }
+
+    .hub-card-headline {
+      font-family: var(--font-fantasy);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .hub-card-body {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .hub-quest-panel {
+      background: #090b12;
+      border: 1px dashed #383e58;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .hub-quest-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* DUNGEON EXPLORATION */
+    .dungeon-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #080910;
+      border: 1px solid #292d42;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .dungeon-depth-badge {
+      font-family: var(--font-fantasy);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c7d2fe;
+    }
+
+    .dungeon-room-badge {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .dungeon-event-scene {
+      background: #080910;
+      border: 2px solid #2c324a;
+      border-radius: 12px;
+      padding: 28px 20px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.85);
+    }
+
+    .scene-icon-large {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
+    }
+
+    .scene-title-text {
+      font-family: var(--font-fantasy);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .scene-desc-text {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      max-width: 540px;
+      line-height: 1.6;
+    }
+
+    .routes-section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .routes-grid-3way {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 560px) {
+      .routes-grid-3way { grid-template-columns: 1fr; }
+    }
+
+    .route-action-btn {
+      background: linear-gradient(180deg, #1c2030 0%, #121522 100%);
+      border: 1px solid #363c58;
+      color: #e2e8f0;
+      padding: 18px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-fantasy);
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .route-action-btn:hover {
+      background: linear-gradient(180deg, #2b3149 0%, #1e2335 100%);
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      color: #fff;
+    }
+
+    .route-arrow-icon {
+      font-size: 1.6rem;
+      color: var(--gold);
+    }
+
+    /* COMBAT ARENA */
+    .combat-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .wave-notice-tag {
+      background: #451a03;
+      border: 1px solid #d97706;
+      color: #fef3c7;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .enemy-card-box {
+      background: #090b12;
+      border: 2px solid #2c324a;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: inset 0 0 35px rgba(0,0,0,0.7);
+      position: relative;
+    }
+
+    .enemy-card-box.elite {
+      border-color: #a855f7;
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.35), inset 0 0 30px rgba(168, 85, 247, 0.2);
+    }
+
+    .enemy-card-box.boss {
+      border-color: #ef4444;
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.45), inset 0 0 40px rgba(239, 68, 68, 0.25);
+    }
+
+    .enemy-avatar-square {
+      width: 95px;
+      height: 95px;
+      background: #141724;
+      border: 1px solid #3b4260;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      font-size: 3.5rem;
+    }
+
+    .enemy-details-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .enemy-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .enemy-name-display {
+      font-family: var(--font-fantasy);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .enemy-badge {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-normal { background: #1e293b; color: #94a3b8; }
+    .badge-elite { background: #581c87; color: #e9d5ff; border: 1px solid #a855f7; }
+    .badge-boss { background: #7f1d1d; color: #fee2e2; border: 1px solid #ef4444; }
+
+    .combat-log-feed {
+      background: #07080d;
+      border: 1px solid #202434;
+      border-radius: 8px;
+      height: 150px;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.84rem;
+    }
+
+    .log-entry {
+      line-height: 1.45;
+      animation: logFade 0.2s ease-out;
+    }
+
+    @keyframes logFade {
+      from { opacity: 0; transform: translateX(-5px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-player-dmg { color: #4ade80; }
+    .log-crit-dmg { color: #fbbf24; font-weight: bold; }
+    .log-enemy-dmg { color: #f87171; }
+    .log-skill-cast { color: #c084fc; font-weight: bold; }
+    .log-heal-effect { color: #38bdf8; font-weight: bold; }
+    .log-info-text { color: #94a3b8; }
+    .log-loot-reward { color: #f59e0b; font-weight: bold; }
+
+    .combat-button-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .combat-button-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .combat-act-btn {
+      padding: 14px 10px;
+      font-size: 0.92rem;
+      border-radius: 8px;
+    }
+
+    .cooldown-text-sub {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: normal;
+      color: #cbd5e1;
+      margin-top: 3px;
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-window {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.85);
+      overflow: hidden;
+    }
+
+    .modal-top-bar {
+      padding: 14px 20px;
+      background: #0f111a;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-heading {
+      font-family: var(--font-fantasy);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-close-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 6px;
+    }
+
+    .modal-close-icon:hover {
+      color: #fff;
+    }
+
+    .modal-content-area {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-bottom-bar {
+      padding: 12px 20px;
+      background: #0f111a;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .tab-nav-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #282d42;
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-nav-btn {
+      background: #171a27;
+      border: 1px solid #282d42;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .tab-nav-btn.active {
+      background: #312e81;
+      border-color: #6366f1;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .inventory-list-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item-row-card {
+      background: #0a0c14;
+      border: 1px solid #24293d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .item-row-card:hover {
+      border-color: #434c70;
+      background: #101320;
+    }
+
+    .item-left-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .item-icon-tile {
+      font-size: 1.6rem;
+      width: 42px;
+      height: 42px;
+      background: #171a28;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .item-meta-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .item-title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .item-title-text {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .item-category-tag {
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      background: #1e2436;
+      color: #94a3b8;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .item-stat-highlight {
+      font-size: 0.82rem;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .item-btn-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-item-sm {
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      border-radius: 6px;
+    }
+
+    .rarity-common { color: var(--rarity-common); }
+    .rarity-uncommon { color: var(--rarity-uncommon); text-shadow: 0 0 6px rgba(34, 197, 94, 0.4); }
+    .rarity-rare { color: var(--rarity-rare); text-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
+    .rarity-epic { color: var(--rarity-epic); text-shadow: 0 0 10px rgba(168, 85, 247, 0.6); }
+    .rarity-legendary { color: var(--rarity-legendary); text-shadow: 0 0 12px rgba(245, 158, 11, 0.7); font-weight: bold; }
+
+    .levelup-options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 550px) {
+      .levelup-options-grid { grid-template-columns: 1fr; }
+    }
+
+    .levelup-card-choice {
+      background: #111422;
+      border: 2px solid #333a54;
+      border-radius: 12px;
+      padding: 20px 14px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .levelup-card-choice:hover {
+      background: #1b2034;
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 22px var(--gold-glow);
+    }
+
+    .levelup-stat-big {
+      font-family: var(--font-fantasy);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    #toast-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: #181b2a;
+      border: 1px solid #6366f1;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(99, 102, 241, 0.4);
+      z-index: 350;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .shake-anim {
+      animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(3px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    .input-box {
+      width: 100%;
+      background: #090b12;
+      border: 1px solid #333a52;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .input-box:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+    }
+  </style>
 </head>
 <body>
-<div id="wrap">
-  <!-- TOP HUD -->
-  <header id="hud">
-    <div class="hud-r">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <span class="p-name" id="h-name">Hero</span>
-        <span class="pill" id="h-lvl">LV 1</span>
-        <span id="h-comp" class="pill" style="display:none;background:#082f49;border-color:#0284c7;color:#bae6fd;">🐺 Serigala</span>
-        <span id="h-buff" class="pill" style="display:none;background:#14532d;border-color:#22c55e;color:#bbf7d0;">Buff Aktif</span>
-      </div>
-      <div style="display:flex;gap:6px;">
-        <button class="btn-sm" id="btn-h-inv">🎒 Tas</button>
-        <button class="btn-sm" id="btn-h-save">💾 Simpan</button>
-        <button class="btn-sm" id="btn-h-snd">🔊</button>
-      </div>
-    </div>
-    <div class="bars">
-      <div class="b-box"><div class="b-hdr"><span style="color:#f87171;">HP</span><span id="h-hp">100/100</span></div><div class="track"><div class="fill-hp" id="bar-hp"></div></div></div>
-      <div class="b-box"><div class="b-hdr"><span style="color:#38bdf8;">EXP</span><span id="h-exp">0/100</span></div><div class="track"><div class="fill-exp" id="bar-exp"></div></div></div>
-    </div>
-    <div class="stats-bar">
-      <span>⚔️ ATK: <strong id="h-atk" style="color:#fff;">10</strong> <small id="h-atk-b" style="color:#4ade80;display:none;">(+0)</small></span>
-      <span>🛡️ DEF: <strong id="h-def" style="color:#fff;">5</strong> <small id="h-def-b" style="color:#60a5fa;display:none;">(+0)</small></span>
-      <span>🗡️ <span id="h-wpn" class="rarity-common">None</span></span>
-      <span>🦺 <span id="h-arm" class="rarity-common">None</span></span>
-      <span style="color:var(--gold);">🪙 Gold: <strong id="h-gold" style="color:var(--gold);">0</strong></span>
-    </div>
-  </header>
+  <div class="dungeon-vignette"></div>
 
-  <!-- SCREEN 1: MENU -->
-  <section id="scr-menu" class="scr active">
-    <div class="panel" style="text-align:center;padding:30px 15px;">
-      <h1 style="font-family:var(--ff);font-size:2.6rem;letter-spacing:3px;color:#fff;margin-bottom:4px;text-shadow:0 0 12px rgba(99,102,241,0.6);">DUNGEON EXPLORER</h1>
-      <p style="color:#cbd5e1;font-size:0.9rem;letter-spacing:2px;margin-bottom:20px;text-transform:uppercase;">Explore • Fight • Survive • Legend</p>
-      <div style="max-width:320px;margin:0 auto;display:flex;flex-direction:column;gap:10px;">
-        <button class="btn btn-gold" id="btn-m-new">⚔️ Game Baru</button>
-        <button class="btn" id="btn-m-cont" disabled>📜 Lanjutkan</button>
-        <button class="btn" id="btn-m-how">📖 Cara Main</button>
-        <button class="btn" id="btn-m-set">⚙️ Pengaturan</button>
-      </div>
-    </div>
-  </section>
+  <!-- Game Container -->
+  <div id="game-wrapper">
 
-  <!-- SCREEN 2: CHAR CREATE -->
-  <section id="scr-create" class="scr">
-    <div class="panel" style="max-width:480px;margin:0 auto;text-align:center;">
-      <h2 style="font-family:var(--ff);color:var(--gold);margin-bottom:8px;">Buat Pahlawan</h2>
-      <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:16px;">Beri nama karakter sebelum menjelajahi Abyss.</p>
-      <input type="text" id="inp-hero" class="input" placeholder="Nama Hero" maxlength="18" value="Alistair">
-      <div style="background:#090a10;border:1px solid #282d42;border-radius:6px;padding:12px;margin-bottom:16px;text-align:left;font-size:0.8rem;color:#cbd5e1;">
-        <div style="color:var(--gold);font-weight:bold;margin-bottom:4px;">Stat Awal (Level 1):</div>
-        <div>❤️ HP: 100 | ⚔️ ATK: 10 | 🛡️ DEF: 5 | 🪙 Gold: 0</div>
-        <div style="color:#64748b;margin-top:4px;">Starter: Iron Shortsword (+3 ATK), Cloth Tunic (+1 DEF), 2x Small Potion.</div>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn" id="btn-c-back" style="flex:1;">Kembali</button>
-        <button class="btn btn-gold" id="btn-c-start" style="flex:2;">Masuk Sanctuary ➔</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- SCREEN 3: TOWN HUB -->
-  <section id="scr-town" class="scr">
-    <div class="panel">
-      <h2 style="font-family:var(--ff);color:#fff;margin-bottom:4px;">🏰 Sanctuary of Oakhaven</h2>
-      <p style="font-size:0.84rem;color:#94a3b8;margin-bottom:16px;">Kota perlindungan aman. Belanja, pesan hidangan kedai, kelola tas, dan turun ke dungeon.</p>
-      <div class="grid-cards">
-        <div class="act-card" id="act-dungeon" style="border-color:#6366f1;background:linear-gradient(135deg,#1e1b4b,#151828);">
-          <div style="font-size:1.8rem;">🚪</div>
-          <div style="font-family:var(--ff);font-weight:bold;color:#a5b4fc;">Jelajah Dungeon</div>
-          <div style="font-size:0.78rem;color:#94a3b8;">Turun ke dungeon, pilih rute 3 arah, hadapi boss & encounter!</div>
-          <button class="btn btn-gold" style="margin-top:auto;padding:6px;">Masuk Dungeon ⚔️</button>
+    <!-- Top HUD -->
+    <header id="top-hud">
+      <div class="hud-row-top">
+        <div class="player-title-box">
+          <span class="player-name-text" id="hud-name">Adventurer</span>
+          <span class="player-lvl-pill" id="hud-level">LV 1</span>
         </div>
-        <div class="act-card" id="act-shop">
-          <div style="font-size:1.8rem;">⚒️</div>
-          <div style="font-family:var(--ff);font-weight:bold;color:#fff;">Toko & Blacksmith</div>
-          <div style="font-size:0.78rem;color:#94a3b8;">Beli perlengkapan/potion atau jual hasil jarahan (50%).</div>
-          <button class="btn" style="margin-top:auto;padding:6px;">Buka Toko 🪙</button>
-        </div>
-        <div class="act-card" id="act-tavern">
-          <div style="font-size:1.8rem;">🍺</div>
-          <div style="font-family:var(--ff);font-weight:bold;color:#fff;">Kedai & Ransum (20g)</div>
-          <div style="font-size:0.78rem;color:#94a3b8;">Santap hidangan hangat (20 Gold) untuk Full Heal & Buff!</div>
-          <button class="btn" style="margin-top:auto;padding:6px;">Pesan Hidangan 🍲</button>
-        </div>
-        <div class="act-card" id="act-inv">
-          <div style="font-size:1.8rem;">🎒</div>
-          <div style="font-family:var(--ff);font-weight:bold;color:#fff;">Tas & Perlengkapan</div>
-          <div style="font-size:0.78rem;color:#94a3b8;">Pasang senjata, armor, atau minum potion pemulih.</div>
-          <button class="btn" style="margin-top:auto;padding:6px;">Buka Tas 📦</button>
+        <div class="hud-quick-actions">
+          <button class="btn-hud-sm" id="btn-top-inv">
+            🎒 <span>Inventory</span>
+          </button>
+          <button class="btn-hud-sm" id="btn-top-save">
+            💾 <span>Save Game</span>
+          </button>
+          <button class="btn-hud-sm" id="btn-top-audio">
+            🔊
+          </button>
         </div>
       </div>
-      <div style="background:#090b12;border:1px dashed #383e58;border-radius:8px;padding:12px;" id="hub-quests">
-        <div style="font-size:0.78rem;font-weight:bold;color:var(--gold);margin-bottom:6px;">📜 QUEST & BOUNTY AKTIF:</div>
-        <div id="quest-list" style="font-size:0.8rem;color:#94a3b8;">Belum ada quest aktif. Temukan penjelajah di dungeon!</div>
-      </div>
-    </div>
-  </section>
 
-  <!-- SCREEN 4: EXPLORE -->
-  <section id="scr-explore" class="scr">
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between;align-items:center;background:#080910;border:1px solid #292d42;border-radius:6px;padding:8px 12px;margin-bottom:14px;flex-wrap:wrap;gap:6px;">
-        <span id="exp-floor" style="font-family:var(--ff);font-weight:bold;color:#c7d2fe;">Lantai 1</span>
-        <span id="exp-room" style="font-size:0.82rem;color:#94a3b8;">Ruang 1 / 8</span>
-        <button class="btn btn-danger" id="btn-escape" style="padding:4px 10px;font-size:0.75rem;">🏃 Kabur ke Kota</button>
-      </div>
-      <div style="background:#080910;border:2px solid #2c324a;border-radius:10px;padding:24px 16px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin-bottom:16px;">
-        <div style="font-size:3.2rem;margin-bottom:8px;" id="exp-icon">🧭</div>
-        <h3 id="exp-title" style="font-family:var(--ff);color:#fff;margin-bottom:6px;">Persimpangan Tiga Lorong</h3>
-        <p id="exp-desc" style="font-size:0.86rem;color:#94a3b8;max-width:500px;line-height:1.5;">Lorong batu terbagi menjadi tiga jalur gelap. Tentukan arah langkahmu.</p>
-      </div>
-      <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;text-align:center;margin-bottom:8px;">PILIH JALUR EKSPLORASI:</div>
-      <div class="grid-3">
-        <button class="btn" onclick="handleRoute('left')">← Lorong Kiri</button>
-        <button class="btn" onclick="handleRoute('forward')">↑ Lorong Tengah</button>
-        <button class="btn" onclick="handleRoute('right')">→ Lorong Kanan</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- SCREEN 5: COMBAT -->
-  <section id="scr-combat" class="scr">
-    <div class="panel" style="display:flex;flex-direction:column;gap:12px;">
-      <div id="c-wave" style="display:none;background:#451a03;border:1px solid #d97706;color:#fef3c7;padding:4px 10px;border-radius:5px;font-size:0.78rem;font-weight:bold;text-align:center;">⚔️ Gelombang Musuh <span id="c-w-cur">1</span> / <span id="c-w-tot">3</span></div>
-      <div class="c-box" id="c-box">
-        <div class="avatar" id="c-avatar"></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-            <span id="c-name" style="font-family:var(--ff);font-size:1.2rem;font-weight:bold;">Goblin</span>
-            <span id="c-badge" class="pill" style="font-size:0.7rem;">Normal</span>
+      <!-- HP & EXP Bars -->
+      <div class="bars-container-grid">
+        <div class="bar-box">
+          <div class="bar-text-header">
+            <span style="color: #f87171;">HP</span>
+            <span id="hud-hp-display">100 / 100</span>
           </div>
-          <div class="b-box"><div class="b-hdr"><span style="color:#f87171;">HP Musuh</span><span id="c-hp-num">50/50</span></div><div class="track"><div class="fill-hp" id="c-hp-bar"></div></div></div>
-          <div style="display:flex;gap:12px;font-size:0.78rem;color:#94a3b8;">
-            <span>⚔️ ATK: <strong id="c-atk-num">8</strong></span>
-            <span>🛡️ DEF: <strong id="c-def-num">3</strong></span>
-            <span style="color:var(--gold);">🪙 Hadiah: <strong id="c-gold-num">10-20</strong></span>
+          <div class="progress-track">
+            <div class="progress-fill-hp" id="hud-hp-bar"></div>
+          </div>
+        </div>
+
+        <div class="bar-box">
+          <div class="bar-text-header">
+            <span style="color: #38bdf8;">EXP</span>
+            <span id="hud-exp-display">0 / 100</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill-exp" id="hud-exp-bar"></div>
           </div>
         </div>
       </div>
-      <div id="c-comp-box" style="display:none;background:#082f49;border:1px solid #0284c7;border-radius:6px;padding:6px 10px;justify-content:space-between;font-size:0.78rem;">
-        <span>🐺 <strong>Tamed Wolf</strong> (Auto-Strike)</span>
-        <span>HP: <strong id="c-comp-hp">40/40</strong></span>
-      </div>
-      <div class="log" id="c-log"></div>
-      <div class="grid-3" style="grid-template-columns:repeat(4,1fr);">
-        <button class="btn btn-gold" id="btn-act-atk">⚔️ Serang</button>
-        <button class="btn" id="btn-act-skl">🔥 Skill <span style="display:block;font-size:0.65rem;font-weight:normal;" id="skl-txt">Fire Strike</span></button>
-        <button class="btn" id="btn-act-inv">🎒 Tas / Potion</button>
-        <button class="btn btn-danger" id="btn-act-flee">🏃 Kabur</button>
-      </div>
-    </div>
-  </section>
 
-  <!-- SCREEN 6: DYNAMIC EVENT -->
-  <section id="scr-event" class="scr">
-    <div class="panel" style="max-width:560px;margin:0 auto;text-align:center;">
-      <div style="font-size:3.5rem;margin-bottom:8px;" id="ev-icon">✨</div>
-      <h2 id="ev-title" style="font-family:var(--ff);color:#fff;margin-bottom:6px;">Event Dungeon</h2>
-      <p id="ev-desc" style="font-size:0.88rem;color:#cbd5e1;line-height:1.5;margin-bottom:16px;">Deskripsi event.</p>
-      <div id="ev-out" style="display:none;background:#090a10;border:1px solid #282d42;border-radius:8px;padding:12px;margin-bottom:14px;text-align:left;">
-        <h4 id="ev-out-t" style="color:var(--gold);margin-bottom:4px;font-family:var(--ff);">Hasil</h4>
-        <p id="ev-out-b" style="font-size:0.82rem;color:#cbd5e1;"></p>
+      <!-- Stats Line -->
+      <div class="stats-info-bar">
+        <div class="stat-badge">
+          <span style="color: #f87171;">⚔️ ATK:</span>
+          <span class="stat-number" id="hud-atk-val">10</span>
+        </div>
+        <div class="stat-badge">
+          <span style="color: #60a5fa;">🛡️ DEF:</span>
+          <span class="stat-number" id="hud-def-val">5</span>
+        </div>
+        <div class="stat-badge">
+          <span style="color: #c084fc;">🗡️ Weapon:</span>
+          <span class="stat-number" id="hud-weapon-val" style="font-size:0.78rem;">None</span>
+        </div>
+        <div class="stat-badge">
+          <span style="color: #34d399;">🦺 Armor:</span>
+          <span class="stat-number" id="hud-armor-val" style="font-size:0.78rem;">None</span>
+        </div>
+        <div class="stat-badge gold-indicator">
+          <span>🪙 Gold:</span>
+          <span class="stat-number gold-indicator" id="hud-gold-val">0</span>
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;" id="ev-btns"></div>
-    </div>
-  </section>
+    </header>
 
-  <!-- SCREEN 7: CHEST -->
-  <section id="scr-chest" class="scr">
-    <div class="panel" style="text-align:center;max-width:520px;margin:0 auto;">
-      <h2 style="font-family:var(--ff);color:var(--gold);margin-bottom:4px;">📦 Peti Dungeon</h2>
-      <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:16px;">Peti besi tergeletak di tengah ruangan.</p>
-      <div id="chest-art" style="font-size:4.5rem;margin:12px 0;cursor:pointer;">🎁</div>
-      <div id="chest-out" style="display:none;background:#090a10;border:1px solid #282d42;border-radius:8px;padding:14px;margin-bottom:14px;text-align:left;">
-        <h4 id="chest-t" style="font-family:var(--ff);margin-bottom:4px;"></h4>
-        <p id="chest-b" style="font-size:0.84rem;color:#cbd5e1;"></p>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:center;">
-        <button class="btn btn-gold" id="btn-open-chest" style="min-width:140px;">🔓 Buka Peti</button>
-        <button class="btn" id="btn-leave-chest" style="display:none;min-width:140px;" onclick="advanceStep()">Lanjut Jelajah ➔</button>
-      </div>
-    </div>
-  </section>
+    <!-- SCREEN 1: MAIN MENU -->
+    <section id="screen-main-menu" class="game-screen active">
+      <div class="menu-center-wrapper panel-box">
+        <h1 class="main-title">DUNGEON EXPLORER</h1>
+        <p class="main-subtitle">"Explore. Fight. Survive. Become a Legend."</p>
 
-  <!-- SCREEN 8: SHOP -->
-  <section id="scr-shop" class="scr">
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px;">
-        <h2 style="font-family:var(--ff);color:var(--gold);">🧙‍♂️ Pedagang Misterius</h2>
-        <button class="btn btn-gold" style="padding:5px 12px;font-size:0.8rem;" onclick="advanceStep()">Tinggalkan Toko ➔</button>
-      </div>
-      <div id="d-shop-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-    </div>
-  </section>
+        <!-- Dark Dungeon Hero SVG Artwork -->
+        <div class="hero-art-box">
+          <svg viewBox="0 0 440 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bgGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#06070d"/>
+                <stop offset="100%" stop-color="#121524"/>
+              </linearGradient>
+              <radialGradient id="portalCore" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#a5b4fc" stop-opacity="0.9"/>
+                <stop offset="50%" stop-color="#4f46e5" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="fireLight" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.95"/>
+                <stop offset="70%" stop-color="#b45309" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="440" height="200" fill="url(#bgGradient)"/>
+            <circle cx="220" cy="100" r="70" fill="url(#portalCore)"/>
+            <ellipse cx="220" cy="105" rx="38" ry="60" fill="#312e81" stroke="#6366f1" stroke-width="2.5"/>
+            <path d="M 220 50 Q 235 105 220 160 Q 205 105 220 50" fill="#c7d2fe" opacity="0.6"/>
 
-  <!-- SCREEN 9: QUEST -->
-  <section id="scr-quest" class="scr">
-    <div class="panel" style="max-width:520px;margin:0 auto;text-align:center;">
-      <div style="font-size:3.2rem;margin-bottom:8px;">🧙‍♂️</div>
-      <h2 id="q-title" style="font-family:var(--ff);color:#fff;margin-bottom:6px;">Penjelajah Terluka</h2>
-      <p id="q-desc" style="font-size:0.88rem;color:#cbd5e1;line-height:1.5;margin-bottom:14px;"></p>
-      <div style="background:#090a10;border:1px solid #282d42;border-radius:8px;padding:12px;margin-bottom:14px;text-align:left;font-size:0.82rem;">
-        <div style="color:var(--gold);font-weight:bold;">MISI:</div>
-        <div id="q-req" style="color:#e2e8f0;margin:3px 0 6px;"></div>
-        <div id="q-rew" style="color:#38bdf8;"></div>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:center;">
-        <button class="btn btn-gold" id="btn-q-acc" style="flex:2;">Terima / Berikan</button>
-        <button class="btn" onclick="advanceStep()" style="flex:1;">Tolak</button>
-      </div>
-    </div>
-  </section>
-</div>
+            <path d="M 40 200 L 40 55 Q 220 5 400 55 L 400 200" fill="none" stroke="#181c2b" stroke-width="30"/>
+            <path d="M 80 200 L 80 75 Q 220 25 360 75 L 360 200" fill="none" stroke="#252b40" stroke-width="16"/>
+            <path d="M 120 200 L 120 95 Q 220 50 320 95 L 320 200" fill="none" stroke="#333b56" stroke-width="8"/>
 
-<!-- MODALS -->
-<!-- 1. INVENTORY -->
-<div class="modal" id="mod-inv"><div class="m-win">
-  <div class="m-top"><div style="font-family:var(--ff);font-weight:bold;color:#fff;">🎒 Tas & Inventaris</div><button class="btn-sm" onclick="closeM('inv')">✕</button></div>
-  <div class="m-body">
-    <div class="tabs">
-      <button class="t-btn active" onclick="tabInv('all')">Semua (<span id="cnt-all">0</span>)</button>
-      <button class="t-btn" onclick="tabInv('weapon')">Senjata (<span id="cnt-wpn">0</span>)</button>
-      <button class="t-btn" onclick="tabInv('armor')">Armor (<span id="cnt-arm">0</span>)</button>
-      <button class="t-btn" onclick="tabInv('potion')">Potion (<span id="cnt-pot">0</span>)</button>
+            <polygon points="140,200 300,200 260,150 180,150" fill="#141724" stroke="#22273a" stroke-width="2"/>
+            <polygon points="160,200 280,200 250,165 190,165" fill="#1b1f30"/>
+
+            <circle cx="100" cy="95" r="30" fill="url(#fireLight)"/>
+            <rect x="97" y="95" width="6" height="26" fill="#78350f" rx="2"/>
+            <path d="M 100 82 Q 106 91 100 95 Q 94 91 100 82" fill="#fbbf24"/>
+
+            <circle cx="340" cy="95" r="30" fill="url(#fireLight)"/>
+            <rect x="337" y="95" width="6" height="26" fill="#78350f" rx="2"/>
+            <path d="M 340 82 Q 346 91 340 95 Q 334 91 340 82" fill="#fbbf24"/>
+
+            <path d="M 215 145 C 210 135, 230 135, 225 145 L 230 175 L 210 175 Z" fill="#090b12"/>
+            <circle cx="220" cy="132" r="6" fill="#090b12"/>
+            <line x1="233" y1="152" x2="248" y2="135" stroke="#94a3b8" stroke-width="2.5"/>
+            <line x1="231" y1="150" x2="238" y2="157" stroke="#cbd5e1" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <div class="menu-buttons-stack">
+          <button class="btn btn-gold" id="btn-menu-new-game">⚔️ New Game</button>
+          <button class="btn" id="btn-menu-continue-game" disabled>📜 Continue</button>
+          <button class="btn" id="btn-menu-how-to-play">📖 How to Play</button>
+          <button class="btn" id="btn-menu-open-settings">⚙️ Settings</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: CHARACTER CREATION -->
+    <section id="screen-char-create" class="game-screen">
+      <div class="panel-box" style="max-width: 520px; margin: 0 auto; text-align: center;">
+        <h2 style="font-family: var(--font-fantasy); margin-bottom: 8px; color: var(--gold);">Create Hero</h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
+          Name your hero before embarking into the treacherous depths.
+        </p>
+
+        <label style="display:block; text-align:left; font-size:0.82rem; color:#cbd5e1; margin-bottom:6px;">Hero Name:</label>
+        <input type="text" id="input-character-name" class="input-box" placeholder="e.g. Alistair, Kaelen, Lyra" maxlength="18" value="Alistair">
+
+        <div style="background:#090a10; border:1px solid #282d42; border-radius:8px; padding:14px; margin-bottom:20px; text-align:left;">
+          <div style="font-weight:700; font-size:0.85rem; color:var(--gold); margin-bottom:8px;">Base Stats (Level 1):</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.82rem; color:#cbd5e1;">
+            <div>❤️ HP: <strong>100 / 100</strong></div>
+            <div>⚔️ ATK: <strong>10</strong></div>
+            <div>🛡️ DEF: <strong>5</strong></div>
+            <div>🪙 Gold: <strong>0</strong></div>
+          </div>
+          <div style="margin-top:10px; font-size:0.75rem; color:#94a3b8; border-top:1px solid #1c2030; padding-top:6px;">
+            Starter Equipment: Common Iron Shortsword (+3 ATK), Common Cloth Tunic (+1 DEF), 2x Small Health Potions.
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button class="btn" id="btn-back-to-menu" style="flex:1;">Back</button>
+          <button class="btn btn-gold" id="btn-confirm-create-hero" style="flex:2;">Enter Sanctuary ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: TOWN HUB -->
+    <section id="screen-town-hub" class="game-screen">
+      <div class="panel-box">
+        <h2 class="hub-title-head">🏰 Sanctuary of Oakhaven</h2>
+        <p class="hub-desc-head">The safe sanctuary before entering the Abyss. Rest, upgrade your equipment, buy potions, accept bounties, and delve into the dungeon.</p>
+
+        <div class="hub-cards-grid">
+          <div class="hub-action-card" id="card-action-dungeon" style="border-color: #6366f1; background: linear-gradient(135deg, #1e1b4b 0%, #151828 100%);">
+            <div class="hub-card-icon">🚪</div>
+            <div class="hub-card-headline" style="color: #a5b4fc;">Enter Dungeon</div>
+            <div class="hub-card-body">Descend into the darkness. Choose your routes, fight monsters, find treasure chests, and face the dungeon boss!</div>
+            <button class="btn btn-gold" style="margin-top: auto; padding: 8px;">Explore Abyss ⚔️</button>
+          </div>
+
+          <div class="hub-action-card" id="card-action-shop">
+            <div class="hub-card-icon">⚒️</div>
+            <div class="hub-card-headline">Town Shop & Blacksmith</div>
+            <div class="hub-card-body">Buy weapons, armors, and health potions. Sell scavenged dungeon loot for 50% gold value.</div>
+            <button class="btn" style="margin-top: auto; padding: 8px;">Visit Shop 🪙</button>
+          </div>
+
+          <div class="hub-action-card" id="card-action-tavern">
+            <div class="hub-card-icon">🍺</div>
+            <div class="hub-card-headline">Tavern & Rations (20g)</div>
+            <div class="hub-card-body">Nikmati santapan hangat di kedai (20 Gold) untuk memulihkan 100% HP dan mendapat Buff Penjelajahan!</div>
+            <button class="btn btn-gold" style="margin-top: auto; padding: 8px;">Pesan Hidangan 🍲</button>
+          </div>
+
+          <div class="hub-action-card" id="card-action-inventory">
+            <div class="hub-card-icon">🎒</div>
+            <div class="hub-card-headline">Inventory & Gear</div>
+            <div class="hub-card-body">Equip weapons, armors, use healing potions, and inspect item rarity and stat bonuses.</div>
+            <button class="btn" style="margin-top: auto; padding: 8px;">Open Bag 📦</button>
+          </div>
+        </div>
+
+        <div class="hub-quest-panel">
+          <div class="hub-quest-header">
+            <span>📜 Active Quests & Bounties</span>
+            <span id="hub-quest-badge" style="color:#94a3b8; font-weight:normal; font-size:0.75rem;">0 active</span>
+          </div>
+          <div id="hub-quest-items-list">
+            <div style="font-size:0.82rem; color:#64748b; font-style:italic;">No active quests. Explore the dungeon to encounter stranded explorers and bounty hunters!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: DUNGEON EXPLORATION -->
+    <section id="screen-dungeon-explore" class="game-screen">
+      <div class="panel-box">
+        <div class="dungeon-nav-header">
+          <div class="dungeon-depth-badge" id="explore-floor-indicator">Depth: Floor 1</div>
+          <div class="dungeon-room-badge" id="explore-room-indicator">Room 1 / 8 (Boss at Room 8)</div>
+          <button class="btn btn-danger" id="btn-escape-dungeon" style="padding: 5px 12px; font-size: 0.78rem;">
+            🏃 Escape to Town
+          </button>
+        </div>
+
+        <div class="dungeon-event-scene">
+          <div class="scene-icon-large" id="scene-icon-symbol">🧭</div>
+          <h3 class="scene-title-text" id="scene-title-heading">You arrive at a crossroads.</h3>
+          <p class="scene-desc-text" id="scene-desc-paragraph">
+            The stone passage splits into three dark corridors. Water drips quietly from the mossy ceiling. Choose your path wisely.
+          </p>
+        </div>
+
+        <div class="routes-section-title">Choose Your Path</div>
+        <div class="routes-grid-3way">
+          <button class="route-action-btn" id="btn-path-left">
+            <span class="route-arrow-icon">←</span>
+            <span>Go Left</span>
+            <span style="font-size:0.72rem; color:#94a3b8; font-weight:normal;">Unexplored Hall</span>
+          </button>
+          <button class="route-action-btn" id="btn-path-forward">
+            <span class="route-arrow-icon">↑</span>
+            <span>Go Forward</span>
+            <span style="font-size:0.72rem; color:#94a3b8; font-weight:normal;">Deeper Passage</span>
+          </button>
+          <button class="route-action-btn" id="btn-path-right">
+            <span class="route-arrow-icon">→</span>
+            <span>Go Right</span>
+            <span style="font-size:0.72rem; color:#94a3b8; font-weight:normal;">Shadowy Arch</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: COMBAT -->
+    <section id="screen-combat" class="game-screen">
+      <div class="panel-box combat-wrapper">
+        <div id="monster-room-banner" class="wave-notice-tag" style="display:none;">
+          ⚔️ Monster Room! Enemy <span id="combat-wave-idx">1</span> of <span id="combat-wave-max">3</span>
+        </div>
+
+        <div class="enemy-card-box" id="combat-enemy-box">
+          <div class="enemy-avatar-square" id="combat-enemy-avatar">
+            👾
+          </div>
+          <div class="enemy-details-column">
+            <div class="enemy-header-line">
+              <span class="enemy-name-display" id="combat-enemy-title">Goblin</span>
+              <span class="enemy-badge badge-normal" id="combat-enemy-tag">Lv. 1 Normal</span>
+            </div>
+            <div class="bar-box" style="background:#141724; border-color:#333a52;">
+              <div class="bar-text-header">
+                <span style="color:#f87171;">Enemy HP</span>
+                <span id="combat-enemy-hp-num">50 / 50</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill-hp" id="combat-enemy-hp-bar"></div>
+              </div>
+            </div>
+            <div style="display:flex; gap:14px; font-size:0.8rem; color:var(--text-muted);">
+              <span>⚔️ ATK: <strong id="combat-enemy-atk-num">8</strong></span>
+              <span>🛡️ DEF: <strong id="combat-enemy-def-num">3</strong></span>
+              <span style="color:var(--gold);">🪙 Reward: <strong id="combat-enemy-gold-num">10-25</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="combat-log-feed" id="combat-log-console">
+          <div class="log-entry log-info-text">⚔️ A hostile creature blocks your path! Prepare for battle!</div>
+        </div>
+
+        <div class="combat-button-grid">
+          <button class="btn btn-gold combat-act-btn" id="btn-combat-act-attack">
+            ⚔️ Attack
+          </button>
+          
+          <button class="btn combat-act-btn" id="btn-combat-act-skill">
+            🔥 Skill
+            <span class="cooldown-text-sub" id="skill-cooldown-text">Fire Strike: READY</span>
+          </button>
+
+          <button class="btn combat-act-btn" id="btn-combat-act-inventory">
+            🎒 Inventory
+            <span class="cooldown-text-sub">Equip / Potion</span>
+          </button>
+
+          <button class="btn btn-danger combat-act-btn" id="btn-combat-act-flee">
+            🏃 Flee
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: CHEST ROOM -->
+    <section id="screen-chest-room" class="game-screen">
+      <div class="panel-box" style="text-align: center;">
+        <h2 style="font-family: var(--font-fantasy); color: var(--gold); margin-bottom: 6px;">
+          📦 Mysterious Chest
+        </h2>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
+          You discover an ironbound chest sitting silently in the dungeon chamber.
+        </p>
+
+        <div id="chest-animation-box" style="font-size: 5.5rem; margin: 20px 0; cursor: pointer; transition: transform 0.2s;">
+          🎁
+        </div>
+
+        <div id="chest-outcome-card" style="display: none; background: #090a10; border: 1px solid #282d42; border-radius: 10px; padding: 18px; margin-bottom: 20px;">
+          <h4 id="chest-outcome-title" style="font-size: 1.3rem; font-family: var(--font-fantasy); margin-bottom: 8px;"></h4>
+          <p id="chest-outcome-body" style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.5;"></p>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button class="btn btn-gold" id="btn-action-open-chest" style="min-width: 170px;">🔓 Open Chest</button>
+          <button class="btn" id="btn-action-leave-chest" style="display: none; min-width: 170px;">Continue Exploring ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7: DUNGEON SHOP -->
+    <section id="screen-dungeon-shop" class="game-screen">
+      <div class="panel-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h2 style="font-family:var(--font-fantasy); color:var(--gold);">🧙‍♂️ Mysterious Merchant</h2>
+            <p style="font-size:0.86rem; color:var(--text-muted);">"You found a mysterious merchant. I offer rare equipment and potions at a special discount (50–70% of normal price)!"</p>
+          </div>
+          <button class="btn btn-gold" id="btn-leave-dungeon-merchant" style="padding:8px 16px; font-size:0.82rem;">
+            Leave Shop ➔
+          </button>
+        </div>
+
+        <div class="inventory-list-stack" id="dungeon-merchant-items-container"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 8: RANDOM QUEST -->
+    <section id="screen-quest-encounter" class="game-screen">
+      <div class="panel-box" style="text-align: center; max-width: 580px; margin: 0 auto;">
+        <div style="font-size: 3.8rem; margin-bottom: 10px;" id="quest-npc-icon">🧙‍♂️</div>
+        <h2 style="font-family: var(--font-fantasy); color: #fff; margin-bottom: 8px;" id="quest-dialog-title">
+          An Injured Explorer Approaches
+        </h2>
+        <p style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.55; margin-bottom: 20px;" id="quest-dialog-desc">
+          "Please, brave adventurer! An injured explorer approaches you seeking aid. Could you spare a potion?"
+        </p>
+
+        <div style="background: #090a10; border: 1px solid #282d42; border-radius: 10px; padding: 16px; margin-bottom: 22px; text-align: left;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--gold); margin-bottom: 6px;">QUEST OBJECTIVE:</div>
+          <div id="quest-req-text" style="font-size: 0.88rem; color: #e2e8f0; margin-bottom: 8px;"></div>
+          <div id="quest-reward-preview-text" style="font-size: 0.84rem; color: #38bdf8;"></div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button class="btn btn-gold" id="btn-quest-accept-or-give" style="flex: 2;">Accept / Complete Quest</button>
+          <button class="btn" id="btn-quest-decline" style="flex: 1;">Decline & Leave</button>
+        </div>
+      </div>
+    </section>
+
+  </div> <!-- /game-wrapper -->
+
+  <!-- MODALS -->
+  <!-- 1. INVENTORY -->
+  <div class="modal-overlay" id="modal-inventory">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <div class="modal-heading">🎒 Inventory & Equipment</div>
+        <button class="modal-close-icon" id="btn-close-inventory-x">&times;</button>
+      </div>
+
+      <div class="modal-content-area">
+        <div id="combat-inv-warning-banner" style="display:none; background:#451a03; border:1px solid #d97706; color:#fef3c7; padding:8px 14px; border-radius:8px; font-size:0.78rem; margin-bottom:12px;">
+          ⚠️ <strong>Combat Inventory:</strong> You can freely switch weapons, switch armor, or use potions! Selling items is disabled during battle.
+        </div>
+
+        <div class="tab-nav-row">
+          <button class="tab-nav-btn active" data-tab="all">All Items (<span id="count-inv-all">0</span>)</button>
+          <button class="tab-nav-btn" data-tab="weapon">Weapons (<span id="count-inv-weapon">0</span>)</button>
+          <button class="tab-nav-btn" data-tab="armor">Armor (<span id="count-inv-armor">0</span>)</button>
+          <button class="tab-nav-btn" data-tab="potion">Potions (<span id="count-inv-potion">0</span>)</button>
+        </div>
+
+        <div class="inventory-list-stack" id="inventory-items-container"></div>
+      </div>
+
+      <div class="modal-bottom-bar">
+        <button class="btn" id="btn-close-inventory-btn">Back</button>
+      </div>
     </div>
-    <div id="inv-list"></div>
   </div>
-  <div class="m-bot"><button class="btn" onclick="closeM('inv')">Tutup</button></div>
-</div></div>
 
-<!-- 2. TOWN SHOP -->
-<div class="modal" id="mod-tshop"><div class="m-win">
-  <div class="m-top"><div style="font-family:var(--ff);font-weight:bold;color:#fff;">⚒️ Toko Kota Oakhaven</div><button class="btn-sm" onclick="closeM('tshop')">✕</button></div>
-  <div class="m-body">
-    <div class="tabs">
-      <button class="t-btn active" id="tb-s-buy" onclick="tabShop('buy')">BELI Barang</button>
-      <button class="t-btn" id="tb-s-sell" onclick="tabShop('sell')">JUAL Hasil Jarahan (50%)</button>
-      <button class="btn-sm" onclick="restockShop()" style="margin-left:auto;background:#2e1065;border-color:#7c3aed;color:#e9d5ff;">🔄 Restock (15g)</button>
-    </div>
-    <div id="tshop-list"></div>
-  </div>
-  <div class="m-bot">
-    <span style="margin-right:auto;color:var(--gold);font-weight:bold;font-size:0.85rem;">🪙 Gold: <span id="s-gold">0</span></span>
-    <button class="btn" onclick="closeM('tshop')">Tutup</button>
-  </div>
-</div></div>
+  <!-- 2. TOWN SHOP -->
+  <div class="modal-overlay" id="modal-town-shop">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <div class="modal-heading">⚒️ Town Shop & Blacksmith</div>
+        <button class="modal-close-icon" id="btn-close-town-shop-x">&times;</button>
+      </div>
 
-<!-- 3. TAVERN FEAST -->
-<div class="modal" id="mod-tavern"><div class="m-win" style="max-width:500px;">
-  <div class="m-top" style="background:#261706;"><div style="font-family:var(--ff);font-weight:bold;color:var(--gold);">🍺 Kedai & Ransum Penjelajah</div><button class="btn-sm" onclick="closeM('tavern')">✕</button></div>
-  <div class="m-body">
-    <p style="font-size:0.84rem;color:#cbd5e1;margin-bottom:10px;">Pesan hidangan (<strong style="color:var(--gold);">20 Gold</strong>) untuk memulihkan HP 100% dan mendapat buff penjelajahan:</p>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="item-card" onclick="meal('hp')"><div><strong style="color:#4ade80;">🍲 Sup Daging Pemburu (20g)</strong><div style="font-size:0.74rem;color:#94a3b8;">100% Heal + <span style="color:#4ade80;">+10 Max HP</span> run ini</div></div><button class="btn btn-gold btn-sm">20g 🍲</button></div>
-      <div class="item-card" onclick="meal('atk')"><div><strong style="color:#f87171;">🍺 Bir Rempah Petualang (20g)</strong><div style="font-size:0.74rem;color:#94a3b8;">100% Heal + <span style="color:#f87171;">+1 ATK</span> run ini</div></div><button class="btn btn-gold btn-sm">20g 🍺</button></div>
-      <div class="item-card" onclick="meal('def')"><div><strong style="color:#60a5fa;">🍵 Teh Kulit Besi (20g)</strong><div style="font-size:0.74rem;color:#94a3b8;">100% Heal + <span style="color:#60a5fa;">+1 DEF</span> run ini</div></div><button class="btn btn-gold btn-sm">20g 🍵</button></div>
-      <div class="item-card" onclick="meal('luck')"><div><strong style="color:#facc15;">📜 Kopi & Peta Rumor (20g)</strong><div style="font-size:0.74rem;color:#94a3b8;">100% Heal + <span style="color:#facc15;">+10% Gold/Luck</span> run ini</div></div><button class="btn btn-gold btn-sm">20g 📜</button></div>
-      <div class="item-card" style="border-style:dashed;" onclick="meal('free')"><div><strong style="color:#cbd5e1;">🪑 Istirahat Bangku Kedai (Gratis)</strong><div style="font-size:0.74rem;color:#94a3b8;">Pulihkan 100% HP saja tanpa buff</div></div><button class="btn btn-sm">Gratis 🪑</button></div>
+      <div class="modal-content-area">
+        <div class="tab-nav-row">
+          <button class="tab-nav-btn active" id="tab-shop-buy">BUY Wares</button>
+          <button class="tab-nav-btn" id="tab-shop-sell">SELL Loot (50% Value)</button>
+          <button class="tab-nav-btn" id="btn-shop-restock" style="margin-left:auto; background:#2e1065; border-color:#7c3aed; color:#e9d5ff;">
+            🔄 Restock (15 Gold)
+          </button>
+        </div>
+
+        <div class="inventory-list-stack" id="town-shop-items-container"></div>
+      </div>
+
+      <div class="modal-bottom-bar">
+        <div style="margin-right:auto; display:flex; align-items:center; gap:6px; color:var(--gold); font-weight:700;">
+          🪙 Your Gold: <span id="shop-player-gold">0</span>
+        </div>
+        <button class="btn" id="btn-close-town-shop-btn">Close Shop</button>
+      </div>
     </div>
   </div>
-  <div class="m-bot"><button class="btn" onclick="closeM('tavern')">Tutup</button></div>
-</div></div>
 
-<!-- 4. LEVEL UP -->
-<div class="modal" id="mod-lvl"><div class="m-win" style="max-width:480px;text-align:center;">
-  <div class="m-top" style="background:#261706;justify-content:center;"><div style="font-family:var(--ff);color:var(--gold);font-size:1.3rem;">✨ LEVEL UP! ✨</div></div>
-  <div class="m-body">
-    <p style="font-size:0.9rem;color:#fff;margin-bottom:4px;">Naik ke <strong>Level <span id="lvl-n">2</span></strong>! HP pulih penuh.</p>
-    <p style="font-size:0.8rem;color:#4ade80;margin-bottom:14px;">Pilih 1 peningkatan stat permanen:</p>
-    <div class="grid-3">
-      <div class="item-card" style="flex-direction:column;cursor:pointer;" onclick="upStat('atk')"><div style="font-size:1.6rem;">⚔️</div><strong style="color:#f87171;">+5 ATK</strong></div>
-      <div class="item-card" style="flex-direction:column;cursor:pointer;" onclick="upStat('def')"><div style="font-size:1.6rem;">🛡️</div><strong style="color:#60a5fa;">+3 DEF</strong></div>
-      <div class="item-card" style="flex-direction:column;cursor:pointer;" onclick="upStat('hp')"><div style="font-size:1.6rem;">❤️</div><strong style="color:#4ade80;">+20 HP</strong></div>
+    <!-- TAVERN FEAST MODAL -->
+  <div class="modal-overlay" id="modal-tavern-feast">
+    <div class="modal-window" style="max-width: 560px;">
+      <div class="modal-top-bar" style="background: #261706;">
+        <div class="modal-heading" style="color: var(--gold);">🍺 Tavern Hearth & Feast</div>
+        <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
+      </div>
+
+      <div class="modal-content-area">
+        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 14px;">
+          Pilih hidangan hangat di kedai sebelum berangkat (Biaya: <strong style="color:var(--gold);">20 Gold</strong>). Memulihkan HP 100% penuh dan memberikan buff penjelajahan:
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('hp')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍲</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#4ade80;">Sup Daging Pemburu (20 Gold)</span>
+                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> selama run</span>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-item-sm">Beli 20g 🍲</button>
+          </div>
+
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('atk')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍺</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#f87171;">Bir Rempah Petualang (20 Gold)</span>
+                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#f87171;">+1 ATK</strong> selama run</span>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-item-sm">Beli 20g 🍺</button>
+          </div>
+
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('def')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍵</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#60a5fa;">Teh Seduh Kulit Besi (20 Gold)</span>
+                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> selama run</span>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-item-sm">Beli 20g 🍵</button>
+          </div>
+
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('luck')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">📜</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#facc15;">Kopi & Peta Rumor (20 Gold)</span>
+                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> selama run</span>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-item-sm">Beli 20g 📜</button>
+          </div>
+
+          <div class="item-row-card" style="cursor:pointer; border-style:dashed;" onclick="handleSelectTavernMeal('free')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🪑</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#cbd5e1;">Istirahat di Bangku Kedai (Gratis)</span>
+                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP saja tanpa buff</span>
+              </div>
+            </div>
+            <button class="btn btn-item-sm">Istirahat 🪑</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-bottom-bar">
+        <button class="btn" id="btn-close-tavern-btn">Done</button>
+      </div>
     </div>
   </div>
-</div></div>
 
-<!-- 5. DEATH -->
-<div class="modal" id="mod-death"><div class="m-win" style="max-width:440px;text-align:center;border-color:#ef4444;">
-  <div class="m-top" style="background:#450a0a;justify-content:center;"><div style="font-family:var(--ff);color:#fca5a5;font-size:1.4rem;">💀 Pahlawan Gugur</div></div>
-  <div class="m-body">
-    <p style="font-size:0.88rem;color:#e2e8f0;line-height:1.5;margin-bottom:12px;">Jiwa pahlawan terbangun dengan aman di Sanctuary.</p>
-    <div style="background:#090a10;border:1px solid #374151;border-radius:6px;padding:10px;text-align:left;font-size:0.78rem;color:#94a3b8;">
-      <div style="color:#4ade80;font-weight:bold;margin-bottom:4px;">🛡️ Garansi Keamanan:</div>
-      <div>✓ Senjata & Armor terpasang TIDAK hilang.</div>
-      <div>✓ Isi tas & Gold sepenuhnya aman.</div>
-      <div>✓ HP dipulihkan 100% penuh.</div>
+  <!-- 3. LEVEL UP -->
+  <div class="modal-overlay" id="modal-level-up">
+    <div class="modal-window" style="text-align: center; border-color: var(--gold);">
+      <div class="modal-top-bar" style="background: #261706; justify-content: center;">
+        <div class="modal-heading" style="color: var(--gold); font-size: 1.6rem; letter-spacing: 2px;">
+          ✨ LEVEL UP! ✨
+        </div>
+      </div>
+
+      <div class="modal-content-area">
+        <p style="font-size: 0.95rem; color: #f8fafc; margin-bottom: 6px;">
+          Congratulations! You have reached <strong>Level <span id="lvlup-number-display">2</span></strong>!
+        </p>
+        <p style="font-size: 0.85rem; color: #4ade80; margin-bottom: 18px;">
+          ❤️ HP fully restored! Choose 1 permanent stat upgrade:
+        </p>
+
+        <div class="levelup-options-grid">
+          <div class="levelup-card-choice" id="btn-upgrade-atk">
+            <div style="font-size: 2.2rem;">⚔️</div>
+            <div class="levelup-stat-big" style="color: #f87171;">+5 ATK</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Empower attack damage and skills.</div>
+          </div>
+
+          <div class="levelup-card-choice" id="btn-upgrade-def">
+            <div style="font-size: 2.2rem;">🛡️</div>
+            <div class="levelup-stat-big" style="color: #60a5fa;">+3 DEF</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Reduce incoming damage from enemies.</div>
+          </div>
+
+          <div class="levelup-card-choice" id="btn-upgrade-hp">
+            <div style="font-size: 2.2rem;">❤️</div>
+            <div class="levelup-stat-big" style="color: #4ade80;">+20 MAX HP</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Boost your maximum life force.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="m-bot" style="justify-content:center;"><button class="btn btn-gold" onclick="closeM('death');setScr('town');">Bangkit di Sanctuary 🏰</button></div>
-</div></div>
 
-<!-- 6. HOW TO PLAY -->
-<div class="modal" id="mod-how"><div class="m-win"><div class="m-top"><div style="font-family:var(--ff);color:#fff;">📖 Petunjuk Permainan</div><button class="btn-sm" onclick="closeM('how')">✕</button></div><div class="m-body" style="font-size:0.84rem;color:#cbd5e1;line-height:1.6;"><h4 style="color:var(--gold);">1. Eksplorasi & Rute</h4><p>Pilih rute kiri, tengah, atau kanan. Temui monster, shrine, peti harta, anvil, dan boss di tiap akhir lantai.</p><h4 style="color:var(--gold);margin-top:8px;">2. Pertarungan & Potion</h4><p>Gunakan serangan biasa atau Fire Strike (Lv. 3). Minum potion tidak mengonsumsi turn (Free Action).</p><h4 style="color:var(--gold);margin-top:8px;">3. Leveling & Kematian Aman</h4><p>Kumpulkan EXP untuk naik level. Kematian tidak menghilangkan gold atau perlengkapan yang dimiliki.</p></div><div class="m-bot"><button class="btn btn-gold" onclick="closeM('how')">Paham!</button></div></div></div>
+  <!-- 4. MILESTONE REWARD -->
+  <div class="modal-overlay" id="modal-milestone-reward">
+    <div class="modal-window" style="text-align: center; border-color: #a855f7;">
+      <div class="modal-top-bar" style="background: #2e1065; justify-content: center;">
+        <div class="modal-heading" style="color: #e9d5ff; font-size: 1.5rem;">
+          🏆 Milestone Reward!
+        </div>
+      </div>
 
-<!-- 7. SETTINGS -->
-<div class="modal" id="mod-set"><div class="m-win" style="max-width:440px;"><div class="m-top"><div style="font-family:var(--ff);color:#fff;">⚙️ Pengaturan</div><button class="btn-sm" onclick="closeM('set')">✕</button></div><div class="m-body" style="display:flex;flex-direction:column;gap:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span>Efek Suara:</span><button class="btn-sm" id="btn-tgl-snd" onclick="tglSnd()">Sound ON 🔊</button></div><div style="display:flex;justify-content:space-between;align-items:center;"><span>Ekspor Simpanan (JSON):</span><button class="btn-sm" onclick="exportSave()">Unduh Save 💾</button></div><div style="border-top:1px solid #282d42;padding-top:10px;"><button class="btn btn-danger" style="width:100%;" onclick="resetSave()">🗑️ Reset Semua Progres</button></div></div><div class="m-bot"><button class="btn" onclick="closeM('set')">Tutup</button></div></div></div>
+      <div class="modal-content-area">
+        <div style="font-size: 4rem; margin: 10px 0;">🎁</div>
+        <h3 style="color: #ffd700; margin-bottom: 6px;">You reached Level <span id="milestone-lvl-num">10</span>!</h3>
+        <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 16px;">
+          You received a random equipment!
+        </p>
 
-<div id="toast">Notifikasi</div>
+        <div id="milestone-equipment-card" style="background: #090a10; border: 2px solid #a855f7; border-radius: 10px; padding: 16px; margin-bottom: 18px;"></div>
+      </div>
 
-<script>
-/* AUDIO ENGINE */
-class AudioSys{
-  constructor(){this.ctx=null;this.on=true;}
-  init(){if(!this.ctx){const A=window.AudioContext||window.webkitAudioContext;if(A)this.ctx=new A();}if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();}
-  tone(f,t='sine',d=0.1,g=0.15){if(!this.on)return;this.init();if(!this.ctx)return;try{const o=this.ctx.createOscillator(),v=this.ctx.createGain();o.type=t;o.frequency.setValueAtTime(f,this.ctx.currentTime);v.gain.setValueAtTime(g,this.ctx.currentTime);v.gain.exponentialRampToValueAtTime(0.0001,this.ctx.currentTime+d);o.connect(v);v.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+d);}catch(e){}}
-  click(){this.tone(550,'triangle',0.05,0.08);}
-  atk(){this.tone(200,'sawtooth',0.08,0.12);setTimeout(()=>this.tone(130,'triangle',0.1,0.14),35);}
-  crit(){this.tone(350,'sawtooth',0.08,0.16);setTimeout(()=>this.tone(720,'square',0.18,0.2),50);}
-  fire(){this.tone(280,'sawtooth',0.1,0.14);setTimeout(()=>this.tone(680,'sine',0.22,0.22),120);}
-  hit(){this.tone(110,'sawtooth',0.14,0.18);}
-  pot(){this.tone(440,'sine',0.08,0.1);setTimeout(()=>this.tone(659,'sine',0.14,0.14),100);}
-  fanfare(){[392,523,659,784].forEach((f,i)=>setTimeout(()=>this.tone(f,'square',0.18,0.16),i*90));}
-  trap(){this.tone(85,'sawtooth',0.3,0.25);}
-  gold(){this.tone(987,'sine',0.06,0.09);setTimeout(()=>this.tone(1318,'sine',0.09,0.11),50);}
-  die(){[220,170,120].forEach((f,i)=>setTimeout(()=>this.tone(f,'sawtooth',0.25,0.22),i*150));}
-}
-const sfx=new AudioSys();
+      <div class="modal-bottom-bar" style="justify-content: center;">
+        <button class="btn btn-gold" id="btn-dismiss-milestone" style="min-width: 150px;">Claim Equipment! ⚔️</button>
+      </div>
+    </div>
+  </div>
 
-/* SVG ICONS */
-const SVGS={
-  slime:'<svg viewBox="0 0 100 100" width="75" height="75"><path d="M50 20 C25 20 15 50 15 75 C15 90 85 90 85 75 C85 50 75 20 50 20 Z" fill="#22c55e" stroke="#15803d" stroke-width="3"/><circle cx="40" cy="50" r="5" fill="#fff"/><circle cx="60" cy="50" r="5" fill="#fff"/><circle cx="42" cy="51" r="2.5" fill="#000"/><circle cx="62" cy="51" r="2.5" fill="#000"/></svg>',
-  goblin:'<svg viewBox="0 0 100 100" width="75" height="75"><path d="M50 15 Q15 25 10 50 Q25 50 35 55 Q30 75 50 85 Q70 75 65 55 Q75 50 90 50 Q85 25 50 15 Z" fill="#15803d"/><circle cx="38" cy="45" r="4" fill="#facc15"/><circle cx="62" cy="45" r="4" fill="#facc15"/><circle cx="38" cy="45" r="2" fill="#000"/><circle cx="62" cy="45" r="2" fill="#000"/></svg>',
-  skeleton:'<svg viewBox="0 0 100 100" width="75" height="75"><ellipse cx="50" cy="50" rx="26" ry="24" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><circle cx="40" cy="48" r="6" fill="#0f172a"/><circle cx="60" cy="48" r="6" fill="#0f172a"/><circle cx="40" cy="48" r="2.5" fill="#38bdf8"/><circle cx="60" cy="48" r="2.5" fill="#38bdf8"/></svg>',
-  wolf:'<svg viewBox="0 0 100 100" width="75" height="75"><polygon points="25,45 15,10 40,28" fill="#312e81"/><polygon points="75,45 85,10 60,28" fill="#312e81"/><polygon points="25,35 50,15 75,35 80,65 50,90 20,65" fill="#0f172a"/><circle cx="38" cy="48" r="3" fill="#ef4444"/><circle cx="62" cy="48" r="3" fill="#ef4444"/></svg>',
-  bandit:'<svg viewBox="0 0 100 100" width="75" height="75"><path d="M50 12 Q20 18 20 52 Q20 85 50 92 Q80 85 80 52 Q80 18 50 12 Z" fill="#27272a"/><ellipse cx="40" cy="48" rx="4" ry="2" fill="#ef4444"/><ellipse cx="60" cy="48" rx="4" ry="2" fill="#ef4444"/></svg>',
-  orc:'<svg viewBox="0 0 100 100" width="75" height="75"><path d="M25 35 Q50 15 75 35 L82 55 Q50 95 18 55 Z" fill="#166534"/><circle cx="38" cy="50" r="4" fill="#facc15"/><circle cx="62" cy="50" r="4" fill="#facc15"/><polygon points="32,75 36,60 40,75" fill="#fff"/><polygon points="68,75 64,60 60,75" fill="#fff"/></svg>',
-  knight:'<svg viewBox="0 0 100 100" width="75" height="75"><polygon points="50,10 80,30 75,80 50,95 25,80 20,30" fill="#0f172a" stroke="#6366f1" stroke-width="2"/><path d="M28 42 L72 42 L68 50 L32 50 Z" fill="#a855f7"/></svg>',
-  demon:'<svg viewBox="0 0 100 100" width="75" height="75"><polygon points="25,35 50,15 75,35 85,75 50,92 15,75" fill="#7f1d1d"/><circle cx="38" cy="48" r="4" fill="#fbbf24"/><circle cx="62" cy="48" r="4" fill="#fbbf24"/></svg>',
-  riddler:'<svg viewBox="0 0 100 100" width="75" height="75"><path d="M50 10 Q16 18 16 55 Q16 90 50 96 Q84 90 84 55 Q84 18 50 10 Z" fill="#3b0764" stroke="#a855f7" stroke-width="2"/><text x="50" y="82" font-family="serif" font-size="24" font-weight="bold" fill="#facc15" text-anchor="middle">?</text></svg>',
-  chrono:'<svg viewBox="0 0 100 100" width="75" height="75"><circle cx="50" cy="50" r="36" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,4"/><polygon points="30,22 70,22 50,50" fill="#0369a1"/><polygon points="30,78 70,78 50,50" fill="#0284c7"/></svg>',
-  boss_tg:'<svg viewBox="0 0 100 100" width="80" height="80"><circle cx="35" cy="50" r="28" fill="#581c87"/><circle cx="65" cy="50" r="28" fill="#ca8a04"/><path d="M50 15 L50 85" stroke="#fff" stroke-width="2"/></svg>',
-  boss_guard:'<svg viewBox="0 0 100 100" width="80" height="80"><polygon points="50,10 85,30 80,85 50,95 20,85 15,30" fill="#334155" stroke="#64748b" stroke-width="3"/><circle cx="50" cy="50" r="12" fill="#ea580c"/></svg>',
-  boss_drag:'<svg viewBox="0 0 100 100" width="80" height="80"><polygon points="50,15 80,45 65,85 50,95 35,85 20,45" fill="#18181b" stroke="#ef4444" stroke-width="2"/><circle cx="38" cy="50" r="3" fill="#a855f7"/><circle cx="62" cy="50" r="3" fill="#a855f7"/></svg>'
-};
+  <!-- 5. YOU DIED -->
+  <div class="modal-overlay" id="modal-death-screen">
+    <div class="modal-window" style="text-align: center; border-color: #ef4444; max-width: 480px;">
+      <div class="modal-top-bar" style="background: #450a0a; justify-content: center;">
+        <div class="modal-heading" style="color: #fca5a5; font-size: 1.7rem; letter-spacing: 2px;">
+          💀 You Died.
+        </div>
+      </div>
 
-/* DATA CONSTANTS */
-const RARITIES={common:{name:"Common",class:"rarity-common",mult:1.0},uncommon:{name:"Uncommon",class:"rarity-uncommon",mult:1.5},rare:{name:"Rare",class:"rarity-rare",mult:2.2},epic:{name:"Epic",class:"rarity-epic",mult:3.2},legendary:{name:"Legendary",class:"rarity-legendary",mult:4.8}};
-const WPNS=[{name:"Dagger",atk:4,icon:"🗡️"},{name:"Shortsword",atk:7,icon:"⚔️"},{name:"Iron Sword",atk:9,icon:"⚔️"},{name:"Longsword",atk:12,icon:"🗡️"},{name:"Battleaxe",atk:16,icon:"🪓"},{name:"Demon Blade",atk:25,icon:"🩸"},{name:"Dragon Slayer",atk:35,icon:"🐉"}];
-const ARMS=[{name:"Cloth Tunic",def:2,icon:"🥋"},{name:"Leather Armor",def:3,icon:"🦺"},{name:"Chainmail",def:7,icon:"⛓️"},{name:"Knight Armor",def:10,icon:"🛡️"},{name:"Dragon Armor",def:25,icon:"🐲"}];
-const POTS=[{id:"pot_s",name:"Small Potion",heal:30,val:20,icon:"🧪",rarity:"common"},{id:"pot_m",name:"Health Potion",heal:60,val:45,icon:"🍷",rarity:"uncommon"},{id:"pot_l",name:"Large Potion",heal:100,val:85,icon:"🏺",rarity:"rare"}];
-const MOBS=[
-  {id:"slime",name:"Slime",hp:45,atk:7,def:2,exp:25,gold:12,svg:SVGS.slime},
-  {id:"goblin",name:"Goblin",hp:60,atk:9,def:3,exp:38,gold:18,svg:SVGS.goblin},
-  {id:"skeleton",name:"Skeleton",hp:72,atk:12,def:4,exp:50,gold:26,svg:SVGS.skeleton},
-  {id:"dark_wolf",name:"Dark Wolf",hp:80,atk:15,def:4,exp:62,gold:32,svg:SVGS.wolf},
-  {id:"bandit",name:"Bandit",hp:92,atk:17,def:6,exp:78,gold:46,svg:SVGS.bandit},
-  {id:"orc",name:"Orc",hp:125,atk:21,def:8,exp:105,gold:62,svg:SVGS.orc},
-  {id:"knight",name:"Dark Knight",hp:160,atk:26,def:13,exp:150,gold:90,svg:SVGS.knight},
-  {id:"demon",name:"Demon",hp:200,atk:32,def:16,exp:200,gold:135,svg:SVGS.demon}
-];
-const BOSSES=[
-  {id:"b_guard",name:"Dungeon Guardian",hp:360,atk:32,def:18,exp:400,gold:300,svg:SVGS.boss_guard},
-  {id:"b_tg",name:"Taking and Giving",hp:460,atk:36,def:20,exp:600,gold:450,svg:SVGS.boss_tg,special:true},
-  {id:"b_drag",name:"Shadow Dragon",hp:620,atk:48,def:25,exp:900,gold:700,svg:SVGS.boss_drag}
-];
-const RIDDLES=[
-  {q:"Aku punya 5 jari tapi tanpa daging atau tulang. Apakah aku?",opts:["Sarung Tangan","Pedang","Bayangan"],c:0},
-  {q:"Semakin banyak diambil, semakin besar jadinya. Apakah aku?",opts:["Emas","Lubang","Waktu"],c:1},
-  {q:"Bisa mengisi seluruh ruangan tanpa makan tempat sama sekali. Apakah aku?",opts:["Cahaya","Asap","Batu"],c:0}
-];
+      <div class="modal-content-area">
+        <p style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.55; margin-bottom: 16px;">
+          Your vision fades to black... But your hero's soul safely returns to the Sanctuary of Oakhaven.
+        </p>
 
-function genRarity(){const r=Math.random();return r<=0.01?"legendary":r<=0.07?"epic":r<=0.20?"rare":r<=0.45?"uncommon":"common";}
-function genEq(type,forceR,lvl=1){
-  if(!type)type=Math.random()<0.5?"weapon":"armor";
-  const rk=forceR||genRarity(),r=RARITIES[rk];
-  const bases=type==="weapon"?WPNS:ARMS;
-  const maxIdx=Math.min(bases.length-1,Math.floor(lvl/4)+2);
-  const b=bases[Math.floor(Math.random()*(maxIdx+1))];
-  const scale=1+(lvl-1)*0.14;
-  const stat=Math.max(1,Math.round((type==="weapon"?b.atk:b.def)*r.mult*scale));
-  return {id:"eq_"+Date.now()+"_"+Math.floor(Math.random()*9999),name:r.name+" "+b.name,type:type,rarity:rk,stat:stat,statLabel:type==="weapon"?`+${stat} ATK`:`+${stat} DEF`,val:Math.round((type==="weapon"?b.atk:b.def)*10*r.mult*scale),icon:b.icon};
-}
-function genPot(id){const p=POTS.find(x=>x.id===id)||POTS[0];return {id:"p_"+Date.now()+"_"+Math.floor(Math.random()*9999),name:p.name,type:"potion",heal:p.heal,val:p.val,icon:p.icon,rarity:p.rarity,statLabel:`+${p.heal} HP`};}
+        <div style="background: #090a10; border: 1px solid #374151; border-radius: 8px; padding: 14px; text-align: left; font-size: 0.84rem; color: #94a3b8; margin-bottom: 16px;">
+          <div style="color: #4ade80; font-weight: bold; margin-bottom: 6px;">🛡️ Safe Haven Guarantee:</div>
+          <div>✓ You did NOT lose any equipped weapons or armor.</div>
+          <div>✓ Your inventory items and potions remain safe.</div>
+          <div>✓ Your gold is completely preserved.</div>
+          <div>✓ HP restored to full upon awakening.</div>
+        </div>
+      </div>
 
-/* STATE MANAGEMENT */
-const S_KEY="dungeon_explorer_save_v1";
-class GameState{
-  constructor(){this.reset();}
-  reset(){
-    this.p={name:"Alistair",lvl:1,exp:0,maxExp:100,hp:100,maxHp:100,bAtk:10,bDef:5,gold:0,inv:[],wpn:null,arm:null,skl:{unlocked:false,cd:0,maxCd:3},quests:[],buffs:{atk:0,def:0,extraHp:0,luck:0,tgAtk:0,sealed:0},comp:null,worthy:false};
-    this.d={active:false,floor:1,room:1,maxRooms:8,roomType:null,wave:[],waveIdx:0,shopItems:[],questOffer:null};
-    this.c={enemy:null,inCombat:false,isBoss:false,turns:0,tgMode:"taking"};
-  }
-  get atk(){return this.p.bAtk+(this.p.wpn?this.p.wpn.stat:0)+this.p.buffs.atk+this.p.buffs.tgAtk;}
-  get def(){return this.p.bDef+(this.p.arm?this.p.arm.stat:0)+this.p.buffs.def;}
-  get totalMaxHp(){return this.p.maxHp+this.p.buffs.extraHp;}
-  getExpLvl(l){return Math.floor(100*Math.pow(1.5,l-1));}
-  save(){try{localStorage.setItem(S_KEY,JSON.stringify({p:this.p,t:Date.now()}));return true;}catch(e){return false;}}
-  load(){try{const r=localStorage.getItem(S_KEY);if(!r)return false;const d=JSON.parse(r);if(d&&d.p){this.p=Object.assign(this.p,d.p);if(!this.p.buffs)this.p.buffs={atk:0,def:0,extraHp:0,luck:0,tgAtk:0,sealed:0};if(this.p.lvl>=3)this.p.skl={unlocked:true,cd:0,maxCd:3};return true;}}catch(e){}return false;}
-  hasSave(){return localStorage.getItem(S_KEY)!==null;}
-}
-const G=new GameState();
+      <div class="modal-bottom-bar" style="justify-content: center;">
+        <button class="btn btn-gold" id="btn-revive-hub" style="min-width: 180px;">Return to Sanctuary 🏰</button>
+      </div>
+    </div>
+  </div>
 
-/* UI CONTROLLER */
-const UI={
-  toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);},
-  updateHUD(){
-    const p=G.p,mHp=G.totalMaxHp;
-    document.getElementById('h-name').textContent=p.name;
-    document.getElementById('h-lvl').textContent=`LV ${p.lvl}`;
-    document.getElementById('h-hp').textContent=`${p.hp}/${mHp}`;
-    document.getElementById('bar-hp').style.width=`${Math.max(0,Math.min(100,(p.hp/mHp)*100))}%`;
-    document.getElementById('h-exp').textContent=`${p.exp}/${p.maxExp}`;
-    document.getElementById('bar-exp').style.width=`${Math.max(0,Math.min(100,(p.exp/p.maxExp)*100))}%`;
-    document.getElementById('h-atk').textContent=G.atk;
-    document.getElementById('h-def').textContent=G.def;
-    document.getElementById('h-gold').textContent=p.gold.toLocaleString();
-    const ab=document.getElementById('h-atk-b');if(p.buffs.atk>0){ab.style.display='inline';ab.textContent=`(+${p.buffs.atk})`;}else ab.style.display='none';
-    const db=document.getElementById('h-def-b');if(p.buffs.def>0){db.style.display='inline';db.textContent=`(+${p.buffs.def})`;}else db.style.display='none';
-    const cb=document.getElementById('h-comp');if(p.comp&&p.comp.hp>0){cb.style.display='inline-block';cb.textContent=`🐺 ${p.comp.name} (${p.comp.hp}/${p.comp.maxHp})`;}else cb.style.display='none';
-    const fb=document.getElementById('h-buff');if(p.buffs.extraHp>0||p.buffs.luck>0){fb.style.display='inline-block';}else fb.style.display='none';
-    document.getElementById('h-wpn').textContent=p.wpn?p.wpn.name:"None";
-    document.getElementById('h-wpn').className=p.wpn?RARITIES[p.wpn.rarity].class:"rarity-common";
-    document.getElementById('h-arm').textContent=p.arm?p.arm.name:"None";
-    document.getElementById('h-arm').className=p.arm?RARITIES[p.arm.rarity].class:"rarity-common";
-    this.updateQuests();
-  },
-  updateQuests(){
-    const l=document.getElementById('quest-list');
-    if(!G.p.quests||G.p.quests.length===0){l.innerHTML='Belum ada quest aktif. Temukan penjelajah di dungeon!';return;}
-    l.innerHTML=G.p.quests.map(q=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1e2d;"><div><strong>${q.title}</strong><div style="font-size:0.72rem;color:#94a3b8;">${q.prog}</div></div><button class="btn btn-gold btn-sm" onclick="claimQ('${q.id}')" ${q.done?'':'disabled'}>${q.done?'Klaim 🎁':'Progres'}</button></div>`).join('');
-  },
-  log(m,c='log-i'){const el=document.getElementById('c-log'),d=document.createElement('div');d.className=`${c}`;d.innerHTML=m;el.appendChild(d);el.scrollTop=el.scrollHeight;},
-  renderInv(tab='all'){
-    const el=document.getElementById('inv-list'),p=G.p;
-    const all=p.inv,wpns=all.filter(i=>i.type==='weapon'),arms=all.filter(i=>i.type==='armor'),pots=all.filter(i=>i.type==='potion');
-    document.getElementById('cnt-all').textContent=all.length;document.getElementById('cnt-wpn').textContent=wpns.length;document.getElementById('cnt-arm').textContent=arms.length;document.getElementById('cnt-pot').textContent=pots.length;
-    let list=tab==='weapon'?wpns:tab==='armor'?arms:tab==='potion'?pots:all;
-    if(list.length===0){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b;">Tas kosong di kategori ini.</div>';return;}
-    el.innerHTML=list.map(item=>{
-      const r=RARITIES[item.rarity]||RARITIES.common,isEq=(p.wpn&&p.wpn.id===item.id)||(p.arm&&p.arm.id===item.id);
-      const totalSame=all.filter(i=>i.name===item.name).length;
-      const countTag=totalSame>1?`<span style="background:#312e81;color:#c7d2fe;font-size:0.72rem;padding:1px 6px;border-radius:4px;font-weight:bold;margin-left:4px;">x${totalSame}</span>`:'';
-      return `<div class="item-card"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.5rem;">${item.icon}</span><div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;"><strong class="${r.class}">${item.name}</strong>${countTag}${isEq?'<span style="background:#065f46;color:#a7f3d0;font-size:0.68rem;padding:1px 5px;border-radius:3px;">DIPAKAI</span>':''}</div><div style="font-size:0.75rem;color:#38bdf8;">${item.statLabel} | Nilai: ${item.val}g</div></div></div><div style="display:flex;gap:4px;">${item.type==='potion'?`<button class="btn btn-gold btn-sm" onclick="usePot('${item.id}')">Pakai 🍷</button>`:isEq?`<button class="btn btn-sm" onclick="uneq('${item.id}')">Lepas</button>`:`<button class="btn btn-gold btn-sm" onclick="eq('${item.id}')">Pakai ⚔️</button>`}<button class="btn btn-danger btn-sm" onclick="dropItem('${item.id}')" ${isEq?'disabled':''}>🗑️</button></div></div>`;
-    }).join('');
-  }
-};
+  <!-- 6. HOW TO PLAY -->
+  <div class="modal-overlay" id="modal-how-to-play">
+    <div class="modal-window" style="max-width: 620px;">
+      <div class="modal-top-bar">
+        <div class="modal-heading">📖 How to Play - Dungeon Explorer</div>
+        <button class="modal-close-icon" id="btn-close-how-x">&times;</button>
+      </div>
 
-function setScr(name){
-  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById(`scr-${name}`);if(el)el.classList.add('active');
-  const hud=document.getElementById('hud');
-  if(name==='menu'||name==='create')hud.style.display='none';
-  else{hud.style.display='block';UI.updateHUD();}
-}
-function openM(name){const m=document.getElementById(`mod-${name}`);if(m){m.classList.add('active');sfx.click();}}
-function closeM(name){const m=document.getElementById(`mod-${name}`);if(m){m.classList.remove('active');sfx.click();}}
+      <div class="modal-content-area" style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.65;">
+        <h4 style="color: var(--gold); margin-bottom: 4px;">1. Dungeon Exploration & Routes</h4>
+        <p style="margin-bottom: 12px;">Navigate through the dungeon by choosing <strong>Go Left (←)</strong>, <strong>Go Forward (↑)</strong>, or <strong>Go Right (→)</strong>. Every choice presents random encounters: Monster Rooms (at least 3 enemies), Elite Rooms, Boss Rooms, Treasure/Trap Chests, Mysterious Merchants, and Quests!</p>
 
-/* INVENTORY ACTIONS */
-function eq(id){const item=G.p.inv.find(i=>i.id===id);if(!item)return;sfx.click();if(item.type==='weapon'){G.p.wpn=item;UI.toast(`Senjata ${item.name} dipasang!`);}else if(item.type==='armor'){G.p.arm=item;UI.toast(`Armor ${item.name} dipasang!`);}UI.updateHUD();UI.renderInv('all');G.save();}
-function uneq(id){sfx.click();if(G.p.wpn&&G.p.wpn.id===id)G.p.wpn=null;else if(G.p.arm&&G.p.arm.id===id)G.p.arm=null;UI.toast("Perlengkapan dilepas");UI.updateHUD();UI.renderInv('all');G.save();}
-function usePot(id){
-  const idx=G.p.inv.findIndex(i=>i.id===id);if(idx===-1)return;
-  const pot=G.p.inv[idx],mHp=G.totalMaxHp;
-  if(G.p.hp>=mHp){UI.toast("HP sudah penuh!");return;}
-  sfx.pot();const old=G.p.hp;G.p.hp=Math.min(mHp,G.p.hp+pot.heal);
-  G.p.inv.splice(idx,1);UI.toast(`Minum ${pot.name}, +${G.p.hp-old} HP!`);
-  if(G.c.inCombat)UI.log(`🍷 Minum <strong>${pot.name}</strong>, memulihkan <strong>+${G.p.hp-old} HP</strong>!`,'log-h');
-  UI.updateHUD();UI.renderInv('all');G.save();
-}
-function dropItem(id){const idx=G.p.inv.findIndex(i=>i.id===id);if(idx===-1)return;sfx.click();G.p.inv.splice(idx,1);UI.toast("Item dibuang");UI.renderInv('all');G.save();}
-function tabInv(t){document.querySelectorAll('#mod-inv .t-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');UI.renderInv(t);}
+        <h4 style="color: var(--gold); margin-bottom: 4px;">2. Turn-Based Combat & Skills</h4>
+        <p style="margin-bottom: 12px;">Damage calculation: <code>Player ATK - Enemy DEF</code> (minimum 1). Unlock <strong>Fire Strike</strong> at Level 3 (deals 2x ATK damage, 3 turns cooldown). Open inventory during battle to equip gear or use healing potions!</p>
 
-/* COMBAT ENGINE */
-function getFloorPool(){const f=G.d.floor||1;return f<=1?MOBS.slice(0,4):f<=2?MOBS.slice(0,6):MOBS;}
-function scaleMob(tmpl,isElite=false){
-  const lvl=G.p.lvl,f=G.d.floor||1;
-  const eHp=isElite?(f===1?1.30:(f===2?1.45:1.60)):1.0;
-  const eAtk=isElite?(f===1?1.10:1.20):1.0;
-  const lHp=1+(lvl-1)*0.12,lAtk=1+(lvl-1)*0.10,lDef=1+(lvl-1)*0.08;
-  return {id:tmpl.id,name:isElite?`Elite ${tmpl.name}`:tmpl.name,hp:Math.round(tmpl.hp*lHp*eHp),atk:Math.round(tmpl.atk*lAtk*eAtk),def:Math.round(tmpl.def*lDef*(isElite?1.1:1.0)),exp:Math.round(tmpl.exp*(1+(lvl-1)*0.18)*(isElite?2:1)),gold:Math.round(tmpl.gold*(1+(lvl-1)*0.2)*(isElite?2:1)),svg:tmpl.svg,isElite:isElite};
-}
-function startCombat(enemyData,isBoss=false,waveInfo=null){
-  G.c.inCombat=true;G.c.enemy=JSON.parse(JSON.stringify(enemyData));G.c.enemy.maxHp=G.c.enemy.hp;G.c.isBoss=isBoss;G.c.turns=0;G.c.tgMode="taking";
-  if(G.p.skl)G.p.skl.cd=0;
-  setScr('combat');
-  const wb=document.getElementById('c-wave');if(waveInfo){wb.style.display='block';document.getElementById('c-w-cur').textContent=waveInfo.cur;document.getElementById('c-w-tot').textContent=waveInfo.tot;}else wb.style.display='none';
-  const cb=document.getElementById('c-comp-box');if(G.p.comp&&G.p.comp.hp>0){cb.style.display='flex';document.getElementById('c-comp-hp').textContent=`${G.p.comp.hp}/${G.p.comp.maxHp}`;}else cb.style.display='none';
-  document.getElementById('c-log').innerHTML='';UI.log(`⚔️ Bertemu <strong>${G.c.enemy.name}</strong>! Bersiap bertarung!`,'log-i');
-  updateCDisplay();
-}
-function updateCDisplay(){
-  const e=G.c.enemy;if(!e)return;
-  document.getElementById('c-name').textContent=e.name;
-  document.getElementById('c-atk-num').textContent=e.atk;
-  document.getElementById('c-def-num').textContent=e.def;
-  document.getElementById('c-gold-num').textContent=`${Math.floor(e.gold*0.8)}-${Math.ceil(e.gold*1.2)}`;
-  document.getElementById('c-hp-num').textContent=`${e.hp}/${e.maxHp}`;
-  document.getElementById('c-hp-bar').style.width=`${Math.max(0,Math.min(100,(e.hp/e.maxHp)*100))}%`;
-  const box=document.getElementById('c-box'),bdg=document.getElementById('c-badge');
-  box.className='c-box';
-  if(G.c.isBoss){box.classList.add('boss');bdg.textContent='BOSS';}else if(e.isElite){box.classList.add('elite');bdg.textContent='ELITE';}else bdg.textContent='Normal';
-  document.getElementById('c-avatar').innerHTML=e.svg||SVGS.goblin;
-  const sBtn=document.getElementById('btn-act-skl'),sTxt=document.getElementById('skl-txt');
-  if(G.p.buffs.sealed>0){sTxt.textContent=`TERSEGEL (${G.p.buffs.sealed} turn)`;sBtn.disabled=true;}
-  else if(!G.p.skl||!G.p.skl.unlocked){sTxt.textContent='Buka di Lv. 3';sBtn.disabled=true;}
-  else if(G.p.skl.cd>0){sTxt.textContent=`Cooldown: ${G.p.skl.cd}`;sBtn.disabled=true;}
-  else{sTxt.textContent='Fire Strike: SIAP';sBtn.disabled=false;}
-  UI.updateHUD();
-}
-function playerAtk(){
-  if(!G.c.inCombat)return;
-  sfx.atk();const p=G.p,e=G.c.enemy;
-  const raw=Math.max(1,G.atk-e.def),crit=Math.random()<0.12,dmg=crit?Math.round(raw*1.5):raw;
-  if(crit){sfx.crit();UI.log(`💥 <strong>CRITICAL HIT!</strong> Menghasilkan ${dmg} damage!`,'log-c');}else UI.log(`Menyerang dan menghasilkan ${dmg} damage!`,'log-p');
-  const b=document.getElementById('c-box');b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),250);
-  e.hp-=dmg;
-  if(e.hp<=0){e.hp=0;updateCDisplay();defeatEnemy();return;}
-  if(p.comp&&p.comp.hp>0){
-    const cdmg=Math.max(2,p.comp.atk-Math.floor(e.def*0.5));e.hp-=cdmg;
-    UI.log(`🐺 ${p.comp.name} menerkam musuh sebesar <strong>${cdmg} damage</strong>!`,'log-h');
-    if(e.hp<=0){e.hp=0;updateCDisplay();defeatEnemy();return;}
-  }
-  advanceCd();updateCDisplay();setTimeout(enemyTurn,450);
-}
-function playerSkill(){
-  if(!G.c.inCombat||G.p.buffs.sealed>0)return;
-  const s=G.p.skl;if(!s||!s.unlocked||s.cd>0)return;
-  sfx.fire();const e=G.c.enemy;
-  const dmg=Math.max(2,Math.round(G.atk*2-(e.def*0.5)));
-  UI.log(`🔥 <strong>Fire Strike!</strong> Semburan api menghasilkan ${dmg} damage!`,'log-s');
-  const b=document.getElementById('c-box');b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),250);
-  s.cd=s.maxCd;e.hp-=dmg;
-  if(e.hp<=0){e.hp=0;updateCDisplay();defeatEnemy();return;}
-  if(G.p.comp&&G.p.comp.hp>0){
-    const cdmg=Math.max(2,G.p.comp.atk-Math.floor(e.def*0.5));e.hp-=cdmg;
-    UI.log(`🐺 ${G.p.comp.name} menyerang sebesar <strong>${cdmg} damage</strong>!`,'log-h');
-    if(e.hp<=0){e.hp=0;updateCDisplay();defeatEnemy();return;}
-  }
-  advanceCd();updateCDisplay();setTimeout(enemyTurn,450);
-}
-function advanceCd(){G.c.turns++;if(G.p.skl&&G.p.skl.cd>0)G.p.skl.cd--;if(G.p.buffs.sealed>0)G.p.buffs.sealed--;}
-function enemyTurn(){
-  if(!G.c.inCombat||G.c.enemy.hp<=0)return;
-  const e=G.c.enemy,p=G.p;
-  if(e.id==='b_tg'){
-    if(G.c.turns%2===0)G.c.tgMode=G.c.tgMode==='taking'?'giving':'taking';
-    if(G.c.tgMode==='taking'){
-      const r=Math.random();
-      if(r<0.4){p.buffs.atk=Math.max(-4,p.buffs.atk-2);UI.log(`🌑 <strong>Taking Mode</strong> menyerap 2 ATK dari Anda!`,'log-e');}
-      else{const dr=Math.round(p.maxHp*0.12);p.hp=Math.max(1,p.hp-dr);e.hp=Math.min(e.maxHp,e.hp+dr);UI.log(`🌑 <em>Soul Drain!</em> Menghisap ${dr} HP Anda!`,'log-e');}
-    }else{
-      p.buffs.tgAtk=10;UI.log(`🌕 <strong>Giving Mode</strong> memberi buff +10 ATK selama 1 turn!`,'log-s');
-      const dmg=Math.max(1,Math.round(e.atk*0.7-G.def));p.hp-=dmg;UI.log(`🌕 Pancaran cahaya memberi ${dmg} damage.`,'log-e');
+        <h4 style="color: var(--gold); margin-bottom: 4px;">3. Leveling System & Stat Upgrades</h4>
+        <p style="margin-bottom: 12px;">Defeating enemies grants EXP. Each level requires more EXP (scaled). On leveling up, your HP is fully restored and you choose between <strong>+5 ATK</strong>, <strong>+3 DEF</strong>, or <strong>+20 MAX HP</strong>.</p>
+
+        <h4 style="color: var(--gold); margin-bottom: 4px;">4. Level Milestone Reward</h4>
+        <p style="margin-bottom: 12px;">Every 10 levels (Level 10, 20, 30, 40...), you receive a <strong>Milestone Reward</strong> containing 1 free random equipment of random rarity!</p>
+
+        <h4 style="color: var(--gold); margin-bottom: 4px;">5. Item Rarity & Shops</h4>
+        <p style="margin-bottom: 12px;">
+          Rarities: <span class="rarity-common">Common (55%)</span>, <span class="rarity-uncommon">Uncommon (25%)</span>, <span class="rarity-rare">Rare (13%)</span>, <span class="rarity-epic">Epic (6%)</span>, <span class="rarity-legendary">Legendary (1%)</span>. Buy and sell items at the Town Shop (50% sell price) or find the Mysterious Merchant in dungeons for 50–70% discounts!
+        </p>
+
+        <h4 style="color: var(--gold); margin-bottom: 4px;">6. Death & Save System</h4>
+        <p>If HP reaches 0, you awaken in town without losing any gold, inventory, or equipped items. Progress is saved automatically in your browser's localStorage!</p>
+      </div>
+
+      <div class="modal-bottom-bar">
+        <button class="btn btn-gold" id="btn-close-how-btn">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. SETTINGS -->
+  <div class="modal-overlay" id="modal-settings">
+    <div class="modal-window" style="max-width: 480px;">
+      <div class="modal-top-bar">
+        <div class="modal-heading">⚙️ Game Settings</div>
+        <button class="modal-close-icon" id="btn-close-settings-x">&times;</button>
+      </div>
+
+      <div class="modal-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <span>Sound Effects:</span>
+          <button class="btn" id="btn-toggle-sound-settings" style="padding:6px 16px;">Sound ON 🔊</button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <span>Export Save Data (JSON):</span>
+          <button class="btn" id="btn-export-save-json" style="padding:6px 16px;">Download Save 💾</button>
+        </div>
+
+        <div style="border-top:1px solid #282d42; padding-top:14px; margin-top:14px;">
+          <div style="font-size:0.82rem; color:#ef4444; font-weight:700; margin-bottom:8px;">Reset Progress:</div>
+          <button class="btn btn-danger" id="btn-delete-save-data" style="width:100%;">
+            🗑️ Delete Save & Reset All Progress
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-bottom-bar">
+        <button class="btn" id="btn-close-settings-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-msg">Item acquired!</div>
+
+  <!-- ENGINE SCRIPT -->
+  <script>
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.soundEnabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      tone(freq, type = 'sine', duration = 0.1, gainVal = 0.15) {
+        if (!this.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn("Audio error", e);
+        }
+      }
+
+      click() { this.tone(550, 'triangle', 0.05, 0.08); }
+      
+      attack() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(200, 'sawtooth', 0.08, 0.14);
+        setTimeout(() => this.tone(130, 'triangle', 0.1, 0.15), 40);
+      }
+
+      critical() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(350, 'sawtooth', 0.08, 0.18);
+        setTimeout(() => this.tone(720, 'square', 0.2, 0.22), 60);
+      }
+
+      skillFire() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(280, 'sawtooth', 0.1, 0.15);
+        setTimeout(() => this.tone(480, 'sawtooth', 0.14, 0.18), 70);
+        setTimeout(() => this.tone(680, 'sine', 0.25, 0.25), 140);
+      }
+
+      enemyHit() { this.tone(110, 'sawtooth', 0.15, 0.2); }
+
+      potion() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(440, 'sine', 0.08, 0.12);
+        setTimeout(() => this.tone(554, 'sine', 0.08, 0.12), 70);
+        setTimeout(() => this.tone(659, 'sine', 0.15, 0.15), 140);
+      }
+
+      levelUp() {
+        if (!this.soundEnabled) return;
+        this.init();
+        const notes = [261, 329, 392, 523, 659, 784];
+        notes.forEach((f, i) => {
+          setTimeout(() => this.tone(f, 'triangle', 0.18, 0.18), i * 90);
+        });
+      }
+
+      fanfare() {
+        if (!this.soundEnabled) return;
+        this.init();
+        const notes = [392, 523, 659, 784, 1046];
+        notes.forEach((f, i) => {
+          setTimeout(() => this.tone(f, 'square', 0.22, 0.2), i * 110);
+        });
+      }
+
+      chest() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(420, 'sine', 0.08, 0.12);
+        setTimeout(() => this.tone(620, 'sine', 0.08, 0.15), 70);
+        setTimeout(() => this.tone(880, 'triangle', 0.25, 0.2), 140);
+      }
+
+      trap() { this.tone(80, 'sawtooth', 0.35, 0.3); }
+
+      gold() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(987, 'sine', 0.06, 0.1);
+        setTimeout(() => this.tone(1318, 'sine', 0.1, 0.12), 60);
+      }
+
+      death() {
+        if (!this.soundEnabled) return;
+        this.init();
+        this.tone(220, 'sawtooth', 0.25, 0.25);
+        setTimeout(() => this.tone(170, 'sawtooth', 0.3, 0.25), 180);
+        setTimeout(() => this.tone(120, 'sawtooth', 0.5, 0.3), 360);
+      }
     }
-  }else{
-    let dmg=Math.max(1,e.atk-G.def);
-    if(p.comp&&p.comp.hp>0&&Math.random()<0.5){
-      p.comp.hp-=dmg;UI.log(`🛡️ <strong>${p.comp.name}</strong> menahan serangan (${dmg} damage)!`,'log-h');
-      if(p.comp.hp<=0){p.comp.hp=0;UI.log(`💀 ${p.comp.name} tumbang dalam pertempuran!`,'log-e');document.getElementById('c-comp-box').style.display='none';}
-      else document.getElementById('c-comp-hp').textContent=`${p.comp.hp}/${p.comp.maxHp}`;
-      UI.updateHUD();return;
+
+    const sfx = new SoundEngine();
+
+    const RARITIES = {
+      common: { name: "Common", class: "rarity-common", multiplier: 1.0, chance: 0.55 },
+      uncommon: { name: "Uncommon", class: "rarity-uncommon", multiplier: 1.5, chance: 0.25 },
+      rare: { name: "Rare", class: "rarity-rare", multiplier: 2.2, chance: 0.13 },
+      epic: { name: "Epic", class: "rarity-epic", multiplier: 3.2, chance: 0.06 },
+      legendary: { name: "Legendary", class: "rarity-legendary", multiplier: 4.8, chance: 0.01 }
+    };
+
+    const WEAPON_BASES = [
+      { name: "Dagger", baseAtk: 4, icon: "🗡️" },
+      { name: "Shortsword", baseAtk: 7, icon: "⚔️" },
+      { name: "Iron Sword", baseAtk: 9, icon: "⚔️" },
+      { name: "Longsword", baseAtk: 12, icon: "🗡️" },
+      { name: "Battleaxe", baseAtk: 16, icon: "🪓" },
+      { name: "Warhammer", baseAtk: 20, icon: "🔨" },
+      { name: "Demon Blade", baseAtk: 25, icon: "🩸" },
+      { name: "Dragon Slayer", baseAtk: 35, icon: "🐉" },
+      { name: "Celestial Blade", baseAtk: 45, icon: "✨" }
+    ];
+
+    const ARMOR_BASES = [
+      { name: "Cloth Tunic", baseDef: 2, icon: "🥋" },
+      { name: "Leather Armor", baseDef: 3, icon: "🦺" },
+      { name: "Chainmail", baseDef: 7, icon: "⛓️" },
+      { name: "Knight Armor", baseDef: 10, icon: "🛡️" },
+      { name: "Dragon Armor", baseDef: 25, icon: "🐲" },
+      { name: "Aegis Fortress", baseDef: 32, icon: "🏰" },
+      { name: "Celestial Aegis", baseDef: 42, icon: "✨" }
+    ];
+
+    const POTION_TYPES = [
+      { id: "pot_small", name: "Small Health Potion", heal: 30, value: 20, rarity: "common", icon: "🧪" },
+      { id: "pot_med", name: "Health Potion", heal: 60, value: 45, rarity: "uncommon", icon: "🍷" },
+      { id: "pot_large", name: "Large Health Potion", heal: 100, value: 85, rarity: "rare", icon: "🏺" }
+    ];
+
+    const ENEMY_TEMPLATES = [
+      { id: "slime", name: "Slime", hp: 45, atk: 7, def: 2, exp: 25, gold: 12, icon: "🟢" },
+      { id: "goblin", name: "Goblin", hp: 60, atk: 10, def: 3, exp: 38, gold: 20, icon: "👺" },
+      { id: "skeleton", name: "Skeleton", hp: 75, atk: 13, def: 5, exp: 52, gold: 28, icon: "💀" },
+      { id: "dark_wolf", name: "Dark Wolf", hp: 85, atk: 16, def: 4, exp: 65, gold: 35, icon: "🐺" },
+      { id: "bandit", name: "Bandit", hp: 95, atk: 18, def: 7, exp: 80, gold: 50, icon: "🥷" },
+      { id: "orc", name: "Orc", hp: 130, atk: 22, def: 9, exp: 110, gold: 65, icon: "👹" },
+      { id: "dark_knight", name: "Dark Knight", hp: 165, atk: 27, def: 14, exp: 155, gold: 95, icon: "🛡️" },
+      { id: "demon", name: "Demon", hp: 210, atk: 33, def: 17, exp: 210, gold: 140, icon: "👿" }
+    ];
+
+    const BOSS_TEMPLATES = [
+      { id: "boss_guardian", name: "Dungeon Guardian", hp: 380, atk: 35, def: 20, exp: 450, gold: 350, icon: "🗿" },
+      { id: "boss_dragon", name: "Abyssal Shadow Dragon", hp: 550, atk: 48, def: 25, exp: 750, gold: 600, icon: "🐉" },
+      { id: "boss_demon_king", name: "Demon Overlord", hp: 850, atk: 62, def: 32, exp: 1200, gold: 1000, icon: "👑" }
+    ];
+
+    function getRandomRarity() {
+      const roll = Math.random();
+      if (roll <= 0.01) return "legendary";
+      if (roll <= 0.07) return "epic";
+      if (roll <= 0.20) return "rare";
+      if (roll <= 0.45) return "uncommon";
+      return "common";
     }
-    sfx.hit();p.hp-=dmg;UI.log(`${e.name} menyerang Anda sebesar ${dmg} damage!`,'log-e');
-  }
-  UI.updateHUD();
-  if(p.hp<=0){p.hp=0;UI.updateHUD();triggerDeath();}
-}
-function playerFlee(){
-  if(!G.c.inCombat)return;
-  if(G.c.isBoss){UI.log(`⛔ Tidak bisa kabur dari pertarungan Boss!`,'log-e');return;}
-  if(Math.random()<0.65){sfx.fanfare();UI.log("🏃 Berhasil melarikan diri dari musuh!",'log-h');G.c.inCombat=false;setTimeout(()=>{setScr('explore');G.save();},500);}
-  else{UI.log("❌ Gagal kabur! Musuh menghalangi jalan!",'log-e');setTimeout(enemyTurn,400);}
-}
-function defeatEnemy(){
-  sfx.fanfare();const e=G.c.enemy;G.c.inCombat=false;
-  const goldGain=Math.round(e.gold*(0.9+Math.random()*0.2)*(1+G.p.buffs.luck)),expGain=e.exp;
-  G.p.gold+=goldGain;UI.log(`🎉 <strong>Mengalahkan ${e.name}!</strong> (+${goldGain}g, +${expGain} EXP)`,'log-r');
-  checkLoot(e);addExp(expGain);
-  if(G.d.roomType==='monster'){
-    G.d.waveIdx++;
-    if(G.d.waveIdx<G.d.wave.length){
-      setTimeout(()=>startCombat(G.d.wave[G.d.waveIdx],false,{cur:G.d.waveIdx+1,tot:G.d.wave.length}),1100);
-      return;
+
+    function generateRandomEquipment(type = null, forceRarity = null, playerLevel = 1) {
+      if (!type) {
+        type = Math.random() < 0.5 ? "weapon" : "armor";
+      }
+      const rarityKey = forceRarity || getRandomRarity();
+      const rarity = RARITIES[rarityKey];
+
+      let bases = type === "weapon" ? WEAPON_BASES : ARMOR_BASES;
+      let maxIdx = Math.min(bases.length - 1, Math.floor(playerLevel / 4) + 2);
+      let base = bases[Math.floor(Math.random() * (maxIdx + 1))];
+
+      let levelScale = 1 + (playerLevel - 1) * 0.15;
+      let statValue = 0;
+      let name = `${rarity.name} ${base.name}`;
+
+      if (type === "weapon") {
+        statValue = Math.max(1, Math.round(base.baseAtk * rarity.multiplier * levelScale));
+      } else {
+        statValue = Math.max(1, Math.round(base.baseDef * rarity.multiplier * levelScale));
+      }
+
+      const basePrice = (type === "weapon" ? base.baseAtk : base.baseDef) * 10;
+      const value = Math.round(basePrice * rarity.multiplier * levelScale);
+
+      return {
+        id: "eq_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
+        name: name,
+        type: type,
+        rarity: rarityKey,
+        stat: statValue,
+        statLabel: type === "weapon" ? `+${statValue} ATK` : `+${statValue} DEF`,
+        value: value,
+        icon: base.icon
+      };
     }
-  }
-  if(G.c.isBoss){
-    setTimeout(()=>{
-      UI.toast("👑 Lantai Selesai!");G.p.gold+=300;
-      const drop=genEq(null,"epic",G.p.lvl);G.p.inv.push(drop);UI.toast(`Mendapat ${drop.name}!`);
-      G.d.floor++;G.d.room=1;G.p.buffs={atk:0,def:0,extraHp:0,luck:0,tgAtk:0,sealed:0};
-      G.save();setScr('town');
-    },1300);return;
-  }
-  G.save();setTimeout(advanceStep,1200);
-}
-function checkLoot(e){
-  const chance=e.isElite?0.85:0.40;
-  if(Math.random()<chance){
-    if(Math.random()<0.5){const pot=genPot(POTS[Math.floor(Math.random()*POTS.length)].id);G.p.inv.push(pot);UI.log(`📦 Menemukan loot: <strong>${pot.name}</strong>!`,'log-r');UI.toast(`Loot: ${pot.name}`);}
-    else{const eqItem=genEq(null,e.isElite?"rare":null,G.p.lvl);G.p.inv.push(eqItem);UI.log(`⚔️ Menemukan senjata: <strong class="${RARITIES[eqItem.rarity].class}">${eqItem.name}</strong>!`,'log-r');UI.toast(`Loot: ${eqItem.name}`);}
-  }
-}
-function addExp(n){
-  const p=G.p;p.exp+=n;
-  while(p.exp>=p.maxExp){
-    p.exp-=p.maxExp;p.lvl++;p.maxExp=G.getExpLvl(p.lvl);
-    if(p.lvl>=3&&(!p.skl||!p.skl.unlocked)){p.skl={unlocked:true,cd:0,maxCd:3};UI.toast("🔥 Skill Fire Strike Terbuka!");}
-    p.hp=G.totalMaxHp;
-    sfx.fanfare();document.getElementById('lvl-n').textContent=p.lvl;openM('lvl');
-  }
-  UI.updateHUD();G.save();
-}
-function upStat(t){
-  if(t==='atk'){G.p.bAtk+=5;UI.toast("+5 ATK permanen!");}
-  else if(t==='def'){G.p.bDef+=3;UI.toast("+3 DEF permanen!");}
-  else if(t==='hp'){G.p.maxHp+=20;G.p.hp=G.totalMaxHp;UI.toast("+20 Max HP permanen!");}
-  closeM('lvl');UI.updateHUD();G.save();
-}
 
-/* EXPLORATION & EVENTS */
-function handleRoute(dir){
-  sfx.click();const d=G.d;
-  if(d.room>=d.maxRooms){
-    d.roomType='boss';
-    const bossTmpl=BOSSES[(d.floor-1)%BOSSES.length];
-    const b={id:bossTmpl.id,name:bossTmpl.name,hp:Math.round(bossTmpl.hp*(1+(G.p.lvl-1)*0.25)),atk:Math.round(bossTmpl.atk*(1+(G.p.lvl-1)*0.20)),def:Math.round(bossTmpl.def*(1+(G.p.lvl-1)*0.18)),exp:bossTmpl.exp,gold:bossTmpl.gold,svg:bossTmpl.svg,isBoss:true};
-    startCombat(b,true);return;
-  }
-  const roll=Math.random();
-  const eliteThresh=(d.floor===1)?(d.room<=3?0.35:0.40):(d.floor===2?0.43:0.50);
-  if(roll<0.35){
-    d.roomType='monster';d.waveIdx=0;d.wave=[];
-    const pool=getFloorPool();
-    for(let i=0;i<3;i++)d.wave.push(scaleMob(pool[Math.floor(Math.random()*pool.length)],false));
-    startCombat(d.wave[0],false,{cur:1,tot:3});
-  }else if(roll<eliteThresh){
-    d.roomType='elite';const pool=getFloorPool();
-    startCombat(scaleMob(pool[Math.floor(Math.random()*pool.length)],true),false);
-  }else if(roll<0.65){
-    d.roomType='chest';setScr('chest');
-    document.getElementById('chest-art').textContent='🎁';document.getElementById('chest-out').style.display='none';
-    document.getElementById('btn-open-chest').style.display='inline-block';document.getElementById('btn-leave-chest').style.display='none';
-  }else if(roll<0.75){
-    d.roomType='shop';setScr('shop');
-    d.shopItems=[genEq("weapon",null,G.p.lvl),genEq("armor",null,G.p.lvl),genPot("pot_m"),genPot("pot_l")];
-    d.shopItems.forEach(i=>i.discVal=Math.max(10,Math.round(i.val*0.6)));
-    renderDShop();
-  }else{
-    triggerEvent();
-  }
-}
-function advanceStep(){G.d.room++;G.save();setScr('explore');document.getElementById('exp-floor').textContent=`Lantai ${G.d.floor}`;document.getElementById('exp-room').textContent=`Ruang ${G.d.room} / ${G.d.maxRooms}`;}
-function triggerEvent(){
-  const evs=["anvil","riddle","beast","fountain","blood","rift","gambler"];
-  const chosen=evs[Math.floor(Math.random()*evs.length)];
-  setScr('event');
-  const ic=document.getElementById('ev-icon'),t=document.getElementById('ev-title'),ds=document.getElementById('ev-desc'),b=document.getElementById('ev-btns');
-  document.getElementById('ev-out').style.display='none';
-  if(chosen==='anvil'){
-    ic.textContent="⚒️";t.textContent="Landasan Tempa Kuno";ds.textContent="Tempa peralatan (Biaya: 20 Gold). 85% berhasil memberi buff ATK/DEF.";
-    b.innerHTML=`<button class="btn btn-gold" onclick="evAnvil('atk')">Asah Senjata (+3 ATK) - 20g ⚔️</button><button class="btn btn-gold" onclick="evAnvil('def')">Perkuat Armor (+2 DEF) - 20g 🛡️</button><button class="btn" onclick="advanceStep()">Lewati ➔</button>`;
-  }else if(chosen==='riddle'){
-    ic.innerHTML=SVGS.riddler;t.textContent="Teka-Teki The Riddler!";const r=RIDDLES[Math.floor(Math.random()*RIDDLES.length)];ds.textContent=`"${r.q}"`;
-    b.innerHTML=r.opts.map((o,i)=>`<button class="btn btn-purple" onclick="evRiddle(${i===r.c})">${o}</button>`).join('')+`<button class="btn" onclick="advanceStep()">Tolak ➔</button>`;
-  }else if(chosen==='beast'){
-    ic.innerHTML=SVGS.wolf;t.textContent="Serigala Terkurung";ds.textContent="Bebaskan serigala bayangan untuk merekrut pendamping tempur (Companion)!";
-    b.innerHTML=`<button class="btn btn-gold" onclick="evBeast()">Buka Kandang 🔓</button><button class="btn" onclick="advanceStep()">Tinggalkan ➔</button>`;
-  }else if(chosen==='fountain'){
-    ic.textContent="⛲";t.textContent="Mata Air Suci";ds.textContent="Air berkilauan suci memancarkan aura penyembuhan.";
-    b.innerHTML=`<button class="btn btn-gold" onclick="evFountain('drink')">Minum (Pulihkan 100% HP) 🍷</button><button class="btn btn-gold" onclick="evFountain('bottle')">Tampung ke Botol (1 Potion) 🧪</button><button class="btn" onclick="advanceStep()">Tinggalkan ➔</button>`;
-  }else if(chosen==='blood'){
-    ic.textContent="🩸";t.textContent="Altar Darah";ds.textContent="Korbankan 25% HP saat ini untuk kekuatan tempur permanen.";
-    b.innerHTML=`<button class="btn btn-danger" onclick="evBlood(true)">Korbankan Darah (+3 Base ATK) 🩸</button><button class="btn btn-gold" onclick="evBlood(false)">Doa Aman (+15 HP) ✨</button><button class="btn" onclick="advanceStep()">Lewati ➔</button>`;
-  }else if(chosen==='rift'){
-    ic.innerHTML=SVGS.chrono;t.textContent="Robekan Dimensi";ds.textContent="Lompat ke dalam robekan ruang waktu untuk melompati 2 ruangan atau lawan Chrono Warden!";
-    b.innerHTML=`<button class="btn btn-purple" onclick="evRift()">Lompat ke Robekan 🌀</button><button class="btn" onclick="advanceStep()">Menjauh ➔</button>`;
-  }else if(chosen==='gambler'){
-    ic.innerHTML=SVGS.goblin;t.textContent="Judi Dadu Goblin";ds.textContent="Taruhan 25 Gold pada lemparan dadu. Angka 4, 5, atau 6 menggandakan uang!";
-    b.innerHTML=`<button class="btn btn-gold" onclick="evGamble(25)">Pasang 25 Gold 🎲</button><button class="btn" onclick="advanceStep()">Tolak ➔</button>`;
-  }
-}
-function showEvOut(t,b){document.getElementById('ev-out').style.display='block';document.getElementById('ev-out-t').textContent=t;document.getElementById('ev-out-b').innerHTML=b;document.getElementById('ev-btns').innerHTML='<button class="btn btn-gold" onclick="advanceStep()">Lanjut Jelajah ➔</button>';UI.updateHUD();G.save();}
-function evAnvil(t){if(G.p.gold<20){UI.toast("Butuh 20 Gold!");return;}G.p.gold-=20;if(Math.random()<0.85){sfx.fanfare();if(t==='atk'){G.p.buffs.atk+=3;showEvOut("✨ Penempaan Berhasil!","Senjata diasah tajam! Mendapat <strong>+3 ATK</strong> selama run.");}else{G.p.buffs.def+=2;showEvOut("✨ Penempaan Berhasil!","Armor diperkuat kokoh! Mendapat <strong>+2 DEF</strong> selama run.");}}else{sfx.trap();showEvOut("💨 Gagal!","Api padam dan logam sedikit bengkok tanpa merusak peralatan.");}}
-function evRiddle(c){if(c){sfx.fanfare();addExp(80);const p=genPot("pot_m");G.p.inv.push(p);showEvOut("🎉 Jawaban Tepat!",`The Riddler kagum atas kecerdasanmu! Menerima +80 EXP dan <strong>${p.name}</strong>.`);}else{sfx.trap();G.p.hp=Math.max(1,G.p.hp-12);showEvOut("⚡ Jawaban Salah!","Sengatan listrik menyengat Anda sebesar 12 damage.");}}
-function evBeast(){if(Math.random()<0.75){sfx.fanfare();G.p.comp={name:"Tamed Shadow Wolf",hp:40,maxHp:40,atk:7};showEvOut("🐺 Serigala Direkrut!","Serigala bayangan setia bergabung sebagai Companion tempur!");}else{G.p.gold+=50;sfx.gold();showEvOut("🪙 Serigala Berterima Kasih!","Serigala memberi kantong berisi 50 Gold lalu menghilang di kegelapan.");}}
-function evFountain(c){if(c==='drink'){sfx.pot();G.p.hp=G.totalMaxHp;showEvOut("❤️ Segar Kembali!","HP dipulihkan 100% penuh!");}else{sfx.fanfare();const p=genPot("pot_m");G.p.inv.push(p);showEvOut("🧪 Potion Diisi!",`Mendapatkan 1x <strong>${p.name}</strong>.`);}}
-function evBlood(sac){if(sac){sfx.trap();const cost=Math.max(15,Math.round(G.p.hp*0.25));G.p.hp-=cost;G.p.bAtk+=3;sfx.fanfare();showEvOut("🩸 Perjanjian Darah!","Mengorbankan darah untuk <strong>+3 Base ATK permanen</strong>!");}else{sfx.pot();G.p.hp=Math.min(G.totalMaxHp,G.p.hp+15);showEvOut("✨ Doa Aman","Memulihkan +15 HP.");}}
-function evRift(){if(Math.random()<0.6){sfx.fanfare();G.d.room=Math.min(G.d.maxRooms-1,G.d.room+2);G.p.gold+=50;showEvOut("🌀 Lompatan Berhasil!","Melompati 2 ruangan dan mengumpulkan 50 Gold di celah waktu!");}else{const c={id:"mini_chrono",name:"Chrono Warden",hp:Math.round(160*(1+(G.p.lvl-1)*0.15)),atk:Math.round(22*(1+(G.p.lvl-1)*0.12)),def:10,exp:220,gold:150,svg:SVGS.chrono,isElite:true};showEvOut("⏳ Anomali Waktu!","Terseret ke duel Chrono Warden!");document.getElementById('ev-btns').innerHTML='<button class="btn btn-purple" onclick="startCombat('+JSON.stringify(c)+')">Duel Chrono Warden ⚔️</button>';}}
-function evGamble(bet){if(G.p.gold<bet){UI.toast("Gold tidak cukup!");return;}G.p.gold-=bet;const roll=Math.floor(Math.random()*6)+1;if(roll>=4){sfx.gold();G.p.gold+=bet*2;showEvOut(`🎲 Dadu: ${roll} (MENANG!)`,`Mendapatkan kembali <strong>${bet*2} Gold</strong>!`);}else{sfx.trap();showEvOut(`🎲 Dadu: ${roll} (Kalah)`,"Uang taruhan disapu goblin!");}}
+    function createPotion(potionId) {
+      const pot = POTION_TYPES.find(p => p.id === potionId) || POTION_TYPES[0];
+      return {
+        id: "pot_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
+        name: pot.name,
+        type: "potion",
+        heal: pot.heal,
+        rarity: pot.rarity,
+        statLabel: `+${pot.heal} HP`,
+        value: pot.value,
+        icon: pot.icon
+      };
+    }
 
-/* CHEST & SHOPS */
-document.getElementById('btn-open-chest').addEventListener('click',()=>{
-  const isGood=Math.random()<0.70;
-  document.getElementById('chest-out').style.display='block';document.getElementById('btn-open-chest').style.display='none';document.getElementById('btn-leave-chest').style.display='inline-block';
-  if(isGood){sfx.fanfare();document.getElementById('chest-art').textContent='✨🎁✨';const g=Math.round(25+Math.random()*40*G.p.lvl);G.p.gold+=g;const eqItem=genEq(null,null,G.p.lvl);G.p.inv.push(eqItem);document.getElementById('chest-t').textContent='🎉 Harta Karun!';document.getElementById('chest-b').innerHTML=`Mendapat <strong>🪙 ${g} Gold</strong> dan <strong>${eqItem.name}</strong>!`;UI.toast(`Peti: ${eqItem.name}`);}
-  else{sfx.trap();document.getElementById('chest-art').textContent='💥💀';const d=Math.max(12,Math.round(G.totalMaxHp*0.18));G.p.hp-=d;document.getElementById('chest-t').textContent='💥 JEBAKAN!';document.getElementById('chest-b').textContent=`Jarum beracun menusuk Anda sebesar ${d} damage!`;UI.toast(`Jebakan: -${d} HP`);if(G.p.hp<=0){G.p.hp=0;UI.updateHUD();setTimeout(triggerDeath,600);return;}}
-  UI.updateHUD();G.save();
-});
-function renderDShop(){
-  const el=document.getElementById('d-shop-list');
-  el.innerHTML=G.d.shopItems.map((item,idx)=>`<div class="item-card"><div style="display:flex;align-items:center;gap:8px;"><span>${item.icon}</span><div><strong>${item.name}</strong><div style="font-size:0.75rem;color:var(--gold);">${item.statLabel} | Diskon: ${item.discVal}g</div></div></div><button class="btn btn-gold btn-sm" onclick="buyDShop(${idx})" ${G.p.gold>=item.discVal?'':'disabled'}>Beli 🪙</button></div>`).join('');
-}
-function buyDShop(idx){const item=G.d.shopItems[idx];if(!item||G.p.gold<item.discVal)return;sfx.gold();G.p.gold-=item.discVal;G.p.inv.push(item);G.d.shopItems.splice(idx,1);UI.toast(`Membeli ${item.name}!`);UI.updateHUD();renderDShop();G.save();}
+    const SAVE_KEY = "dungeon_explorer_save_v1";
 
-/* TOWN HUB & TAVERN */
-let townStock=[];
-function genTownStock(){const l=G.p.lvl;townStock=[genEq("weapon",null,l),genEq("weapon",null,l),genEq("armor",null,l),genEq("armor",null,l),genPot("pot_s"),genPot("pot_m"),genPot("pot_l")];}
-function renderTShop(tab='buy'){
-  const el=document.getElementById('tshop-list');document.getElementById('s-gold').textContent=G.p.gold.toLocaleString();
-  if(tab==='buy'){
-    el.innerHTML=townStock.map((it,idx)=>`<div class="item-card"><div style="display:flex;align-items:center;gap:8px;"><span>${it.icon}</span><div><strong>${it.name}</strong><div style="font-size:0.75rem;color:var(--gold);">${it.statLabel} | Harga: ${it.val}g</div></div></div><button class="btn btn-gold btn-sm" onclick="buyTown(${idx})" ${G.p.gold>=it.val?'':'disabled'}>Beli 🪙</button></div>`).join('');
-  }else{
-    if(G.p.inv.length===0){el.innerHTML='<div style="text-align:center;padding:20px;color:#64748b;">Tidak ada barang untuk dijual.</div>';return;}
-    el.innerHTML=G.p.inv.map(it=>{const isEq=(G.p.wpn&&G.p.wpn.id===it.id)||(G.p.arm&&G.p.arm.id===it.id),sv=Math.max(1,Math.floor(it.val*0.5));return `<div class="item-card"><div style="display:flex;align-items:center;gap:8px;"><span>${it.icon}</span><div><strong>${it.name}</strong><div style="font-size:0.75rem;color:var(--gold);">${it.statLabel} | Jual: ${sv}g</div></div></div><button class="btn btn-gold btn-sm" onclick="sellTown('${it.id}')" ${isEq?'disabled':''}>Jual 💰</button></div>`;}).join('');
-  }
-}
-function buyTown(idx){const it=townStock[idx];if(!it||G.p.gold<it.val)return;sfx.gold();G.p.gold-=it.val;G.p.inv.push(it);townStock.splice(idx,1);UI.toast(`Beli ${it.name}!`);UI.updateHUD();renderTShop('buy');G.save();}
-function sellTown(id){const idx=G.p.inv.findIndex(i=>i.id===id);if(idx===-1)return;const it=G.p.inv[idx],sv=Math.max(1,Math.floor(it.val*0.5));sfx.gold();G.p.gold+=sv;G.p.inv.splice(idx,1);UI.toast(`Jual ${it.name} (+${sv}g)!`);UI.updateHUD();renderTShop('sell');G.save();}
-function tabShop(t){document.getElementById('tb-s-buy').classList.toggle('active',t==='buy');document.getElementById('tb-s-sell').classList.toggle('active',t==='sell');renderTShop(t);}
-function restockShop(){if(G.p.gold<15){UI.toast("Butuh 15 Gold!");return;}sfx.gold();G.p.gold-=15;genTownStock();renderTShop('buy');UI.updateHUD();G.save();}
-function meal(t){
-  if(t==='free'){sfx.pot();G.p.hp=G.totalMaxHp;UI.toast("Istirahat bangku kedai. HP 100%!");closeM('tavern');UI.updateHUD();G.save();return;}
-  if(G.p.gold<20){UI.toast("Butuh 20 Gold untuk hidangan kedai!");return;}
-  G.p.gold-=20;sfx.pot();
-  if(t==='hp'){G.p.buffs.extraHp=10;G.p.hp=G.totalMaxHp;UI.toast("Sup disantap (-20g)! +10 Max HP run ini!");}
-  else if(t==='atk'){G.p.buffs.atk=1;G.p.hp=G.totalMaxHp;UI.toast("Bir diminum (-20g)! +1 ATK run ini!");}
-  else if(t==='def'){G.p.buffs.def=1;G.p.hp=G.totalMaxHp;UI.toast("Teh diminum (-20g)! +1 DEF run ini!");}
-  else if(t==='luck'){G.p.buffs.luck=0.10;G.p.hp=G.totalMaxHp;UI.toast("Kopi disimak (-20g)! +10% Gold/Luck run ini!");}
-  closeM('tavern');UI.updateHUD();G.save();
-}
+    class GameEngineState {
+      constructor() {
+        this.reset();
+      }
 
-function triggerDeath(){sfx.die();G.c.inCombat=false;G.d.active=false;G.p.buffs={atk:0,def:0,extraHp:0,luck:0,tgAtk:0,sealed:0};G.p.hp=G.totalMaxHp;openM('death');G.save();}
-function tglSnd(){sfx.on=!sfx.on;document.getElementById('btn-tgl-snd').textContent=sfx.on?'Sound ON 🔊':'Sound Muted 🔇';document.getElementById('btn-h-snd').textContent=sfx.on?'🔊':'🔇';}
-function exportSave(){const r=localStorage.getItem(S_KEY);if(!r)return;const b=new Blob([r],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=`dungeon_save_${G.p.name}.json`;a.click();URL.revokeObjectURL(u);UI.toast("Save diunduh!");}
-function resetSave(){if(confirm("Hapus semua progres?")){localStorage.removeItem(S_KEY);G.reset();location.reload();}}
+      reset() {
+        this.player = {
+          name: "Alistair",
+          level: 1,
+          exp: 0,
+          maxExp: 100,
+          hp: 100,
+          maxHp: 100,
+          baseAtk: 10,
+          baseDef: 5,
+          gold: 0,
+          inventory: [],
+          equippedWeapon: null,
+          equippedArmor: null,
+          skills: {
+            fireStrike: { unlocked: false, cooldown: 0, maxCooldown: 3 }
+          },
+          activeQuests: []
+        };
 
-/* INIT WIRING */
-window.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('btn-m-new').onclick=()=>setScr('create');
-  document.getElementById('btn-m-cont').onclick=()=>{if(G.load()){UI.toast(`Selamat datang kembali, ${G.p.name}!`);setScr('town');}};
-  document.getElementById('btn-m-how').onclick=()=>openM('how');
-  document.getElementById('btn-m-set').onclick=()=>openM('set');
-  document.getElementById('btn-c-back').onclick=()=>setScr('menu');
-  document.getElementById('btn-c-start').onclick=()=>{
-    const n=document.getElementById('inp-hero').value.trim()||"Alistair";G.reset();G.p.name=n;
-    const w=genEq("weapon","common",1),a=genEq("armor","common",1);
-    G.p.inv.push(w);G.p.inv.push(a);G.p.inv.push(genPot("pot_s"));G.p.inv.push(genPot("pot_s"));
-    G.p.wpn=w;G.p.arm=a;genTownStock();G.save();UI.toast(`Pahlawan ${n} tiba di Oakhaven!`);setScr('town');
-  };
-  document.getElementById('act-dungeon').onclick=()=>{G.d.active=true;G.d.room=1;setScr('explore');document.getElementById('exp-floor').textContent=`Lantai ${G.d.floor}`;document.getElementById('exp-room').textContent=`Ruang 1 / 8`;};
-  document.getElementById('act-shop').onclick=()=>{if(townStock.length===0)genTownStock();renderTShop('buy');openM('tshop');};
-  document.getElementById('act-tavern').onclick=()=>openM('tavern');
-  document.getElementById('act-inv').onclick=()=>{UI.renderInv('all');openM('inv');};
-  document.getElementById('btn-h-inv').onclick=()=>{UI.renderInv('all');openM('inv');};
-  document.getElementById('btn-h-save').onclick=()=>{if(G.save())UI.toast("Progres tersimpan!");};
-  document.getElementById('btn-h-snd').onclick=tglSnd;
-  document.getElementById('btn-escape').onclick=()=>{G.d.active=false;G.p.buffs={atk:0,def:0,extraHp:0,luck:0,tgAtk:0,sealed:0};G.save();setScr('town');UI.toast("Pulang ke Sanctuary.");};
-  document.getElementById('btn-act-atk').onclick=playerAtk;
-  document.getElementById('btn-act-skl').onclick=playerSkill;
-  document.getElementById('btn-act-inv').onclick=()=>{UI.renderInv('all');openM('inv');};
-  document.getElementById('btn-act-flee').onclick=playerFlee;
-  if(G.hasSave())document.getElementById('btn-m-cont').disabled=false;
-  setScr('menu');
-});
-</script>
+        this.dungeon = {
+          active: false,
+          floor: 1,
+          room: 1,
+          maxRooms: 8,
+          currentRoomType: null,
+          monsterWave: [],
+          currentMonsterIndex: 0,
+          dungeonShopItems: [],
+          currentQuestOffer: null
+        };
+
+        this.combat = {
+          enemy: null,
+          inCombat: false,
+          isBoss: false
+        };
+      }
+
+      get atk() {
+        const weaponBonus = this.player.equippedWeapon ? this.player.equippedWeapon.stat : 0;
+        return this.player.baseAtk + weaponBonus;
+      }
+
+      get def() {
+        const armorBonus = this.player.equippedArmor ? this.player.equippedArmor.stat : 0;
+        return this.player.baseDef + armorBonus;
+      }
+
+      getExpForLevel(lvl) {
+        return Math.floor(100 * Math.pow(1.5, lvl - 1));
+      }
+
+      save() {
+        try {
+          const payload = JSON.stringify({
+            player: this.player,
+            timestamp: Date.now()
+          });
+          localStorage.setItem(SAVE_KEY, payload);
+          return true;
+        } catch (e) {
+          console.error("Save error:", e);
+          return false;
+        }
+      }
+
+      load() {
+        try {
+          const raw = localStorage.getItem(SAVE_KEY);
+          if (!raw) return false;
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.player) {
+            this.player = Object.assign(this.player, parsed.player);
+            if (this.player.level >= 3) {
+              if (!this.player.skills.fireStrike) {
+                this.player.skills.fireStrike = { unlocked: true, cooldown: 0, maxCooldown: 3 };
+              } else {
+                this.player.skills.fireStrike.unlocked = true;
+              }
+            }
+            return true;
+          }
+        } catch (e) {
+          console.error("Load error:", e);
+        }
+        return false;
+      }
+
+      hasSaveData() {
+        return localStorage.getItem(SAVE_KEY) !== null;
+      }
+    }
+
+    const state = new GameEngineState();
+
+    const UI = {
+      screens: {
+        mainMenu: document.getElementById('screen-main-menu'),
+        charCreate: document.getElementById('screen-char-create'),
+        townHub: document.getElementById('screen-town-hub'),
+        dungeonExplore: document.getElementById('screen-dungeon-explore'),
+        combat: document.getElementById('screen-combat'),
+        chestRoom: document.getElementById('screen-chest-room'),
+        dungeonShop: document.getElementById('screen-dungeon-shop'),
+        questEncounter: document.getElementById('screen-quest-encounter')
+      },
+
+      modals: {
+        inventory: document.getElementById('modal-inventory'),
+        townShop: document.getElementById('modal-town-shop'),
+        levelUp: document.getElementById('modal-level-up'),
+        milestone: document.getElementById('modal-milestone-reward'),
+        death: document.getElementById('modal-death-screen'),
+        howToPlay: document.getElementById('modal-how-to-play'),
+        settings: document.getElementById('modal-settings')
+      },
+
+      hud: document.getElementById('top-hud'),
+
+      showScreen(name) {
+        Object.values(this.screens).forEach(s => s.classList.remove('active'));
+        if (this.screens[name]) {
+          this.screens[name].classList.add('active');
+        }
+
+        if (name === 'mainMenu' || name === 'charCreate') {
+          this.hud.style.display = 'none';
+        } else {
+          this.hud.style.display = 'block';
+          this.updateHUD();
+        }
+      },
+
+      openModal(name) {
+        if (this.modals[name]) {
+          this.modals[name].classList.add('active');
+          sfx.click();
+        }
+      },
+
+      closeModal(name) {
+        if (this.modals[name]) {
+          this.modals[name].classList.remove('active');
+          sfx.click();
+        }
+      },
+
+      showToast(text) {
+        const t = document.getElementById('toast-msg');
+        t.textContent = text;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2400);
+      },
+
+      updateHUD() {
+        const p = state.player;
+        document.getElementById('hud-name').textContent = p.name;
+        document.getElementById('hud-level').textContent = `LV ${p.level}`;
+
+        const hpPercent = Math.max(0, Math.min(100, (p.hp / p.maxHp) * 100));
+        document.getElementById('hud-hp-display').textContent = `${p.hp} / ${p.maxHp}`;
+        document.getElementById('hud-hp-bar').style.width = `${hpPercent}%`;
+
+        const expPercent = Math.max(0, Math.min(100, (p.exp / p.maxExp) * 100));
+        document.getElementById('hud-exp-display').textContent = `${p.exp} / ${p.maxExp}`;
+        document.getElementById('hud-exp-bar').style.width = `${expPercent}%`;
+
+        document.getElementById('hud-atk-val').textContent = state.atk;
+        document.getElementById('hud-def-val').textContent = state.def;
+        document.getElementById('hud-gold-val').textContent = p.gold.toLocaleString();
+
+        document.getElementById('hud-weapon-val').textContent = p.equippedWeapon ? p.equippedWeapon.name : "None";
+        document.getElementById('hud-weapon-val').className = p.equippedWeapon ? `stat-number ${RARITIES[p.equippedWeapon.rarity].class}` : "stat-number";
+
+        document.getElementById('hud-armor-val').textContent = p.equippedArmor ? p.equippedArmor.name : "None";
+        document.getElementById('hud-armor-val').className = p.equippedArmor ? `stat-number ${RARITIES[p.equippedArmor.rarity].class}` : "stat-number";
+
+        this.updateHubQuests();
+      },
+
+      updateHubQuests() {
+        const list = document.getElementById('hub-quest-items-list');
+        const badge = document.getElementById('hub-quest-badge');
+        const quests = state.player.activeQuests;
+
+        badge.textContent = `${quests.length} active`;
+        if (quests.length === 0) {
+          list.innerHTML = `<div style="font-size:0.82rem; color:#64748b; font-style:italic;">No active quests. Explore the dungeon to encounter stranded explorers and bounty hunters!</div>`;
+          return;
+        }
+
+        list.innerHTML = quests.map(q => `
+          <div style="font-size:0.84rem; color:#cbd5e1; padding:6px 0; border-bottom:1px solid #1a1e2d; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>${q.title}</strong>
+              <div style="font-size:0.74rem; color:#94a3b8;">${q.progressText}</div>
+            </div>
+            <button class="btn btn-gold" style="padding:4px 10px; font-size:0.72rem;" onclick="handleClaimQuest('${q.id}')" ${q.completed ? '' : 'disabled'}>
+              ${q.completed ? 'Claim Reward! 🎁' : 'In Progress'}
+            </button>
+          </div>
+        `).join('');
+      },
+
+      logCombat(msg, cssClass = 'log-info-text') {
+        const feed = document.getElementById('combat-log-console');
+        const div = document.createElement('div');
+        div.className = `log-entry ${cssClass}`;
+        div.innerHTML = msg;
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+      },
+
+      renderInventory(tab = 'all', isCombat = false) {
+        const container = document.getElementById('inventory-items-container');
+        const p = state.player;
+        document.getElementById('combat-inv-warning-banner').style.display = isCombat ? 'block' : 'none';
+
+        const allItems = p.inventory;
+        const weapons = allItems.filter(i => i.type === 'weapon');
+        const armors = allItems.filter(i => i.type === 'armor');
+        const potions = allItems.filter(i => i.type === 'potion');
+
+        document.getElementById('count-inv-all').textContent = allItems.length;
+        document.getElementById('count-inv-weapon').textContent = weapons.length;
+        document.getElementById('count-inv-armor').textContent = armors.length;
+        document.getElementById('count-inv-potion').textContent = potions.length;
+
+        let filtered = allItems;
+        if (tab === 'weapon') filtered = weapons;
+        else if (tab === 'armor') filtered = armors;
+        else if (tab === 'potion') filtered = potions;
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:26px; color:#64748b; font-size:0.88rem;">Bag is empty in this category.</div>`;
+          return;
+        }
+
+        container.innerHTML = filtered.map((item) => {
+          const rarity = RARITIES[item.rarity] || RARITIES.common;
+          const isEquipped = (p.equippedWeapon && p.equippedWeapon.id === item.id) || (p.equippedArmor && p.equippedArmor.id === item.id);
+          const totalSame = allItems.filter(i => i.name === item.name).length;
+          const countBadge = totalSame > 1 ? `<span style="background:#312e81; color:#c7d2fe; font-size:0.72rem; padding:1px 6px; border-radius:4px; font-weight:bold; margin-left:4px;">x${totalSame}</span>` : '';
+
+          return `
+            <div class="item-row-card">
+              <div class="item-left-block">
+                <div class="item-icon-tile">${item.icon}</div>
+                <div class="item-meta-col">
+                  <div class="item-title-line">
+                    <span class="item-title-text ${rarity.class}">${item.name}</span>
+                    ${countBadge}
+                    <span class="item-category-tag">${item.type}</span>
+                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700;">EQUIPPED</span>' : ''}
+                  </div>
+                  <div class="item-stat-highlight">${item.statLabel} | Nilai: ${item.value}g</div>
+                </div>
+              </div>
+              <div class="item-btn-actions">
+                ${item.type === 'potion' ? `
+                  <button class="btn btn-gold btn-item-sm" onclick="handleUsePotion('${item.id}')">Gunakan 🍷</button>
+                ` : isEquipped ? `
+                  <button class="btn btn-item-sm" onclick="handleUnequip('${item.id}')">Lepas</button>
+                ` : `
+                  <button class="btn btn-gold btn-item-sm" onclick="handleEquip('${item.id}')">Pakai ⚔️</button>
+                `}
+                <button class="btn btn-danger btn-item-sm" onclick="handleDropItem('${item.id}')" ${isEquipped ? 'disabled' : ''}>🗑️</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    };
+
+    function startCombatEncounter(enemyData, isBoss = false, waveInfo = null) {
+      state.combat.inCombat = true;
+      state.combat.enemy = JSON.parse(JSON.stringify(enemyData));
+      state.combat.enemy.maxHp = state.combat.enemy.hp;
+      state.combat.isBoss = isBoss;
+
+      if (state.player.skills.fireStrike) {
+        state.player.skills.fireStrike.cooldown = 0;
+      }
+
+      UI.showScreen('combat');
+
+      const waveBanner = document.getElementById('monster-room-banner');
+      if (waveInfo) {
+        waveBanner.style.display = 'block';
+        document.getElementById('combat-wave-idx').textContent = waveInfo.current;
+        document.getElementById('combat-wave-max').textContent = waveInfo.total;
+      } else {
+        waveBanner.style.display = 'none';
+      }
+
+      const log = document.getElementById('combat-log-console');
+      log.innerHTML = '';
+      UI.logCombat(`⚔️ Encountered <strong>${state.combat.enemy.name}</strong>! Prepare for battle!`, 'log-info-text');
+
+      updateCombatDisplay();
+    }
+
+    function updateCombatDisplay() {
+      const e = state.combat.enemy;
+      if (!e) return;
+
+      document.getElementById('combat-enemy-title').textContent = e.name;
+      document.getElementById('combat-enemy-atk-num').textContent = e.atk;
+      document.getElementById('combat-enemy-def-num').textContent = e.def;
+      document.getElementById('combat-enemy-gold-num').textContent = `${Math.floor(e.gold * 0.8)}-${Math.ceil(e.gold * 1.2)}`;
+
+      const hpPercent = Math.max(0, Math.min(100, (e.hp / e.maxHp) * 100));
+      document.getElementById('combat-enemy-hp-num').textContent = `${e.hp} / ${e.maxHp}`;
+      document.getElementById('combat-enemy-hp-bar').style.width = `${hpPercent}%`;
+
+      const badge = document.getElementById('combat-enemy-tag');
+      const box = document.getElementById('combat-enemy-box');
+      box.className = 'enemy-card-box';
+
+      if (state.combat.isBoss) {
+        badge.className = 'enemy-badge badge-boss';
+        badge.textContent = `Lv. ${state.player.level} BOSS`;
+        box.classList.add('boss');
+      } else if (e.isElite) {
+        badge.className = 'enemy-badge badge-elite';
+        badge.textContent = `Lv. ${state.player.level} ELITE`;
+        box.classList.add('elite');
+      } else {
+        badge.className = 'enemy-badge badge-normal';
+        badge.textContent = `Lv. ${state.player.level} Normal`;
+      }
+
+      document.getElementById('combat-enemy-avatar').textContent = e.icon || '👾';
+
+      const skillBtn = document.getElementById('btn-combat-act-skill');
+      const skillText = document.getElementById('skill-cooldown-text');
+      const skill = state.player.skills.fireStrike;
+
+      if (!skill || !skill.unlocked) {
+        skillText.textContent = 'Unlocks at Level 3';
+        skillBtn.disabled = true;
+      } else if (skill.cooldown > 0) {
+        skillText.textContent = `Fire Strike: ${skill.cooldown} turns`;
+        skillBtn.disabled = true;
+      } else {
+        skillText.textContent = `Fire Strike: READY`;
+        skillBtn.disabled = false;
+      }
+
+      UI.updateHUD();
+    }
+
+    function handlePlayerAttack() {
+      if (!state.combat.inCombat) return;
+
+      sfx.attack();
+      const p = state.player;
+      const e = state.combat.enemy;
+
+      const rawDmg = Math.max(Math.round(state.atk * 0.40), state.atk - Math.floor(e.def * 0.75));
+      const isCrit = Math.random() < 0.12;
+      let finalDamage = isCrit ? Math.round(rawDmg * 1.5) : rawDmg;
+
+      if (isCrit) {
+        sfx.critical();
+        UI.logCombat(`💥 <strong>CRITICAL HIT!</strong> You dealt ${finalDamage} damage!`, 'log-crit-dmg');
+      } else {
+        UI.logCombat(`You dealt ${finalDamage} damage!`, 'log-player-dmg');
+      }
+
+      const card = document.getElementById('combat-enemy-box');
+      card.classList.add('shake-anim');
+      setTimeout(() => card.classList.remove('shake-anim'), 300);
+
+      e.hp -= finalDamage;
+      if (e.hp <= 0) {
+        e.hp = 0;
+        updateCombatDisplay();
+        processEnemyDefeat();
+        return;
+      }
+
+      if (state.player.skills.fireStrike && state.player.skills.fireStrike.cooldown > 0) {
+        state.player.skills.fireStrike.cooldown--;
+      }
+
+      updateCombatDisplay();
+      setTimeout(handleEnemyAttackTurn, 450);
+    }
+
+    function handlePlayerSkillFireStrike() {
+      if (!state.combat.inCombat) return;
+      const skill = state.player.skills.fireStrike;
+      if (!skill || !skill.unlocked || skill.cooldown > 0) return;
+
+      sfx.skillFire();
+      const e = state.combat.enemy;
+
+      const dmg = Math.max(2, Math.round(state.atk * 2 - (e.def * 0.5)));
+      UI.logCombat(`🔥 <strong>Fire Strike!</strong> You dealt ${dmg} fire damage!`, 'log-skill-cast');
+
+      const card = document.getElementById('combat-enemy-box');
+      card.classList.add('shake-anim');
+      setTimeout(() => card.classList.remove('shake-anim'), 300);
+
+      skill.cooldown = skill.maxCooldown;
+      e.hp -= dmg;
+
+      if (e.hp <= 0) {
+        e.hp = 0;
+        updateCombatDisplay();
+        processEnemyDefeat();
+        return;
+      }
+
+      updateCombatDisplay();
+      setTimeout(handleEnemyAttackTurn, 450);
+    }
+
+    function handleEnemyAttackTurn() {
+      if (!state.combat.inCombat || state.combat.enemy.hp <= 0) return;
+
+      const e = state.combat.enemy;
+      const p = state.player;
+
+      const enemyDmg = Math.max(1, e.atk - state.def);
+
+      sfx.enemyHit();
+      p.hp -= enemyDmg;
+      UI.logCombat(`${e.name} dealt ${enemyDmg} damage!`, 'log-enemy-dmg');
+
+      UI.updateHUD();
+
+      if (p.hp <= 0) {
+        p.hp = 0;
+        UI.updateHUD();
+        triggerPlayerDeath();
+      }
+    }
+
+    function handlePlayerFlee() {
+      if (!state.combat.inCombat) return;
+
+      sfx.click();
+      if (state.combat.isBoss) {
+        UI.logCombat(`⛔ You cannot flee from a Boss battle!`, 'log-enemy-dmg');
+        return;
+      }
+
+      const fleeSuccess = Math.random() < 0.65;
+      if (fleeSuccess) {
+        sfx.fanfare();
+        UI.logCombat(`🏃 You successfully fled from battle!`, 'log-heal-effect');
+        state.combat.inCombat = false;
+        setTimeout(() => {
+          UI.showScreen('dungeonExplore');
+          state.save();
+        }, 550);
+      } else {
+        UI.logCombat(`❌ Flee failed! ${state.combat.enemy.name} blocked your path!`, 'log-enemy-dmg');
+        setTimeout(handleEnemyAttackTurn, 400);
+      }
+    }
+
+    function processEnemyDefeat() {
+      sfx.fanfare();
+      const e = state.combat.enemy;
+      state.combat.inCombat = false;
+
+      const goldGain = Math.round(e.gold * (0.9 + Math.random() * 0.2));
+      const expGain = e.exp;
+
+      state.player.gold += goldGain;
+      UI.logCombat(`🎉 <strong>Defeated ${e.name}!</strong>`, 'log-loot-reward');
+      UI.logCombat(`🪙 Gained +${goldGain} Gold and +${expGain} EXP!`, 'log-loot-reward');
+
+      checkQuestKillProgress(e);
+      checkMonsterLootDrop(e);
+      gainExp(expGain);
+
+      if (state.dungeon.currentRoomType === 'monster') {
+        state.dungeon.currentMonsterIndex++;
+        if (state.dungeon.currentMonsterIndex < state.dungeon.monsterWave.length) {
+          setTimeout(() => {
+            const nextEnemy = state.dungeon.monsterWave[state.dungeon.currentMonsterIndex];
+            startCombatEncounter(nextEnemy, false, {
+              current: state.dungeon.currentMonsterIndex + 1,
+              total: state.dungeon.monsterWave.length
+            });
+          }, 1200);
+          return;
+        }
+      }
+
+      if (state.combat.isBoss) {
+        setTimeout(() => {
+          UI.showToast("👑 Boss Cleared! Floor Complete!");
+          state.player.gold += 250;
+          const bossDrop = generateRandomEquipment(null, "epic", state.player.level);
+          state.player.inventory.push(bossDrop);
+          UI.showToast(`Received ${bossDrop.name}!`);
+          state.dungeon.floor++;
+          state.dungeon.room = 1;
+          state.save();
+          UI.showScreen('townHub');
+        }, 1500);
+        return;
+      }
+
+      state.save();
+      setTimeout(advanceDungeonStep, 1400);
+    }
+
+    function checkMonsterLootDrop(enemy) {
+      const dropChance = enemy.isElite ? 0.85 : 0.40;
+      if (Math.random() < dropChance) {
+        if (Math.random() < 0.5) {
+          const potType = POTION_TYPES[Math.floor(Math.random() * POTION_TYPES.length)].id;
+          const pot = createPotion(potType);
+          state.player.inventory.push(pot);
+          UI.logCombat(`📦 Loot drop: <strong>${pot.name}</strong>!`, 'log-loot-reward');
+          UI.showToast(`Loot: ${pot.name}`);
+        } else {
+          const forceRarity = enemy.isElite ? (Math.random() < 0.4 ? "epic" : "rare") : null;
+          const gear = generateRandomEquipment(null, forceRarity, state.player.level);
+          state.player.inventory.push(gear);
+          UI.logCombat(`⚔️ Equipment drop: <span class="${RARITIES[gear.rarity].class}"><strong>${gear.name} (${gear.statLabel})</strong></span>!`, 'log-loot-reward');
+          UI.showToast(`Loot: ${gear.name}`);
+        }
+      }
+    }
+
+    function gainExp(amount) {
+      const p = state.player;
+      p.exp += amount;
+
+      while (p.exp >= p.maxExp) {
+        p.exp -= p.maxExp;
+        p.level++;
+        p.maxExp = state.getExpForLevel(p.level);
+
+        if (p.level >= 3 && (!p.skills.fireStrike || !p.skills.fireStrike.unlocked)) {
+          p.skills.fireStrike = { unlocked: true, cooldown: 0, maxCooldown: 3 };
+          UI.showToast("🔥 Fire Strike Skill Unlocked!");
+        }
+
+        p.hp = p.maxHp;
+        triggerLevelUpModal();
+
+        if (p.level % 10 === 0) {
+          setTimeout(triggerMilestoneReward, 800);
+        }
+      }
+
+      UI.updateHUD();
+      state.save();
+    }
+
+    function triggerLevelUpModal() {
+      sfx.levelUp();
+      document.getElementById('lvlup-number-display').textContent = state.player.level;
+      UI.openModal('levelUp');
+    }
+
+    function applyLevelUpStatUpgrade(statType) {
+      const p = state.player;
+      if (statType === 'atk') {
+        p.baseAtk += 5;
+        UI.showToast("+5 ATK permanent upgrade applied!");
+      } else if (statType === 'def') {
+        p.baseDef += 3;
+        UI.showToast("+3 DEF permanent upgrade applied!");
+      } else if (statType === 'hp') {
+        p.maxHp += 20;
+        p.hp = p.maxHp;
+        UI.showToast("+20 MAX HP permanent upgrade applied!");
+      }
+
+      sfx.fanfare();
+      UI.closeModal('levelUp');
+      UI.updateHUD();
+      state.save();
+    }
+
+    function triggerMilestoneReward() {
+      sfx.fanfare();
+      const p = state.player;
+      document.getElementById('milestone-lvl-num').textContent = p.level;
+
+      const randomRarity = ["rare", "epic", "legendary"][Math.floor(Math.random() * 3)];
+      const rewardGear = generateRandomEquipment(null, randomRarity, p.level);
+      p.inventory.push(rewardGear);
+
+      const card = document.getElementById('milestone-equipment-card');
+      card.innerHTML = `
+        <div style="font-size:2.2rem; margin-bottom:6px;">${rewardGear.icon}</div>
+        <div class="item-title-text ${RARITIES[rewardGear.rarity].class}" style="font-size:1.15rem; font-weight:bold;">${rewardGear.name}</div>
+        <div style="font-size:0.9rem; color:#38bdf8; margin:5px 0;">${rewardGear.statLabel}</div>
+        <div style="font-size:0.78rem; color:#94a3b8;">Type: ${rewardGear.type.toUpperCase()} | Rarity: ${rewardGear.rarity.toUpperCase()}</div>
+      `;
+
+      UI.openModal('milestone');
+      state.save();
+    }
+
+    function startDungeonExploration() {
+      sfx.click();
+      state.dungeon.active = true;
+      state.dungeon.room = 1;
+      UI.showScreen('dungeonExplore');
+      renderExplorationRoom();
+    }
+
+    function renderExplorationRoom() {
+      const d = state.dungeon;
+      document.getElementById('explore-floor-indicator').textContent = `Depth: Floor ${d.floor}`;
+      document.getElementById('explore-room-indicator').textContent = `Room ${d.room} / ${d.maxRooms}`;
+
+      const icon = document.getElementById('scene-icon-symbol');
+      const title = document.getElementById('scene-title-heading');
+      const desc = document.getElementById('scene-desc-paragraph');
+
+      if (d.room >= d.maxRooms) {
+        icon.textContent = '🚪';
+        title.textContent = 'The Boss Chamber Gates!';
+        desc.textContent = 'Massive ironbound doors covered in dark runes block the hallway. Beyond waits the terrifying Boss of this dungeon floor!';
+      } else {
+        const crossroads = [
+          { icon: '🧭', title: 'You arrive at a crossroads.', desc: 'The stone passage splits into three dark corridors. Water drips quietly from the mossy ceiling.' },
+          { icon: '🕯️', title: 'A fork in the catacombs.', desc: 'Ancient stone pillars support the vaulted archway. Eerie winds howl through the fissures.' },
+          { icon: '🗝️', title: 'A subterranean crossway.', desc: 'Scratched weapon marks line the stone walls. Faint footsteps echo in the darkness.' }
+        ];
+        const chosen = crossroads[Math.floor(Math.random() * crossroads.length)];
+        icon.textContent = chosen.icon;
+        title.textContent = chosen.title;
+        desc.textContent = chosen.desc;
+      }
+    }
+
+    function handleRouteSelection(direction) {
+      sfx.click();
+      const d = state.dungeon;
+
+      if (d.room >= d.maxRooms) {
+        createBossRoom();
+        return;
+      }
+
+      const roll = Math.random();
+      if (roll < 0.40) {
+        createMonsterRoom();
+      } else if (roll < 0.58) {
+        createEliteRoom();
+      } else if (roll < 0.76) {
+        createChestRoom();
+      } else if (roll < 0.88) {
+        createDungeonShopRoom();
+      } else {
+        createQuestRoom();
+      }
+    }
+
+        function getFloorMonsterTemplates() {
+      const floor = state.dungeon.floor || 1;
+      if (floor <= 1) {
+        // Floor 1: Slime, Goblin, Skeleton, Dark Wolf
+        return ENEMY_TEMPLATES.slice(0, 4);
+      } else if (floor <= 2) {
+        // Floor 2: + Bandit, Orc
+        return ENEMY_TEMPLATES.slice(0, 6);
+      } else {
+        // Floor 3+: All monsters
+        return ENEMY_TEMPLATES;
+      }
+    }
+
+    function scaleMonsterStats(template, isElite = false) {
+      const lvl = state.player.level;
+      const floor = state.dungeon.floor || 1;
+      const eliteHpMult = isElite ? (floor === 1 ? 1.30 : (floor === 2 ? 1.45 : 1.60)) : 1.0;
+      const eliteAtkMult = isElite ? (floor === 1 ? 1.10 : 1.20) : 1.0;
+      const eliteDefMult = isElite ? 1.10 : 1.0;
+
+      const lvlHp = 1 + (lvl - 1) * 0.12;
+      const lvlAtk = 1 + (lvl - 1) * 0.10;
+      const lvlDef = 1 + (lvl - 1) * 0.08;
+
+      return {
+        id: template.id,
+        name: isElite ? `Elite ${template.name}` : template.name,
+        hp: Math.round(template.hp * lvlHp * eliteHpMult),
+        atk: Math.round(template.atk * lvlAtk * eliteAtkMult),
+        def: Math.round(template.def * lvlDef * eliteDefMult),
+        exp: Math.round(template.exp * (1 + (lvl - 1) * 0.18) * (isElite ? 2.0 : 1.0)),
+        gold: Math.round(template.gold * (1 + (lvl - 1) * 0.20) * (isElite ? 2.0 : 1.0)),
+        svg: template.svg,
+        isElite: isElite
+      };
+    }
+
+    function createMonsterRoom() {
+      state.dungeon.currentRoomType = 'monster';
+      state.dungeon.currentMonsterIndex = 0;
+      state.dungeon.monsterWave = [];
+
+      const waveSize = 3;
+      for (let i = 0; i < waveSize; i++) {
+        const pool = getFloorMonsterTemplates();
+        const randTemplate = pool[Math.floor(Math.random() * pool.length)];
+        state.dungeon.monsterWave.push(scaleMonsterStats(randTemplate, false));
+      }
+
+      startCombatEncounter(state.dungeon.monsterWave[0], false, { current: 1, total: waveSize });
+    }
+
+    function createEliteRoom() {
+      state.dungeon.currentRoomType = 'elite';
+      const pool = getFloorMonsterTemplates();
+        const randTemplate = pool[Math.floor(Math.random() * pool.length)];
+      const elite = scaleMonsterStats(randTemplate, true);
+
+      startCombatEncounter(elite, false);
+    }
+
+    function createBossRoom() {
+      state.dungeon.currentRoomType = 'boss';
+      const bossIdx = Math.min(BOSS_TEMPLATES.length - 1, state.dungeon.floor - 1);
+      const template = BOSS_TEMPLATES[bossIdx];
+
+      const lvl = state.player.level;
+      const boss = {
+        id: template.id,
+        name: template.name,
+        hp: Math.round(template.hp * (1 + (lvl - 1) * 0.28)),
+        atk: Math.round(template.atk * (1 + (lvl - 1) * 0.22)),
+        def: Math.round(template.def * (1 + (lvl - 1) * 0.20)),
+        exp: Math.round(template.exp * (1 + (lvl - 1) * 0.25)),
+        gold: Math.round(template.gold * (1 + (lvl - 1) * 0.3)),
+        icon: template.icon,
+        isBoss: true
+      };
+
+      startCombatEncounter(boss, true);
+    }
+
+    function createChestRoom() {
+      state.dungeon.currentRoomType = 'chest';
+      UI.showScreen('chestRoom');
+      document.getElementById('chest-animation-box').textContent = '🎁';
+      document.getElementById('chest-outcome-card').style.display = 'none';
+      document.getElementById('btn-action-open-chest').style.display = 'inline-block';
+      document.getElementById('btn-action-leave-chest').style.display = 'none';
+    }
+
+    function handleOpenChestAction() {
+      sfx.click();
+      const isTreasure = Math.random() < 0.70;
+      const outcomeBox = document.getElementById('chest-outcome-card');
+      const title = document.getElementById('chest-outcome-title');
+      const body = document.getElementById('chest-outcome-body');
+
+      outcomeBox.style.display = 'block';
+      document.getElementById('btn-action-open-chest').style.display = 'none';
+      document.getElementById('btn-action-leave-chest').style.display = 'inline-block';
+
+      if (isTreasure) {
+        sfx.chest();
+        document.getElementById('chest-animation-box').textContent = '✨🎁✨';
+        const goldFound = Math.round(35 + Math.random() * 70 * state.player.level);
+        state.player.gold += goldFound;
+
+        const pot = createPotion(POTION_TYPES[Math.floor(Math.random() * POTION_TYPES.length)].id);
+        const gear = generateRandomEquipment(null, null, state.player.level);
+        state.player.inventory.push(pot);
+        state.player.inventory.push(gear);
+
+        title.style.color = 'var(--gold)';
+        title.textContent = '🎉 Treasure Chest!';
+        body.innerHTML = `
+          You opened the chest and found <strong>🪙 ${goldFound} Gold</strong>, 
+          <strong>${pot.name}</strong>, and 
+          <span class="${RARITIES[gear.rarity].class}"><strong>${gear.name} (${gear.statLabel})</strong></span>!
+        `;
+        UI.showToast(`Found: ${gear.name} & ${goldFound}g!`);
+      } else {
+        sfx.trap();
+        document.getElementById('chest-animation-box').textContent = '💥💀';
+        const trapDamage = Math.max(15, Math.round(state.player.maxHp * 0.20));
+        state.player.hp -= trapDamage;
+
+        title.style.color = '#ef4444';
+        title.textContent = 'TRAP!';
+        body.textContent = `A poisoned spike trap exploded from the lock! You took ${trapDamage} damage!`;
+        UI.showToast(`TRAP! Took ${trapDamage} damage!`);
+
+        if (state.player.hp <= 0) {
+          state.player.hp = 0;
+          UI.updateHUD();
+          setTimeout(triggerPlayerDeath, 600);
+          return;
+        }
+      }
+
+      UI.updateHUD();
+      state.save();
+    }
+
+    function createDungeonShopRoom() {
+      state.dungeon.currentRoomType = 'shop';
+      UI.showScreen('dungeonShop');
+
+      state.dungeon.dungeonShopItems = [
+        generateRandomEquipment("weapon", null, state.player.level),
+        generateRandomEquipment("armor", null, state.player.level),
+        createPotion("pot_med"),
+        createPotion("pot_large")
+      ];
+
+      state.dungeon.dungeonShopItems.forEach(i => {
+        i.discountPrice = Math.max(10, Math.round(i.value * 0.60));
+      });
+
+      renderDungeonMerchantList();
+    }
+
+    function renderDungeonMerchantList() {
+      const container = document.getElementById('dungeon-merchant-items-container');
+      container.innerHTML = state.dungeon.dungeonShopItems.map((item, idx) => {
+        const rarity = RARITIES[item.rarity] || RARITIES.common;
+        return `
+          <div class="item-row-card">
+            <div class="item-left-block">
+              <div class="item-icon-tile">${item.icon}</div>
+              <div class="item-meta-col">
+                <div class="item-title-line">
+                  <span class="item-title-text ${rarity.class}">${item.name}</span>
+                  <span class="item-category-tag">${item.type}</span>
+                </div>
+                <div class="item-stat-highlight">${item.statLabel} | <span style="text-decoration:line-through; color:#64748b;">${item.value}g</span> <strong style="color:var(--gold);">${item.discountPrice}g (Discounted!)</strong></div>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-item-sm" onclick="handleBuyDungeonMerchantItem(${idx})" ${state.player.gold >= item.discountPrice ? '' : 'disabled'}>
+              Buy 🪙
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleBuyDungeonMerchantItem(idx) {
+      const item = state.dungeon.dungeonShopItems[idx];
+      if (!item || state.player.gold < item.discountPrice) {
+        UI.showToast("Not enough gold!");
+        return;
+      }
+
+      sfx.gold();
+      state.player.gold -= item.discountPrice;
+      state.player.inventory.push(item);
+      state.dungeon.dungeonShopItems.splice(idx, 1);
+      UI.showToast(`Purchased ${item.name}!`);
+      UI.updateHUD();
+      renderDungeonMerchantList();
+      state.save();
+    }
+
+    function createQuestRoom() {
+      state.dungeon.currentRoomType = 'quest';
+      UI.showScreen('questEncounter');
+
+      const isGiveItem = Math.random() < 0.5;
+      const pLvl = state.player.level;
+
+      if (isGiveItem) {
+        state.dungeon.currentQuestOffer = {
+          id: "quest_" + Date.now(),
+          type: "give_item",
+          title: "Injured Explorer's Request",
+          targetItemType: "potion",
+          desc: `"An injured explorer approaches you: 'Please, brave warrior! I was ambushed by dungeon fiends. Could you spare 1 Health Potion to save my life?'"`,
+          rewardExp: 65 * pLvl,
+          rewardGold: 85 * pLvl,
+          rewardItem: generateRandomEquipment(null, "rare", pLvl)
+        };
+
+        document.getElementById('quest-dialog-title').textContent = "An injured explorer approaches you.";
+        document.getElementById('quest-dialog-desc').textContent = state.dungeon.currentQuestOffer.desc;
+        document.getElementById('quest-req-text').textContent = "Requirement: 1x Health Potion in your inventory";
+        document.getElementById('quest-reward-preview-text').textContent = `Reward: +${state.dungeon.currentQuestOffer.rewardGold} Gold, +${state.dungeon.currentQuestOffer.rewardExp} EXP, and Rare Equipment!`;
+        document.getElementById('btn-quest-accept-or-give').textContent = "Give Potion 🍷";
+      } else {
+        const targetMonster = ENEMY_TEMPLATES[Math.floor(Math.random() * ENEMY_TEMPLATES.length)];
+        state.dungeon.currentQuestOffer = {
+          id: "quest_" + Date.now(),
+          type: "kill_monster",
+          targetEnemyName: targetMonster.name,
+          targetCount: 3,
+          currentCount: 0,
+          title: `Defeat 3 ${targetMonster.name}s`,
+          progressText: `Defeat 0 / 3 ${targetMonster.name}s`,
+          desc: `"A wandering scout asks for your help: 'The dungeon path is infested. Defeat 3 ${targetMonster.name}s to secure the route and earn a rich reward!'"`,
+          rewardExp: 110 * pLvl,
+          rewardGold: 130 * pLvl,
+          rewardItem: generateRandomEquipment(null, "rare", pLvl),
+          completed: false
+        };
+
+        document.getElementById('quest-dialog-title').textContent = "Bounty Hunter Hermit";
+        document.getElementById('quest-dialog-desc').textContent = state.dungeon.currentQuestOffer.desc;
+        document.getElementById('quest-req-text').textContent = `Requirement: Defeat 3 ${targetMonster.name}s`;
+        document.getElementById('quest-reward-preview-text').textContent = `Reward: +${state.dungeon.currentQuestOffer.rewardGold} Gold, +${state.dungeon.currentQuestOffer.rewardExp} EXP, and Rare Equipment!`;
+        document.getElementById('btn-quest-accept-or-give').textContent = "Accept Quest 📜";
+      }
+    }
+
+    function handleQuestConfirmPrimary() {
+      const q = state.dungeon.currentQuestOffer;
+      if (!q) return;
+
+      if (q.type === 'give_item') {
+        const potIdx = state.player.inventory.findIndex(i => i.type === 'potion');
+        if (potIdx === -1) {
+          UI.showToast("You don't have any potion in your inventory!");
+          return;
+        }
+
+        sfx.fanfare();
+        state.player.inventory.splice(potIdx, 1);
+        state.player.gold += q.rewardGold;
+        state.player.inventory.push(q.rewardItem);
+        gainExp(q.rewardExp);
+
+        UI.showToast(`Quest Completed! Received ${q.rewardItem.name}!`);
+        state.save();
+        advanceDungeonStep();
+      } else {
+        sfx.click();
+        state.player.activeQuests.push(q);
+        UI.showToast(`Accepted: ${q.title}!`);
+        state.save();
+        advanceDungeonStep();
+      }
+    }
+
+    function checkQuestKillProgress(enemy) {
+      state.player.activeQuests.forEach(q => {
+        if (q.type === 'kill_monster' && !q.completed) {
+          if (enemy.name.includes(q.targetEnemyName) || q.targetEnemyName.includes(enemy.name)) {
+            q.currentCount++;
+            q.progressText = `Defeat ${q.currentCount} / ${q.targetCount} ${q.targetEnemyName}s`;
+            if (q.currentCount >= q.targetCount) {
+              q.completed = true;
+              q.progressText = `Ready to claim in Hub!`;
+              UI.showToast(`Quest Objective Complete: ${q.title}!`);
+            }
+          }
+        }
+      });
+      UI.updateHubQuests();
+    }
+
+    function handleClaimQuest(questId) {
+      const idx = state.player.activeQuests.findIndex(q => q.id === questId);
+      if (idx === -1) return;
+
+      const q = state.player.activeQuests[idx];
+      if (!q.completed) return;
+
+      sfx.fanfare();
+      state.player.gold += q.rewardGold;
+      state.player.inventory.push(q.rewardItem);
+      gainExp(q.rewardExp);
+
+      state.player.activeQuests.splice(idx, 1);
+      UI.showToast(`Claimed Reward for ${q.title}!`);
+      UI.updateHUD();
+      state.save();
+    }
+
+    function advanceDungeonStep() {
+      state.dungeon.room++;
+      state.save();
+      UI.showScreen('dungeonExplore');
+      renderExplorationRoom();
+    }
+
+    function handleEquip(itemId) {
+      const item = state.player.inventory.find(i => i.id === itemId);
+      if (!item) return;
+
+      sfx.click();
+      if (item.type === 'weapon') {
+        state.player.equippedWeapon = item;
+        UI.showToast(`Equipped ${item.name} (+${item.stat} ATK)`);
+      } else if (item.type === 'armor') {
+        state.player.equippedArmor = item;
+        UI.showToast(`Equipped ${item.name} (+${item.stat} DEF)`);
+      }
+
+      UI.updateHUD();
+      UI.renderInventory('all', state.combat.inCombat);
+      state.save();
+    }
+
+    function handleUnequip(itemId) {
+      sfx.click();
+      if (state.player.equippedWeapon && state.player.equippedWeapon.id === itemId) {
+        state.player.equippedWeapon = null;
+        UI.showToast("Weapon unequipped");
+      } else if (state.player.equippedArmor && state.player.equippedArmor.id === itemId) {
+        state.player.equippedArmor = null;
+        UI.showToast("Armor unequipped");
+      }
+
+      UI.updateHUD();
+      UI.renderInventory('all', state.combat.inCombat);
+      state.save();
+    }
+
+    function handleUsePotion(itemId) {
+      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      if (idx === -1) return;
+
+      const pot = state.player.inventory[idx];
+      if (state.player.hp >= state.player.maxHp) {
+        UI.showToast("HP is already full!");
+        return;
+      }
+
+      sfx.potion();
+      const prevHp = state.player.hp;
+      state.player.hp = Math.min(state.player.maxHp, state.player.hp + pot.heal);
+      const diff = state.player.hp - prevHp;
+
+      state.player.inventory.splice(idx, 1);
+      UI.showToast(`Used ${pot.name}, restored ${diff} HP!`);
+
+      if (state.combat.inCombat) {
+        UI.logCombat(`🍷 You drank <strong>${pot.name}</strong> and restored <strong>+${diff} HP</strong>!`, 'log-heal-effect');
+      }
+
+      UI.updateHUD();
+      UI.renderInventory('all', state.combat.inCombat);
+      state.save();
+    }
+
+    function handleDropItem(itemId) {
+      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      if (idx === -1) return;
+
+      sfx.click();
+      const item = state.player.inventory[idx];
+      state.player.inventory.splice(idx, 1);
+      UI.showToast(`Dropped ${item.name}`);
+      UI.renderInventory('all', state.combat.inCombat);
+      state.save();
+    }
+
+    let townStock = [];
+
+    function generateTownStock() {
+      const lvl = state.player.level;
+      townStock = [
+        generateRandomEquipment("weapon", null, lvl),
+        generateRandomEquipment("weapon", null, lvl),
+        generateRandomEquipment("armor", null, lvl),
+        generateRandomEquipment("armor", null, lvl),
+        createPotion("pot_small"),
+        createPotion("pot_med"),
+        createPotion("pot_large")
+      ];
+    }
+
+    function renderTownShop(tab = 'buy') {
+      const container = document.getElementById('town-shop-items-container');
+      document.getElementById('shop-player-gold').textContent = state.player.gold.toLocaleString();
+
+      if (tab === 'buy') {
+        container.innerHTML = townStock.map((item, idx) => {
+          const rarity = RARITIES[item.rarity] || RARITIES.common;
+          return `
+            <div class="item-row-card">
+              <div class="item-left-block">
+                <div class="item-icon-tile">${item.icon}</div>
+                <div class="item-meta-col">
+                  <div class="item-title-line">
+                    <span class="item-title-text ${rarity.class}">${item.name}</span>
+                    <span class="item-category-tag">${item.type}</span>
+                  </div>
+                  <div class="item-stat-highlight">${item.statLabel} | Price: <strong style="color:var(--gold);">${item.value}g</strong></div>
+                </div>
+              </div>
+              <button class="btn btn-gold btn-item-sm" onclick="handleBuyTownShopItem(${idx})" ${state.player.gold >= item.value ? '' : 'disabled'}>
+                BUY 🪙
+              </button>
+            </div>
+          `;
+        }).join('');
+      } else {
+        const inventoryItems = state.player.inventory;
+        if (inventoryItems.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:24px; color:#64748b;">No items in your inventory to sell.</div>`;
+          return;
+        }
+
+        container.innerHTML = inventoryItems.map((item) => {
+          const rarity = RARITIES[item.rarity] || RARITIES.common;
+          const isEquipped = (state.player.equippedWeapon && state.player.equippedWeapon.id === item.id) || (state.player.equippedArmor && state.player.equippedArmor.id === item.id);
+          const sellValue = Math.max(1, Math.floor(item.value * 0.50));
+
+          return `
+            <div class="item-row-card">
+              <div class="item-left-block">
+                <div class="item-icon-tile">${item.icon}</div>
+                <div class="item-meta-col">
+                  <div class="item-title-line">
+                    <span class="item-title-text ${rarity.class}">${item.name}</span>
+                    <span class="item-category-tag">${item.type}</span>
+                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.68rem; padding:1px 6px; border-radius:4px;">EQUIPPED</span>' : ''}
+                  </div>
+                  <div class="item-stat-highlight">${item.statLabel} | Sell: <strong style="color:var(--gold);">${sellValue}g</strong> (50%)</div>
+                </div>
+              </div>
+              <button class="btn btn-gold btn-item-sm" onclick="handleSellTownShopItem('${item.id}')" ${isEquipped ? 'disabled' : ''}>
+                SELL 💰
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function handleBuyTownShopItem(idx) {
+      const item = townStock[idx];
+      if (!item || state.player.gold < item.value) {
+        UI.showToast("Not enough gold!");
+        return;
+      }
+
+      sfx.gold();
+      state.player.gold -= item.value;
+      state.player.inventory.push(item);
+      townStock.splice(idx, 1);
+      UI.showToast(`Purchased ${item.name}!`);
+      UI.updateHUD();
+      renderTownShop('buy');
+      state.save();
+    }
+
+    function handleSellTownShopItem(itemId) {
+      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      if (idx === -1) return;
+
+      const item = state.player.inventory[idx];
+      const sellPrice = Math.max(1, Math.floor(item.value * 0.50));
+
+      sfx.gold();
+      state.player.gold += sellPrice;
+      state.player.inventory.splice(idx, 1);
+      UI.showToast(`Sold ${item.name} for +${sellPrice}g!`);
+      UI.updateHUD();
+      renderTownShop('sell');
+      state.save();
+    }
+
+    function triggerPlayerDeath() {
+      sfx.death();
+      state.combat.inCombat = false;
+      state.dungeon.active = false;
+
+      state.player.hp = state.player.maxHp;
+
+      UI.openModal('death');
+      state.save();
+    }
+
+    function initGameEventListeners() {
+      document.getElementById('btn-menu-new-game').addEventListener('click', () => {
+        sfx.click();
+        UI.showScreen('charCreate');
+      });
+
+      document.getElementById('btn-menu-continue-game').addEventListener('click', () => {
+        sfx.click();
+        if (state.load()) {
+          UI.showToast(`Welcome back, ${state.player.name}!`);
+          UI.showScreen('townHub');
+        }
+      });
+
+      document.getElementById('btn-menu-how-to-play').addEventListener('click', () => {
+        UI.openModal('howToPlay');
+      });
+
+      document.getElementById('btn-menu-open-settings').addEventListener('click', () => {
+        UI.openModal('settings');
+      });
+
+      document.getElementById('btn-back-to-menu').addEventListener('click', () => {
+        sfx.click();
+        UI.showScreen('mainMenu');
+      });
+
+      document.getElementById('btn-confirm-create-hero').addEventListener('click', () => {
+        sfx.fanfare();
+        const heroName = document.getElementById('input-character-name').value.trim() || "Alistair";
+        state.reset();
+        state.player.name = heroName;
+
+        const starterSword = {
+          id: "starter_sword",
+          name: "Common Iron Shortsword",
+          type: "weapon",
+          rarity: "common",
+          stat: 3,
+          statLabel: "+3 ATK",
+          value: 15,
+          icon: "⚔️"
+        };
+
+        const starterArmor = {
+          id: "starter_armor",
+          name: "Common Cloth Tunic",
+          type: "armor",
+          rarity: "common",
+          stat: 1,
+          statLabel: "+1 DEF",
+          value: 10,
+          icon: "🥋"
+        };
+
+        state.player.inventory.push(starterSword);
+        state.player.inventory.push(starterArmor);
+        state.player.inventory.push(createPotion("pot_small"));
+        state.player.inventory.push(createPotion("pot_small"));
+
+        state.player.equippedWeapon = starterSword;
+        state.player.equippedArmor = starterArmor;
+
+        state.save();
+        generateTownStock();
+        UI.showToast(`Hero ${heroName} arrives in Oakhaven!`);
+        UI.showScreen('townHub');
+      });
+
+      document.getElementById('card-action-dungeon').addEventListener('click', startDungeonExploration);
+
+      document.getElementById('card-action-shop').addEventListener('click', () => {
+        sfx.click();
+        if (townStock.length === 0) generateTownStock();
+        renderTownShop('buy');
+        UI.openModal('townShop');
+      });
+
+      document.getElementById('card-action-tavern').addEventListener('click', () => {
+        sfx.click();
+        UI.openModal('tavernFeast');
+      });
+
+      document.getElementById('card-action-inventory').addEventListener('click', () => {
+        sfx.click();
+        UI.renderInventory('all', false);
+        UI.openModal('inventory');
+      });
+
+      document.getElementById('btn-top-inv').addEventListener('click', () => {
+        sfx.click();
+        UI.renderInventory('all', state.combat.inCombat);
+        UI.openModal('inventory');
+      });
+
+      document.getElementById('btn-top-save').addEventListener('click', () => {
+        sfx.click();
+        if (state.save()) {
+          UI.showToast("Game saved successfully!");
+        }
+      });
+
+      document.getElementById('btn-top-audio').addEventListener('click', () => {
+        sfx.soundEnabled = !sfx.soundEnabled;
+        document.getElementById('btn-top-audio').textContent = sfx.soundEnabled ? '🔊' : '🔇';
+        UI.showToast(sfx.soundEnabled ? "Sound Effects ON" : "Sound Muted");
+      });
+
+      document.getElementById('btn-path-left').addEventListener('click', () => handleRouteSelection('left'));
+      document.getElementById('btn-path-forward').addEventListener('click', () => handleRouteSelection('forward'));
+      document.getElementById('btn-path-right').addEventListener('click', () => handleRouteSelection('right'));
+
+      document.getElementById('btn-escape-dungeon').addEventListener('click', () => {
+        sfx.click();
+        state.dungeon.active = false;
+        state.save();
+        UI.showScreen('townHub');
+        UI.showToast("Safely returned to Sanctuary.");
+      });
+
+      document.getElementById('btn-combat-act-attack').addEventListener('click', handlePlayerAttack);
+      document.getElementById('btn-combat-act-skill').addEventListener('click', handlePlayerSkillFireStrike);
+      document.getElementById('btn-combat-act-inventory').addEventListener('click', () => {
+        sfx.click();
+        UI.renderInventory('all', true);
+        UI.openModal('inventory');
+      });
+      document.getElementById('btn-combat-act-flee').addEventListener('click', handlePlayerFlee);
+
+      document.getElementById('btn-action-open-chest').addEventListener('click', handleOpenChestAction);
+      document.getElementById('chest-animation-box').addEventListener('click', () => {
+        if (document.getElementById('btn-action-open-chest').style.display !== 'none') {
+          handleOpenChestAction();
+        }
+      });
+      document.getElementById('btn-action-leave-chest').addEventListener('click', advanceDungeonStep);
+
+      document.getElementById('btn-leave-dungeon-merchant').addEventListener('click', advanceDungeonStep);
+
+      document.getElementById('btn-quest-accept-or-give').addEventListener('click', handleQuestConfirmPrimary);
+      document.getElementById('btn-quest-decline').addEventListener('click', advanceDungeonStep);
+
+      document.getElementById('btn-upgrade-atk').addEventListener('click', () => applyLevelUpStatUpgrade('atk'));
+      document.getElementById('btn-upgrade-def').addEventListener('click', () => applyLevelUpStatUpgrade('def'));
+      document.getElementById('btn-upgrade-hp').addEventListener('click', () => applyLevelUpStatUpgrade('hp'));
+
+      document.getElementById('btn-dismiss-milestone').addEventListener('click', () => {
+        sfx.click();
+        UI.closeModal('milestone');
+      });
+
+      document.getElementById('btn-revive-hub').addEventListener('click', () => {
+        sfx.click();
+        UI.closeModal('death');
+        UI.showScreen('townHub');
+      });
+
+      document.getElementById('btn-close-inventory-x').addEventListener('click', () => UI.closeModal('inventory'));
+      document.getElementById('btn-close-inventory-btn').addEventListener('click', () => UI.closeModal('inventory'));
+      document.getElementById('btn-close-town-shop-x').addEventListener('click', () => UI.closeModal('townShop'));
+      document.getElementById('btn-close-town-shop-btn').addEventListener('click', () => UI.closeModal('townShop'));
+      document.getElementById('btn-close-how-x').addEventListener('click', () => UI.closeModal('howToPlay'));
+      document.getElementById('btn-close-how-btn').addEventListener('click', () => UI.closeModal('howToPlay'));
+      document.getElementById('btn-close-settings-x').addEventListener('click', () => UI.closeModal('settings'));
+      document.getElementById('btn-close-settings-btn').addEventListener('click', () => UI.closeModal('settings'));
+
+      document.querySelectorAll('#modal-inventory .tab-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#modal-inventory .tab-nav-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const tab = btn.getAttribute('data-tab');
+          UI.renderInventory(tab, state.combat.inCombat);
+        });
+      });
+
+      document.getElementById('tab-shop-buy').addEventListener('click', () => {
+        document.getElementById('tab-shop-buy').classList.add('active');
+        document.getElementById('tab-shop-sell').classList.remove('active');
+        renderTownShop('buy');
+      });
+
+      document.getElementById('tab-shop-sell').addEventListener('click', () => {
+        document.getElementById('tab-shop-sell').classList.add('active');
+        document.getElementById('tab-shop-buy').classList.remove('active');
+        renderTownShop('sell');
+      });
+
+      document.getElementById('btn-shop-restock').addEventListener('click', () => {
+        if (state.player.gold < 15) {
+          UI.showToast("Restock requires 15 Gold!");
+          return;
+        }
+        sfx.gold();
+        state.player.gold -= 15;
+        generateTownStock();
+        UI.showToast("Shop restocked with fresh equipment & potions!");
+        renderTownShop('buy');
+        UI.updateHUD();
+        state.save();
+      });
+
+      document.getElementById('btn-toggle-sound-settings').addEventListener('click', () => {
+        sfx.soundEnabled = !sfx.soundEnabled;
+        document.getElementById('btn-toggle-sound-settings').textContent = sfx.soundEnabled ? 'Sound ON 🔊' : 'Sound Muted 🔇';
+        document.getElementById('btn-top-audio').textContent = sfx.soundEnabled ? '🔊' : '🔇';
+      });
+
+      document.getElementById('btn-export-save-json').addEventListener('click', () => {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) {
+          UI.showToast("No save data found to export.");
+          return;
+        }
+        const blob = new Blob([raw], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dungeon_explorer_save_${state.player.name}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        UI.showToast("Save file exported!");
+      });
+
+      document.getElementById('btn-delete-save-data').addEventListener('click', () => {
+        if (confirm("Are you sure you want to delete all saved data? This cannot be undone.")) {
+          localStorage.removeItem(SAVE_KEY);
+          state.reset();
+          UI.closeModal('settings');
+          UI.showToast("Save data deleted.");
+          location.reload();
+        }
+      });
+
+      if (state.hasSaveData()) {
+        document.getElementById('btn-menu-continue-game').disabled = false;
+      }
+    }
+
+    window.handleEquip = handleEquip;
+    window.handleUnequip = handleUnequip;
+    window.handleUsePotion = handleUsePotion;
+    window.handleDropItem = handleDropItem;
+    window.handleBuyTownShopItem = handleBuyTownShopItem;
+    window.handleSellTownShopItem = handleSellTownShopItem;
+    window.handleBuyDungeonMerchantItem = handleBuyDungeonMerchantItem;
+    window.handleClaimQuest = handleClaimQuest;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGameEventListeners();
+      UI.showScreen('mainMenu');
+    });
+  </script>
 </body>
 </html>
+
