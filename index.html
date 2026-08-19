@@ -1443,22 +1443,20 @@
   </div>
 
   
-  <!-- 3. TAVERN FEAST (PAID 20G & REST) -->
+  <!-- TAVERN FEAST MODAL -->
   <div class="modal-overlay" id="modal-tavern-feast">
-    <div class="modal-window" style="max-width: 520px;">
-      <div class="modal-top-bar" style="background: #261706;">
-        <div class="modal-heading" style="color: var(--gold);">🍺 Tavern Hearth & Feast</div>
+    <div class="modal-window" style="max-width:540px;">
+      <div class="modal-top-bar" style="background:#261706;">
+        <div class="modal-heading" style="color:var(--gold);">🍺 Tavern Hearth & Feast</div>
         <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
       </div>
-  
+
       <div class="modal-content-area">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#090a10; border:1px solid #282d42; border-radius:8px; padding:8px 12px; margin-bottom:12px;">
-          <span style="font-size:0.85rem; color:#cbd5e1;">Select a pre-run meal (Cost: <strong style="color:var(--gold);">20 Gold</strong>)</span>
-          <span style="font-size:0.85rem; color:var(--gold); font-weight:700;">🪙 <span id="tavern-gold-num">0</span> Gold</span>
-        </div>
-  
+        <p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:12px;">
+          Select a hearty meal before departing (Cost: <strong style="color:var(--gold);">20 Gold</strong>). Fully restores HP to 100% and grants a delve buff:
+        </p>
+
         <div style="display:flex; flex-direction:column; gap:8px;">
-          <!-- Hunter's Meat Stew -->
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('hp')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍲</div>
@@ -1467,10 +1465,9 @@
                 <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> for this delve</span>
               </div>
             </div>
-            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('hp');">Order 20g 🍲</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍲</button>
           </div>
-  
-          <!-- Spiced Adventurer's Ale -->
+
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('atk')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍺</div>
@@ -1479,10 +1476,9 @@
                 <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#f87171;">+1 ATK</strong> for this delve</span>
               </div>
             </div>
-            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('atk');">Order 20g 🍺</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍺</button>
           </div>
-  
-          <!-- Ironbark Herbal Tea -->
+
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('def')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍵</div>
@@ -1491,10 +1487,9 @@
                 <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> for this delve</span>
               </div>
             </div>
-            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('def');">Order 20g 🍵</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍵</button>
           </div>
-  
-          <!-- Scout Coffee & Rumors -->
+
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('luck')">
             <div class="item-left-block">
               <div class="item-icon-tile">📜</div>
@@ -1503,81 +1498,121 @@
                 <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> for this delve</span>
               </div>
             </div>
-            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('luck');">Order 20g 📜</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 📜</button>
           </div>
-  
-          <!-- Free Rest on Bench -->
+
           <div class="item-row-card" style="cursor:pointer; border-style:dashed;" onclick="handleSelectTavernMeal('free')">
             <div class="item-left-block">
               <div class="item-icon-tile">🪑</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#cbd5e1;">Rest on Hearth Bench (Free)</span>
+                <span class="item-title-text" style="color:#cbd5e1;">Rest on the Hearth Bench (Free)</span>
                 <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP only (no buff)</span>
               </div>
             </div>
-            <button type="button" class="btn btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('free');">Rest Free 🪑</button>
+            <button class="btn btn-item-sm">Rest 🪑</button>
           </div>
         </div>
       </div>
-  
+
       <div class="modal-bottom-bar">
         <button class="btn" id="btn-close-tavern-btn">Close</button>
       </div>
     </div>
   </div>
-    <!-- 4. MILESTONE REWARD -->
-    <div class="modal-overlay" id="modal-milestone-reward">
-      <div class="modal-window" style="text-align: center; border-color: #a855f7;">
-        <div class="modal-top-bar" style="background: #2e1065; justify-content: center;">
-          <div class="modal-heading" style="color: #e9d5ff; font-size: 1.5rem;">
-            🏆 Milestone Reward!
+
+  <!-- 3. LEVEL UP -->
+  <div class="modal-overlay" id="modal-level-up">
+    <div class="modal-window" style="text-align: center; border-color: var(--gold);">
+      <div class="modal-top-bar" style="background: #261706; justify-content: center;">
+        <div class="modal-heading" style="color: var(--gold); font-size: 1.6rem; letter-spacing: 2px;">
+          ✨ LEVEL UP! ✨
+        </div>
+      </div>
+
+      <div class="modal-content-area">
+        <p style="font-size: 0.95rem; color: #f8fafc; margin-bottom: 6px;">
+          Congratulations! You have reached <strong>Level <span id="lvlup-number-display">2</span></strong>!
+        </p>
+        <p style="font-size: 0.85rem; color: #4ade80; margin-bottom: 18px;">
+          ❤️ HP fully restored! Choose 1 permanent stat upgrade:
+        </p>
+
+        <div class="levelup-options-grid">
+          <div class="levelup-card-choice" id="btn-upgrade-atk">
+            <div style="font-size: 2.2rem;">⚔️</div>
+            <div class="levelup-stat-big" style="color: #f87171;">+5 ATK</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Empower attack damage and skills.</div>
           </div>
-        </div>
-  
-        <div class="modal-content-area">
-          <div style="font-size: 4rem; margin: 10px 0;">🎁</div>
-          <h3 style="color: #ffd700; margin-bottom: 6px;">You reached Level <span id="milestone-lvl-num">10</span>!</h3>
-          <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 16px;">
-            You received a random equipment!
-          </p>
-  
-          <div id="milestone-equipment-card" style="background: #090a10; border: 2px solid #a855f7; border-radius: 10px; padding: 16px; margin-bottom: 18px;"></div>
-        </div>
-  
-        <div class="modal-bottom-bar" style="justify-content: center;">
-          <button class="btn btn-gold" id="btn-dismiss-milestone" style="min-width: 150px;">Claim Equipment! ⚔️</button>
+
+          <div class="levelup-card-choice" id="btn-upgrade-def">
+            <div style="font-size: 2.2rem;">🛡️</div>
+            <div class="levelup-stat-big" style="color: #60a5fa;">+3 DEF</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Reduce incoming damage from enemies.</div>
+          </div>
+
+          <div class="levelup-card-choice" id="btn-upgrade-hp">
+            <div style="font-size: 2.2rem;">❤️</div>
+            <div class="levelup-stat-big" style="color: #4ade80;">+20 MAX HP</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Boost your maximum life force.</div>
+          </div>
         </div>
       </div>
     </div>
-  
-    <!-- 5. YOU DIED -->
-    <div class="modal-overlay" id="modal-death-screen">
-      <div class="modal-window" style="text-align: center; border-color: #ef4444; max-width: 480px;">
-        <div class="modal-top-bar" style="background: #450a0a; justify-content: center;">
-          <div class="modal-heading" style="color: #fca5a5; font-size: 1.7rem; letter-spacing: 2px;">
-            💀 You Died.
-          </div>
-        </div>
-  
-        <div class="modal-content-area">
-          <p style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.55; margin-bottom: 16px;">
-            Your vision fades to black... But your hero's soul safely returns to the Sanctuary of Oakhaven.
-          </p>
-  
-          <div style="background: #090a10; border: 1px solid #374151; border-radius: 8px; padding: 14px; text-align: left; font-size: 0.84rem; color: #94a3b8; margin-bottom: 16px;">
-            <div style="color: #4ade80; font-weight: bold; margin-bottom: 6px;">🛡️ Safe Haven Guarantee:</div>
-            <div>✓ You did NOT lose any equipped weapons or armor.</div>
-            <div>✓ Your inventory items and potions remain safe.</div>
-            <div>✓ Your gold is completely preserved.</div>
-            <div>✓ HP restored to full upon awakening.</div>
-          </div>
-        </div>
-  
-        <div class="modal-bottom-bar" style="justify-content: center;">
-          <button class="btn btn-gold" id="btn-revive-hub" style="min-width: 180px;">Return to Sanctuary 🏰</button>
+  </div>
+
+  <!-- 4. MILESTONE REWARD -->
+  <div class="modal-overlay" id="modal-milestone-reward">
+    <div class="modal-window" style="text-align: center; border-color: #a855f7;">
+      <div class="modal-top-bar" style="background: #2e1065; justify-content: center;">
+        <div class="modal-heading" style="color: #e9d5ff; font-size: 1.5rem;">
+          🏆 Milestone Reward!
         </div>
       </div>
+
+      <div class="modal-content-area">
+        <div style="font-size: 4rem; margin: 10px 0;">🎁</div>
+        <h3 style="color: #ffd700; margin-bottom: 6px;">You reached Level <span id="milestone-lvl-num">10</span>!</h3>
+        <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 16px;">
+          You received a random equipment!
+        </p>
+
+        <div id="milestone-equipment-card" style="background: #090a10; border: 2px solid #a855f7; border-radius: 10px; padding: 16px; margin-bottom: 18px;"></div>
+      </div>
+
+      <div class="modal-bottom-bar" style="justify-content: center;">
+        <button class="btn btn-gold" id="btn-dismiss-milestone" style="min-width: 150px;">Claim Equipment! ⚔️</button>
+      </div>
     </div>
+  </div>
+
+  <!-- 5. YOU DIED -->
+  <div class="modal-overlay" id="modal-death-screen">
+    <div class="modal-window" style="text-align: center; border-color: #ef4444; max-width: 480px;">
+      <div class="modal-top-bar" style="background: #450a0a; justify-content: center;">
+        <div class="modal-heading" style="color: #fca5a5; font-size: 1.7rem; letter-spacing: 2px;">
+          💀 You Died.
+        </div>
+      </div>
+
+      <div class="modal-content-area">
+        <p style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.55; margin-bottom: 16px;">
+          Your vision fades to black... But your hero's soul safely returns to the Sanctuary of Oakhaven.
+        </p>
+
+        <div style="background: #090a10; border: 1px solid #374151; border-radius: 8px; padding: 14px; text-align: left; font-size: 0.84rem; color: #94a3b8; margin-bottom: 16px;">
+          <div style="color: #4ade80; font-weight: bold; margin-bottom: 6px;">🛡️ Safe Haven Guarantee:</div>
+          <div>✓ You did NOT lose any equipped weapons or armor.</div>
+          <div>✓ Your inventory items and potions remain safe.</div>
+          <div>✓ Your gold is completely preserved.</div>
+          <div>✓ HP restored to full upon awakening.</div>
+        </div>
+      </div>
+
+      <div class="modal-bottom-bar" style="justify-content: center;">
+        <button class="btn btn-gold" id="btn-revive-hub" style="min-width: 180px;">Return to Sanctuary 🏰</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 6. HOW TO PLAY -->
   <div class="modal-overlay" id="modal-how-to-play">
@@ -2001,15 +2036,17 @@
       },
 
       modals: {
-    inventory: document.getElementById('modal-inventory'),
-    townShop: document.getElementById('modal-town-shop'),
-    tavernFeast: document.getElementById('modal-tavern-feast'), // <-- Titik krusial yang sebelumnya terlewat
-    levelUp: document.getElementById('modal-level-up'),
-    milestone: document.getElementById('modal-milestone-reward'),
-    death: document.getElementById('modal-death-screen'),
-    howToPlay: document.getElementById('modal-how-to-play'),
-    settings: document.getElementById('modal-settings')
-  },
+        inventory: document.getElementById('modal-inventory'),
+        townShop: document.getElementById('modal-town-shop'),
+        tavernFeast: document.getElementById('modal-tavern-feast'),
+        levelUp: document.getElementById('modal-level-up'),
+        milestone: document.getElementById('modal-milestone-reward'),
+        death: document.getElementById('modal-death-screen'),
+        howToPlay: document.getElementById('modal-how-to-play'),
+        settings: document.getElementById('modal-settings')
+      },
+
+      hud: document.getElementById('top-hud'),
 
       showScreen(name) {
         Object.values(this.screens).forEach(s => s.classList.remove('active'));
@@ -2026,21 +2063,20 @@
       },
 
       openModal(name) {
-    const m = this.modals[name] || document.getElementById('modal-' + name) || document.getElementById('modal-tavern-feast');
-    if (m) {
-      m.classList.add('active');
-      sfx.click();
-    }
-  },
+        const m = this.modals[name] || document.getElementById('modal-' + name) || document.getElementById('modal-tavern-feast');
+        if (m) {
+          m.classList.add('active');
+          sfx.click();
+        }
+      },
 
       closeModal(name) {
-    const m = this.modals[name] || document.getElementById('modal-' + name) || document.getElementById('modal-tavern-feast');
-    if (m) {
-      m.classList.remove('active');
-      sfx.click();
-    }
-  }
-};
+        const m = this.modals[name] || document.getElementById('modal-' + name) || document.getElementById('modal-tavern-feast');
+        if (m) {
+          m.classList.remove('active');
+          sfx.click();
+        }
+      },
 
       showToast(text) {
         const t = document.getElementById('toast-msg');
@@ -2874,52 +2910,48 @@
 
     
     function handleSelectTavernMeal(type) {
-  // 1. Opsi Istirahat Gratis
-  if (type === 'free') {
-    sfx.potion();
-    state.player.hp = state.totalMaxHp;
-    UI.showToast("Rested on the hearth bench. HP restored to 100%!");
-    UI.closeModal('tavernFeast');
-    UI.updateHUD();
-    state.save();
-    return;
-  }
+      if (type === 'free') {
+        sfx.potion();
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Rested on the hearth bench. HP restored to 100%!");
+        UI.closeModal('tavernFeast');
+        UI.updateHUD();
+        state.save();
+        return;
+      }
 
-  // 2. Pengecekan Gold
-  if (state.player.gold < 20) {
-    sfx.click();
-    UI.showToast(`Requires 20 Gold! (You have ${state.player.gold}g). Rest for free on the bench to heal.`);
-    return;
-  }
+      if (state.player.gold < 20) {
+        sfx.click();
+        UI.showToast(`Requires 20 Gold! (You have ${state.player.gold}g). Rest for free on the bench to heal.`);
+        return;
+      }
 
-  // 3. Potong 20 Gold & Berikan Buff
-  state.player.gold -= 20;
-  sfx.potion();
+      state.player.gold -= 20;
+      sfx.potion();
 
-  if (type === 'hp') {
-    state.player.runBuffs.extraMaxHp = 10;
-    state.player.hp = state.totalMaxHp;
-    UI.showToast("Hunter's Stew enjoyed (-20g)! +10 Max HP for this delve!");
-  } else if (type === 'atk') {
-    state.player.runBuffs.atk = 1;
-    state.player.hp = state.totalMaxHp;
-    UI.showToast("Spiced Ale enjoyed (-20g)! +1 ATK for this delve!");
-  } else if (type === 'def') {
-    state.player.runBuffs.def = 1;
-    state.player.hp = state.totalMaxHp;
-    UI.showToast("Ironbark Tea enjoyed (-20g)! +1 DEF for this delve!");
-  } else if (type === 'luck') {
-    state.player.runBuffs.luckBoost = 0.10;
-    state.player.hp = state.totalMaxHp;
-    UI.showToast("Scout Coffee enjoyed (-20g)! +10% Gold/Luck for this delve!");
-  }
+      if (type === 'hp') {
+        state.player.runBuffs.extraMaxHp = 10;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Hunter's Stew enjoyed (-20g)! +10 Max HP for this delve!");
+      } else if (type === 'atk') {
+        state.player.runBuffs.atk = 1;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Spiced Ale enjoyed (-20g)! +1 ATK for this delve!");
+      } else if (type === 'def') {
+        state.player.runBuffs.def = 1;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Ironbark Tea enjoyed (-20g)! +1 DEF for this delve!");
+      } else if (type === 'luck') {
+        state.player.runBuffs.luckBoost = 0.10;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Scout Coffee enjoyed (-20g)! +10% Gold/Luck for this delve!");
+      }
 
-  UI.closeModal('tavernFeast');
-  UI.updateHUD();
-  state.save();
-}
-
-window.handleSelectTavernMeal = handleSelectTavernMeal;
+      UI.closeModal('tavernFeast');
+      UI.updateHUD();
+      state.save();
+    }
+    window.handleSelectTavernMeal = handleSelectTavernMeal;
 
     function advanceDungeonStep() {
       state.dungeon.room++;
@@ -3202,9 +3234,6 @@ window.handleSelectTavernMeal = handleSelectTavernMeal;
         if (tgn) tgn.textContent = state.player.gold.toLocaleString();
         UI.openModal('tavernFeast');
       });
-      
-      document.getElementById('btn-close-tavern-x').addEventListener('click', () => UI.closeModal('tavernFeast'));
-      document.getElementById('btn-close-tavern-btn').addEventListener('click', () => UI.closeModal('tavernFeast'));
 
       document.getElementById('card-action-inventory').addEventListener('click', () => {
         sfx.click();
