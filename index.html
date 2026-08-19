@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -309,12 +309,12 @@
       box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
     }
 
-    .btn-danger {
+    .btn-andger {
       background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%);
       border-color: #dc2626;
     }
 
-    .btn-danger:hover:not(:disabled) {
+    .btn-andger:hover:not(:disabled) {
       background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%);
       border-color: #ef4444;
       box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
@@ -1156,7 +1156,7 @@
             <div>🪙 Gold: <strong>0</strong></div>
           </div>
           <div style="margin-top:10px; font-size:0.75rem; color:#94a3b8; border-top:1px solid #1c2030; padding-top:6px;">
-            Starter Equipment: Common Iron Shortsword (+3 ATK), Common Cloth Tunic (+1 DEF), 2x Small Health Potions.
+            Starter Equipment: Common Iron Shortsword (+3 ATK), Common Cloth Tunic (+1 DEF), 2x Small Health Potionss.
           </div>
         </div>
 
@@ -1191,8 +1191,8 @@
           <div class="hub-action-card" id="card-action-tavern">
             <div class="hub-card-icon">🍺</div>
             <div class="hub-card-headline">Tavern & Rations (20g)</div>
-            <div class="hub-card-body">Enjoy a hot meal at the tavern (20 Gold) to restore 100% HP and get an Exploration Buff!</div>
-            <button class="btn btn-gold" style="margin-top: auto; padding: 8px;">Order a Dish 🍲</button>
+            <div class="hub-card-body">Enjoy a warm tavern meal (20 Gold) to restore 100% HP and receive a Pre-Run Delve Buff!</div>
+            <button class="btn btn-gold" style="margin-top: auto; padding: 8px;">Order Feast 🍲</button>
           </div>
 
           <div class="hub-action-card" id="card-action-inventory">
@@ -1221,7 +1221,7 @@
         <div class="dungeon-nav-header">
           <div class="dungeon-depth-badge" id="explore-floor-indicator">Depth: Floor 1</div>
           <div class="dungeon-room-badge" id="explore-room-indicator">Room 1 / 8 (Boss at Room 8)</div>
-          <button class="btn btn-danger" id="btn-escape-dungeon" style="padding: 5px 12px; font-size: 0.78rem;">
+          <button class="btn btn-andger" id="btn-escape-dungeon" style="padding: 5px 12px; font-size: 0.78rem;">
             🏃 Escape to Town
           </button>
         </div>
@@ -1304,10 +1304,10 @@
 
           <button class="btn combat-act-btn" id="btn-combat-act-inventory">
             🎒 Inventory
-            <span class="cooldown-text-sub">Equip / Potion</span>
+            <span class="cooldown-text-sub">Equip / Potions</span>
           </button>
 
-          <button class="btn btn-danger combat-act-btn" id="btn-combat-act-flee">
+          <button class="btn btn-andger combat-act-btn" id="btn-combat-act-flee">
             🏃 Flee
           </button>
         </div>
@@ -1401,7 +1401,7 @@
           <button class="tab-nav-btn active" data-tab="all">All Items (<span id="count-inv-all">0</span>)</button>
           <button class="tab-nav-btn" data-tab="weapon">Weapons (<span id="count-inv-weapon">0</span>)</button>
           <button class="tab-nav-btn" data-tab="armor">Armor (<span id="count-inv-armor">0</span>)</button>
-          <button class="tab-nav-btn" data-tab="potion">Potions (<span id="count-inv-potion">0</span>)</button>
+          <button class="tab-nav-btn" data-tab="potion">Potionss (<span id="count-inv-potion">0</span>)</button>
         </div>
 
         <div class="inventory-list-stack" id="inventory-items-container"></div>
@@ -1447,13 +1447,13 @@
   <div class="modal-overlay" id="modal-tavern-feast">
     <div class="modal-window" style="max-width:540px;">
       <div class="modal-top-bar" style="background:#261706;">
-        <div class="modal-heading" style="color:var(--gold);">🍺 Kedai & Ransum Penjelajah</div>
+        <div class="modal-heading" style="color:var(--gold);">🍺 Tavern Hearth & Feast</div>
         <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
       </div>
 
       <div class="modal-content-area">
         <p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:12px;">
-          Pilih hidangan hangat di kedai sebelum berangkat (Biaya: <strong style="color:var(--gold);">20 Gold</strong>). Memulihkan HP 100% penuh dan memberikan buff penjelajahan:
+          Select a hearty meal before departing (Cost: <strong style="color:var(--gold);">20 Gold</strong>). Fully restores HP to 100% and grants a delve buff:
         </p>
 
         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -1461,61 +1461,61 @@
             <div class="item-left-block">
               <div class="item-icon-tile">🍲</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#4ade80;">Sup Daging Pemburu (20 Gold)</span>
-                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> selama run</span>
+                <span class="item-title-text" style="color:#4ade80;">Hunter's Meat Stew (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> for this delve</span>
               </div>
             </div>
-            <button class="btn btn-gold btn-item-sm">Beli 20g 🍲</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍲</button>
           </div>
 
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('atk')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍺</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#f87171;">Bir Rempah Petualang (20 Gold)</span>
-                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#f87171;">+1 ATK</strong> selama run</span>
+                <span class="item-title-text" style="color:#f87171;">Spiced Adventurer's Ale (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#f87171;">+1 ATK</strong> for this delve</span>
               </div>
             </div>
-            <button class="btn btn-gold btn-item-sm">Beli 20g 🍺</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍺</button>
           </div>
 
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('def')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍵</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#60a5fa;">Teh Seduh Kulit Besi (20 Gold)</span>
-                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> selama run</span>
+                <span class="item-title-text" style="color:#60a5fa;">Ironbark Herbal Tea (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> for this delve</span>
               </div>
             </div>
-            <button class="btn btn-gold btn-item-sm">Beli 20g 🍵</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 🍵</button>
           </div>
 
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('luck')">
             <div class="item-left-block">
               <div class="item-icon-tile">📜</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#facc15;">Kopi & Peta Rumor (20 Gold)</span>
-                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> selama run</span>
+                <span class="item-title-text" style="color:#facc15;">Scout Coffee & Rumors (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> for this delve</span>
               </div>
             </div>
-            <button class="btn btn-gold btn-item-sm">Beli 20g 📜</button>
+            <button class="btn btn-gold btn-item-sm">Order 20g 📜</button>
           </div>
 
           <div class="item-row-card" style="cursor:pointer; border-style:dashed;" onclick="handleSelectTavernMeal('free')">
             <div class="item-left-block">
               <div class="item-icon-tile">🪑</div>
               <div class="item-meta-col">
-                <span class="item-title-text" style="color:#cbd5e1;">Istirahat di Bangku Kedai (Gratis)</span>
-                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP saja (tanpa buff)</span>
+                <span class="item-title-text" style="color:#cbd5e1;">Rest on the Hearth Bench (Free)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP only (no buff)</span>
               </div>
             </div>
-            <button class="btn btn-item-sm">Istirahat 🪑</button>
+            <button class="btn btn-item-sm">Rest 🪑</button>
           </div>
         </div>
       </div>
 
       <div class="modal-bottom-bar">
-        <button class="btn" id="btn-close-tavern-btn">Tutup</button>
+        <button class="btn" id="btn-close-tavern-btn">Close</button>
       </div>
     </div>
   </div>
@@ -1641,7 +1641,7 @@
         </p>
 
         <h4 style="color: var(--gold); margin-bottom: 4px;">6. Death & Save System</h4>
-        <p>If HP reaches 0, you awaken in town without losing any gold, inventory, or equipped items. Progress is saved automatically in your browser's localStorage!</p>
+        <p>If HP reaches 0, you awaken in town without losing any gold, inventory, or equipped items. In Progresss is saved automatically in your browser's localStorage!</p>
       </div>
 
       <div class="modal-bottom-bar">
@@ -1670,9 +1670,9 @@
         </div>
 
         <div style="border-top:1px solid #282d42; padding-top:14px; margin-top:14px;">
-          <div style="font-size:0.82rem; color:#ef4444; font-weight:700; margin-bottom:8px;">Reset Progress:</div>
-          <button class="btn btn-danger" id="btn-delete-save-data" style="width:100%;">
-            🗑️ Delete Save & Reset All Progress
+          <div style="font-size:0.82rem; color:#ef4444; font-weight:700; margin-bottom:8px;">Reset In Progresss:</div>
+          <button class="btn btn-andger" id="btn-delete-save-data" style="width:100%;">
+            🗑️ Delete Save & Reset All In Progresss
           </button>
         </div>
       </div>
@@ -1839,9 +1839,9 @@
     ];
 
     const POTION_TYPES = [
-      { id: "pot_small", name: "Small Health Potion", heal: 30, value: 20, rarity: "common", icon: "🧪" },
-      { id: "pot_med", name: "Health Potion", heal: 60, value: 45, rarity: "uncommon", icon: "🍷" },
-      { id: "pot_large", name: "Large Health Potion", heal: 100, value: 85, rarity: "rare", icon: "🏺" }
+      { id: "pot_small", name: "Small Health Potions", heal: 30, value: 20, rarity: "common", icon: "🧪" },
+      { id: "pot_med", name: "Health Potions", heal: 60, value: 45, rarity: "uncommon", icon: "🍷" },
+      { id: "pot_large", name: "Large Health Potions", heal: 100, value: 85, rarity: "rare", icon: "🏺" }
     ];
 
     const ENEMY_TEMPLATES = [
@@ -1906,7 +1906,7 @@
       };
     }
 
-    function createPotion(potionId) {
+    function createPotions(potionId) {
       const pot = POTION_TYPES.find(p => p.id === potionId) || POTION_TYPES[0];
       return {
         id: "pot_" + Date.now() + "_" + Math.floor(Math.random() * 100000),
@@ -2123,10 +2123,10 @@
           <div style="font-size:0.84rem; color:#cbd5e1; padding:6px 0; border-bottom:1px solid #1a1e2d; display:flex; justify-content:space-between; align-items:center;">
             <div>
               <strong>${q.title}</strong>
-              <div style="font-size:0.74rem; color:#94a3b8;">${q.progressText}</div>
+              <div style="font-size:0.74rem; color:#94a3b8;">${q.progressTextressText}</div>
             </div>
             <button class="btn btn-gold" style="padding:4px 10px; font-size:0.72rem;" onclick="handleClaimQuest('${q.id}')" ${q.completed ? '' : 'disabled'}>
-              ${q.completed ? 'Claim Reward! 🎁' : 'In Progress'}
+              ${q.completed ? 'Claim Reward! 🎁' : 'In In Progresss'}
             </button>
           </div>
         `).join('');
@@ -2197,20 +2197,20 @@
                     <span class="item-title-text ${rarity.class}">${item.name}</span>
                     ${countBadge}
                     <span class="item-category-tag">${item.type}</span>
-                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.65rem; padding:1px 5px; border-radius:3px; font-weight:700;">DIPAKAI</span>' : ''}
+                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.65rem; padding:1px 5px; border-radius:3px; font-weight:700;">EQUIPPED</span>' : ''}
                   </div>
-                  <div class="item-stat-highlight">${item.statLabel} | Nilai: ${item.value}g</div>
+                  <div class="item-stat-highlight">${item.statLabel} | Value: ${item.value}g</div>
                 </div>
               </div>
               <div class="item-btn-actions">
                 ${item.type === 'potion' ? `
-                  <button class="btn btn-gold btn-item-sm" onclick="handleUsePotion('${item.id}')">Gunakan 🍷</button>
+                  <button class="btn btn-gold btn-item-sm" onclick="handleUsePotions('${item.id}')">Use Potion 🍷</button>
                 ` : isEquipped ? `
-                  <button class="btn btn-item-sm" onclick="handleUnequip('${item.id}')">Lepas</button>
+                  <button class="btn btn-item-sm" onclick="handleUnequip('${item.id}')">Unequip</button>
                 ` : `
-                  <button class="btn btn-gold btn-item-sm" onclick="handleEquip('${item.id}')">Pakai ⚔️</button>
+                  <button class="btn btn-gold btn-item-sm" onclick="handleEquip('${item.id}')">Equip ⚔️</button>
                 `}
-                <button class="btn btn-danger btn-item-sm" onclick="handleDropItem('${item.id}')" ${isEquipped ? 'disabled' : ''}>🗑️</button>
+                <button class="btn btn-andger btn-item-sm" onclick="handleDropItem('${item.id}')" ${isEquipped ? 'disabled' : ''}>🗑️</button>
               </div>
             </div>
           `;
@@ -2464,7 +2464,7 @@
       if (Math.random() < dropChance) {
         if (Math.random() < 0.5) {
           const potType = POTION_TYPES[Math.floor(Math.random() * POTION_TYPES.length)].id;
-          const pot = createPotion(potType);
+          const pot = createPotions(potType);
           state.player.inventory.push(pot);
           UI.logCombat(`📦 Loot drop: <strong>${pot.name}</strong>!`, 'log-loot-reward');
           UI.showToast(`Loot: ${pot.name}`);
@@ -2697,7 +2697,7 @@
         const goldFound = Math.round(35 + Math.random() * 70 * state.player.level);
         state.player.gold += goldFound;
 
-        const pot = createPotion(POTION_TYPES[Math.floor(Math.random() * POTION_TYPES.length)].id);
+        const pot = createPotions(POTION_TYPES[Math.floor(Math.random() * POTION_TYPES.length)].id);
         const gear = generateRandomEquipment(null, null, state.player.level);
         state.player.inventory.push(pot);
         state.player.inventory.push(gear);
@@ -2740,8 +2740,8 @@
       state.dungeon.dungeonShopItems = [
         generateRandomEquipment("weapon", null, state.player.level),
         generateRandomEquipment("armor", null, state.player.level),
-        createPotion("pot_med"),
-        createPotion("pot_large")
+        createPotions("pot_med"),
+        createPotions("pot_large")
       ];
 
       state.dungeon.dungeonShopItems.forEach(i => {
@@ -2805,7 +2805,7 @@
           type: "give_item",
           title: "Injured Explorer's Request",
           targetItemType: "potion",
-          desc: `"An injured explorer approaches you: 'Please, brave warrior! I was ambushed by dungeon fiends. Could you spare 1 Health Potion to save my life?'"`,
+          desc: `"An injured explorer approaches you: 'Please, brave warrior! I was ambushed by dungeon fiends. Could you spare 1 Health Potions to save my life?'"`,
           rewardExp: 65 * pLvl,
           rewardGold: 85 * pLvl,
           rewardItem: generateRandomEquipment(null, "rare", pLvl)
@@ -2813,9 +2813,9 @@
 
         document.getElementById('quest-dialog-title').textContent = "An injured explorer approaches you.";
         document.getElementById('quest-dialog-desc').textContent = state.dungeon.currentQuestOffer.desc;
-        document.getElementById('quest-req-text').textContent = "Requirement: 1x Health Potion in your inventory";
+        document.getElementById('quest-req-text').textContent = "Requirement: 1x Health Potions in your inventory";
         document.getElementById('quest-reward-preview-text').textContent = `Reward: +${state.dungeon.currentQuestOffer.rewardGold} Gold, +${state.dungeon.currentQuestOffer.rewardExp} EXP, and Rare Equipment!`;
-        document.getElementById('btn-quest-accept-or-give').textContent = "Give Potion 🍷";
+        document.getElementById('btn-quest-accept-or-give').textContent = "Give Potions 🍷";
       } else {
         const targetMonster = ENEMY_TEMPLATES[Math.floor(Math.random() * ENEMY_TEMPLATES.length)];
         state.dungeon.currentQuestOffer = {
@@ -2875,10 +2875,10 @@
         if (q.type === 'kill_monster' && !q.completed) {
           if (enemy.name.includes(q.targetEnemyName) || q.targetEnemyName.includes(enemy.name)) {
             q.currentCount++;
-            q.progressText = `Defeat ${q.currentCount} / ${q.targetCount} ${q.targetEnemyName}s`;
+            q.progressTextressText = `Defeat ${q.currentCount} / ${q.targetCount} ${q.targetEnemyName}s`;
             if (q.currentCount >= q.targetCount) {
               q.completed = true;
-              q.progressText = `Ready to claim in Hub!`;
+              q.progressTextressText = `Ready to claim in Hub!`;
               UI.showToast(`Quest Objective Complete: ${q.title}!`);
             }
           }
@@ -2910,7 +2910,7 @@
       if (type === 'free') {
         sfx.potion();
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Istirahat di bangku kedai. HP pulih 100%!");
+        UI.showToast("Rested on the tavern bench. HP restored to 100%!");
         UI.closeModal('tavernFeast');
         UI.updateHUD();
         state.save();
@@ -2918,7 +2918,7 @@
       }
 
       if (state.player.gold < 20) {
-        UI.showToast("Dibutuhkan 20 Gold untuk memesan hidangan kedai!");
+        UI.showToast("Requires 20 Gold to order a tavern meal!");
         return;
       }
 
@@ -2928,19 +2928,19 @@
       if (type === 'hp') {
         state.player.runBuffs.extraMaxHp = 10;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Sup Daging disantap (-20g)! HP Pulih 100% & +10 Max HP run ini!");
+        UI.showToast("Hunter's Stew eaten (-20g)! HP restored & +10 Max HP for this delve!");
       } else if (type === 'atk') {
         state.player.runBuffs.atk = 1;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Bir Rempah diminum (-20g)! HP Pulih 100% & +1 ATK run ini!");
+        UI.showToast("Spiced Ale drank (-20g)! HP restored & +1 ATK for this delve!");
       } else if (type === 'def') {
         state.player.runBuffs.def = 1;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Teh Kulit Besi diminum (-20g)! HP Pulih 100% & +1 DEF run ini!");
+        UI.showToast("Ironbark Tea sipped (-20g)! HP restored & +1 DEF for this delve!");
       } else if (type === 'luck') {
         state.player.runBuffs.luckBoost = 0.10;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Kopi & Peta disimak (-20g)! HP Pulih 100% & +10% Gold/Luck run ini!");
+        UI.showToast("Scout Coffee enjoyed (-20g)! HP restored & +10% Gold/Luck for this delve!");
       }
 
       UI.closeModal('tavernFeast');
@@ -2989,7 +2989,7 @@
       state.save();
     }
 
-    function handleUsePotion(itemId) {
+    function handleUsePotions(itemId) {
       const idx = state.player.inventory.findIndex(i => i.id === itemId || (i.type === 'potion' && i.name === itemId));
       if (idx === -1) return;
 
@@ -3037,9 +3037,9 @@
         generateRandomEquipment("weapon", null, lvl),
         generateRandomEquipment("armor", null, lvl),
         generateRandomEquipment("armor", null, lvl),
-        createPotion("pot_small"),
-        createPotion("pot_med"),
-        createPotion("pot_large")
+        createPotions("pot_small"),
+        createPotions("pot_med"),
+        createPotions("pot_large")
       ];
     }
 
@@ -3203,8 +3203,8 @@
 
         state.player.inventory.push(starterSword);
         state.player.inventory.push(starterArmor);
-        state.player.inventory.push(createPotion("pot_small"));
-        state.player.inventory.push(createPotion("pot_small"));
+        state.player.inventory.push(createPotions("pot_small"));
+        state.player.inventory.push(createPotions("pot_small"));
 
         state.player.equippedWeapon = starterSword;
         state.player.equippedArmor = starterArmor;
@@ -3388,7 +3388,7 @@
 
     window.handleEquip = handleEquip;
     window.handleUnequip = handleUnequip;
-    window.handleUsePotion = handleUsePotion;
+    window.handleUsePotions = handleUsePotions;
     window.handleDropItem = handleDropItem;
     window.handleBuyTownShopItem = handleBuyTownShopItem;
     window.handleSellTownShopItem = handleSellTownShopItem;
