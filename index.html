@@ -2910,7 +2910,7 @@
       if (type === 'free') {
         sfx.potion();
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Rested on the tavern bench. HP restored to 100%!");
+        UI.showToast("Rested on the hearth bench. HP restored to 100%!");
         UI.closeModal('tavernFeast');
         UI.updateHUD();
         state.save();
@@ -2918,7 +2918,8 @@
       }
 
       if (state.player.gold < 20) {
-        UI.showToast("Requires 20 Gold to order a tavern meal!");
+        sfx.click();
+        UI.showToast(`Requires 20 Gold! (You have ${state.player.gold}g). Rest for free on the bench to heal.`);
         return;
       }
 
@@ -2928,19 +2929,19 @@
       if (type === 'hp') {
         state.player.runBuffs.extraMaxHp = 10;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Hunter's Stew eaten (-20g)! HP restored & +10 Max HP for this delve!");
+        UI.showToast("Hunter's Stew enjoyed (-20g)! +10 Max HP for this delve!");
       } else if (type === 'atk') {
         state.player.runBuffs.atk = 1;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Spiced Ale drank (-20g)! HP restored & +1 ATK for this delve!");
+        UI.showToast("Spiced Ale enjoyed (-20g)! +1 ATK for this delve!");
       } else if (type === 'def') {
         state.player.runBuffs.def = 1;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Ironbark Tea sipped (-20g)! HP restored & +1 DEF for this delve!");
+        UI.showToast("Ironbark Tea enjoyed (-20g)! +1 DEF for this delve!");
       } else if (type === 'luck') {
         state.player.runBuffs.luckBoost = 0.10;
         state.player.hp = state.totalMaxHp;
-        UI.showToast("Scout Coffee enjoyed (-20g)! HP restored & +10% Gold/Luck for this delve!");
+        UI.showToast("Scout Coffee enjoyed (-20g)! +10% Gold/Luck for this delve!");
       }
 
       UI.closeModal('tavernFeast');
@@ -3226,6 +3227,8 @@
 
       document.getElementById('card-action-tavern').addEventListener('click', () => {
         sfx.click();
+        const tgn = document.getElementById('tavern-gold-num');
+        if (tgn) tgn.textContent = state.player.gold.toLocaleString();
         UI.openModal('tavernFeast');
       });
 
