@@ -22,6 +22,7 @@
       --hp-glow: rgba(239, 68, 68, 0.4);
       --exp-cyan: #06b6d4;
       --exp-glow: rgba(6, 182, 212, 0.4);
+      --companion-blue: #38bdf8;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dark: #64748b;
@@ -56,7 +57,7 @@
       justify-content: flex-start;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
         linear-gradient(180deg, #07090e 0%, #0d1017 100%);
     }
 
@@ -70,13 +71,13 @@
 
     #game-wrapper {
       width: 100%;
-      max-width: 900px;
+      max-width: 920px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       position: relative;
       padding: 12px;
-      padding-bottom: 30px;
+      padding-bottom: 35px;
     }
 
     /* TOP HUD */
@@ -234,6 +235,19 @@
       text-shadow: 0 0 8px var(--gold-glow);
     }
 
+    .companion-pill {
+      background: #082f49;
+      border: 1px solid #0284c7;
+      color: #bae6fd;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     /* SCREENS & PANELS */
     .game-screen {
       display: none;
@@ -318,6 +332,18 @@
       background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%);
       border-color: #ef4444;
       box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    }
+
+    .btn-purple {
+      background: linear-gradient(180deg, #6b21a8 0%, #4c1d95 100%);
+      border-color: #a855f7;
+      color: #fff;
+    }
+
+    .btn-purple:hover:not(:disabled) {
+      background: linear-gradient(180deg, #9333ea 0%, #6b21a8 100%);
+      border-color: #c084fc;
+      box-shadow: 0 6px 18px rgba(168, 85, 247, 0.45);
     }
 
     /* MAIN MENU */
@@ -494,8 +520,10 @@
     }
 
     .scene-icon-large {
-      font-size: 3.5rem;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
     }
 
@@ -583,14 +611,27 @@
       letter-spacing: 1px;
     }
 
+    .boss-special-tag {
+      background: #3b0764;
+      border: 1px solid #a855f7;
+      color: #f3e8ff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     .enemy-card-box {
       background: #090b12;
       border: 2px solid #2c324a;
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
       box-shadow: inset 0 0 35px rgba(0,0,0,0.7);
       position: relative;
     }
@@ -605,9 +646,14 @@
       box-shadow: 0 0 35px rgba(239, 68, 68, 0.45), inset 0 0 40px rgba(239, 68, 68, 0.25);
     }
 
+    .enemy-card-box.taking-giving {
+      border-color: #eab308;
+      box-shadow: 0 0 35px rgba(234, 179, 8, 0.45), inset 0 0 40px rgba(168, 85, 247, 0.25);
+    }
+
     .enemy-avatar-square {
-      width: 95px;
-      height: 95px;
+      width: 105px;
+      height: 105px;
       background: #141724;
       border: 1px solid #3b4260;
       border-radius: 10px;
@@ -616,7 +662,6 @@
       justify-content: center;
       flex-shrink: 0;
       overflow: hidden;
-      font-size: 3.5rem;
     }
 
     .enemy-details-column {
@@ -652,6 +697,18 @@
     .badge-normal { background: #1e293b; color: #94a3b8; }
     .badge-elite { background: #581c87; color: #e9d5ff; border: 1px solid #a855f7; }
     .badge-boss { background: #7f1d1d; color: #fee2e2; border: 1px solid #ef4444; }
+    .badge-special { background: #713f12; color: #fef08a; border: 1px solid #eab308; }
+
+    #companion-combat-card {
+      background: #082f49;
+      border: 1px solid #0284c7;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
 
     .combat-log-feed {
       background: #07080d;
@@ -682,6 +739,8 @@
     .log-enemy-dmg { color: #f87171; }
     .log-skill-cast { color: #c084fc; font-weight: bold; }
     .log-heal-effect { color: #38bdf8; font-weight: bold; }
+    .log-companion-dmg { color: #67e8f9; font-weight: bold; }
+    .log-boss-special { color: #f59e0b; font-weight: bold; }
     .log-info-text { color: #94a3b8; }
     .log-loot-reward { color: #f59e0b; font-weight: bold; }
 
@@ -945,6 +1004,15 @@
       color: #fff;
     }
 
+    .event-choices-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
     #toast-msg {
       position: fixed;
       bottom: 24px;
@@ -1001,7 +1069,6 @@
 <body>
   <div class="dungeon-vignette"></div>
 
-  <!-- Game Container -->
   <div id="game-wrapper">
 
     <!-- Top HUD -->
@@ -1010,6 +1077,9 @@
         <div class="player-title-box">
           <span class="player-name-text" id="hud-name">Adventurer</span>
           <span class="player-lvl-pill" id="hud-level">LV 1</span>
+          <div id="hud-companion-badge" class="companion-pill" style="display:none;">
+            🐺 <span id="hud-companion-text">Wolf: 40/40 HP</span>
+          </div>
         </div>
         <div class="hud-quick-actions">
           <button class="btn-hud-sm" id="btn-top-inv">
@@ -1052,10 +1122,12 @@
         <div class="stat-badge">
           <span style="color: #f87171;">⚔️ ATK:</span>
           <span class="stat-number" id="hud-atk-val">10</span>
+          <span id="hud-atk-buff" style="color:#4ade80; font-size:0.75rem; display:none;">(+3)</span>
         </div>
         <div class="stat-badge">
           <span style="color: #60a5fa;">🛡️ DEF:</span>
           <span class="stat-number" id="hud-def-val">5</span>
+          <span id="hud-def-buff" style="color:#60a5fa; font-size:0.75rem; display:none;">(+2)</span>
         </div>
         <div class="stat-badge">
           <span style="color: #c084fc;">🗡️ Weapon:</span>
@@ -1174,7 +1246,7 @@
           <div class="hub-action-card" id="card-action-dungeon" style="border-color: #6366f1; background: linear-gradient(135deg, #1e1b4b 0%, #151828 100%);">
             <div class="hub-card-icon">🚪</div>
             <div class="hub-card-headline" style="color: #a5b4fc;">Enter Dungeon</div>
-            <div class="hub-card-body">Descend into the darkness. Choose your routes, fight monsters, find treasure chests, and face the dungeon boss!</div>
+            <div class="hub-card-body">Descend into the darkness. Choose your routes, fight monsters, trigger unique encounters, and face legendary bosses!</div>
             <button class="btn btn-gold" style="margin-top: auto; padding: 8px;">Explore Abyss ⚔️</button>
           </div>
 
@@ -1259,9 +1331,13 @@
           ⚔️ Monster Room! Enemy <span id="combat-wave-idx">1</span> of <span id="combat-wave-max">3</span>
         </div>
 
+        <div id="boss-special-banner" class="boss-special-tag" style="display:none;">
+          ⚖️ Boss Fight: Taking and Giving (The Dual Arbiter)
+        </div>
+
         <div class="enemy-card-box" id="combat-enemy-box">
           <div class="enemy-avatar-square" id="combat-enemy-avatar">
-            👾
+            <!-- Dynamic Vector SVG -->
           </div>
           <div class="enemy-details-column">
             <div class="enemy-header-line">
@@ -1277,12 +1353,22 @@
                 <div class="progress-fill-hp" id="combat-enemy-hp-bar"></div>
               </div>
             </div>
-            <div style="display:flex; gap:14px; font-size:0.8rem; color:var(--text-muted);">
+            <div style="display:flex; gap:14px; font-size:0.8rem; color:var(--text-muted); flex-wrap:wrap;">
               <span>⚔️ ATK: <strong id="combat-enemy-atk-num">8</strong></span>
               <span>🛡️ DEF: <strong id="combat-enemy-def-num">3</strong></span>
               <span style="color:var(--gold);">🪙 Reward: <strong id="combat-enemy-gold-num">10-25</strong></span>
             </div>
           </div>
+        </div>
+
+        <!-- Companion Battle Info -->
+        <div id="companion-combat-card">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span>🐺</span>
+            <strong>Tamed Shadow Wolf (Companion)</strong>
+            <span style="color:#38bdf8;">| ⚔️ 7 ATK (Auto-Strikes each turn)</span>
+          </div>
+          <div>HP: <strong id="companion-hp-text">40 / 40</strong></div>
         </div>
 
         <div class="combat-log-feed" id="combat-log-console">
@@ -1311,7 +1397,30 @@
       </div>
     </section>
 
-    <!-- SCREEN 6: CHEST ROOM -->
+    <!-- SCREEN 6: DYNAMIC EVENT SCREEN -->
+    <section id="screen-dynamic-event" class="game-screen">
+      <div class="panel-box" style="text-align: center; max-width: 620px; margin: 0 auto;">
+        <div class="scene-icon-large" id="event-scene-svg">
+          <!-- Dynamic Event SVG -->
+        </div>
+
+        <h2 style="font-family: var(--font-fantasy); color: #fff; margin-bottom: 8px;" id="event-title-display">
+          Event Title
+        </h2>
+        <p style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;" id="event-desc-display">
+          Event description details.
+        </p>
+
+        <div id="event-outcome-box" style="display:none; background:#090a10; border:1px solid #282d42; border-radius:10px; padding:16px; margin-bottom:20px; text-align:left;">
+          <h4 id="event-outcome-title" style="font-size:1.1rem; font-family:var(--font-fantasy); margin-bottom:6px;"></h4>
+          <p id="event-outcome-body" style="font-size:0.88rem; color:#cbd5e1; line-height:1.5;"></p>
+        </div>
+
+        <div class="event-choices-stack" id="event-buttons-container"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7: CHEST ROOM -->
     <section id="screen-chest-room" class="game-screen">
       <div class="panel-box" style="text-align: center;">
         <h2 style="font-family: var(--font-fantasy); color: var(--gold); margin-bottom: 6px;">
@@ -1337,7 +1446,7 @@
       </div>
     </section>
 
-    <!-- SCREEN 7: DUNGEON SHOP -->
+    <!-- SCREEN 8: DUNGEON SHOP -->
     <section id="screen-dungeon-shop" class="game-screen">
       <div class="panel-box">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
@@ -1354,7 +1463,7 @@
       </div>
     </section>
 
-    <!-- SCREEN 8: RANDOM QUEST -->
+    <!-- SCREEN 9: RANDOM QUEST -->
     <section id="screen-quest-encounter" class="game-screen">
       <div class="panel-box" style="text-align: center; max-width: 580px; margin: 0 auto;">
         <div style="font-size: 3.8rem; margin-bottom: 10px;" id="quest-npc-icon">🧙‍♂️</div>
@@ -1543,24 +1652,21 @@
 
       <div class="modal-content-area" style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.65;">
         <h4 style="color: var(--gold); margin-bottom: 4px;">1. Dungeon Exploration & Routes</h4>
-        <p style="margin-bottom: 12px;">Navigate through the dungeon by choosing <strong>Go Left (←)</strong>, <strong>Go Forward (↑)</strong>, or <strong>Go Right (→)</strong>. Every choice presents random encounters: Monster Rooms (at least 3 enemies), Elite Rooms, Boss Rooms, Treasure/Trap Chests, Mysterious Merchants, and Quests!</p>
+        <p style="margin-bottom: 12px;">Navigate by choosing <strong>Go Left (←)</strong>, <strong>Go Forward (↑)</strong>, or <strong>Go Right (→)</strong>. Encounter regular packs, elite monsters, mysterious shrines, ancient anvils, companion beasts, riddles, and boss gates!</p>
 
         <h4 style="color: var(--gold); margin-bottom: 4px;">2. Turn-Based Combat & Skills</h4>
-        <p style="margin-bottom: 12px;">Damage calculation: <code>Player ATK - Enemy DEF</code> (minimum 1). Unlock <strong>Fire Strike</strong> at Level 3 (deals 2x ATK damage, 3 turns cooldown). Open inventory during battle to equip gear or use healing potions!</p>
+        <p style="margin-bottom: 12px;">Damage calculation: <code>Player ATK - Enemy DEF</code> (minimum 1). Unlock <strong>Fire Strike</strong> at Level 3 (2x ATK damage, 3 turns cooldown). Open inventory during battle to equip weapons/armors or use potions live!</p>
 
         <h4 style="color: var(--gold); margin-bottom: 4px;">3. Leveling System & Stat Upgrades</h4>
-        <p style="margin-bottom: 12px;">Defeating enemies grants EXP. Each level requires more EXP (scaled). On leveling up, your HP is fully restored and you choose between <strong>+5 ATK</strong>, <strong>+3 DEF</strong>, or <strong>+20 MAX HP</strong>.</p>
+        <p style="margin-bottom: 12px;">Defeating enemies grants EXP. On leveling up, your HP is fully restored and you pick <strong>+5 ATK</strong>, <strong>+3 DEF</strong>, or <strong>+20 MAX HP</strong>. Every 10 levels, receive a free Milestone Reward equipment!</p>
 
-        <h4 style="color: var(--gold); margin-bottom: 4px;">4. Level Milestone Reward</h4>
-        <p style="margin-bottom: 12px;">Every 10 levels (Level 10, 20, 30, 40...), you receive a <strong>Milestone Reward</strong> containing 1 free random equipment of random rarity!</p>
-
-        <h4 style="color: var(--gold); margin-bottom: 4px;">5. Item Rarity & Shops</h4>
+        <h4 style="color: var(--gold); margin-bottom: 4px;">4. Random Encounters & Bosses</h4>
         <p style="margin-bottom: 12px;">
-          Rarities: <span class="rarity-common">Common (55%)</span>, <span class="rarity-uncommon">Uncommon (25%)</span>, <span class="rarity-rare">Rare (13%)</span>, <span class="rarity-epic">Epic (6%)</span>, <span class="rarity-legendary">Legendary (1%)</span>. Buy and sell items at the Town Shop (50% sell price) or find the Mysterious Merchant in dungeons for 50–70% discounts!
+          Interact with the <strong>Ancient Anvil</strong> for temporary run buffs, free <strong>Caged Beasts</strong> to gain combat pet companions, solve <strong>The Riddler</strong>'s trials, or face the dual-mask boss <strong>Taking and Giving</strong>!
         </p>
 
-        <h4 style="color: var(--gold); margin-bottom: 4px;">6. Death & Save System</h4>
-        <p>If HP reaches 0, you awaken in town without losing any gold, inventory, or equipped items. Progress is saved automatically in your browser's localStorage!</p>
+        <h4 style="color: var(--gold); margin-bottom: 4px;">5. Death & Save System</h4>
+        <p>If HP reaches 0, you awaken in town without losing gold, inventory, or gear. Progress saves automatically in your browser's localStorage!</p>
       </div>
 
       <div class="modal-bottom-bar">
@@ -1606,6 +1712,9 @@
 
   <!-- ENGINE SCRIPT -->
   <script>
+    /* ============================================================
+       1. SYNTH AUDIO SYSTEM (WEB AUDIO API)
+       ============================================================ */
     class SoundEngine {
       constructor() {
         this.ctx = null;
@@ -1727,6 +1836,216 @@
 
     const sfx = new SoundEngine();
 
+    /* ============================================================
+       2. SVG MONSTER & BOSS ILLUSTRATIONS (DARK FANTASY VECTOR)
+       ============================================================ */
+    const SVG_ILLUSTRATIONS = {
+      slime: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="slimeGlow" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" stop-color="#4ade80" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="#16a34a" stop-opacity="0.75"/>
+              <stop offset="100%" stop-color="#052e16" stop-opacity="0.95"/>
+            </radialGradient>
+          </defs>
+          <path d="M 50 20 C 25 20, 15 50, 15 75 C 15 90, 85 90, 85 75 C 85 50, 75 20, 50 20 Z" fill="url(#slimeGlow)" stroke="#22c55e" stroke-width="2.5"/>
+          <ellipse cx="40" cy="50" rx="6" ry="8" fill="#fff"/>
+          <ellipse cx="60" cy="50" rx="6" ry="8" fill="#fff"/>
+          <circle cx="42" cy="51" r="3.5" fill="#052e16"/>
+          <circle cx="62" cy="51" r="3.5" fill="#052e16"/>
+          <circle cx="35" cy="35" r="3" fill="#bbf7d0" opacity="0.6"/>
+          <circle cx="68" cy="38" r="4" fill="#bbf7d0" opacity="0.6"/>
+          <path d="M 44 68 Q 50 74 56 68" stroke="#14532d" stroke-width="2" fill="none"/>
+        </svg>
+      `,
+
+      goblin: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 50 15 Q 15 25 10 50 Q 25 50 35 55 Q 30 75 50 85 Q 70 75 65 55 Q 75 50 90 50 Q 85 25 50 15 Z" fill="#2d6a4f" stroke="#1b4332" stroke-width="2"/>
+          <polygon points="50,15 25,32 75,32" fill="#991b1b"/>
+          <ellipse cx="38" cy="45" rx="5" ry="7" fill="#facc15"/>
+          <ellipse cx="62" cy="45" rx="5" ry="7" fill="#facc15"/>
+          <circle cx="38" cy="45" r="2.5" fill="#000"/>
+          <circle cx="62" cy="45" r="2.5" fill="#000"/>
+          <polygon points="46,55 54,55 50,62" fill="#1b4332"/>
+          <path d="M 38 68 Q 50 75 62 68" stroke="#000" stroke-width="2" fill="none"/>
+          <polygon points="42,67 45,62 48,67" fill="#fff"/>
+          <polygon points="52,67 55,62 58,67" fill="#fff"/>
+        </svg>
+      `,
+
+      skeleton: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 30 18 Q 50 8 70 18 L 74 38 L 26 38 Z" fill="#334155" stroke="#64748b" stroke-width="2"/>
+          <ellipse cx="50" cy="50" rx="26" ry="24" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+          <ellipse cx="40" cy="48" rx="7" ry="8" fill="#0f172a"/>
+          <ellipse cx="60" cy="48" rx="7" ry="8" fill="#0f172a"/>
+          <circle cx="40" cy="48" r="3" fill="#38bdf8"/>
+          <circle cx="60" cy="48" r="3" fill="#38bdf8"/>
+          <polygon points="48,58 52,58 50,64" fill="#0f172a"/>
+          <rect x="36" y="68" width="28" height="12" fill="#cbd5e1" rx="2"/>
+          <line x1="42" y1="68" x2="42" y2="80" stroke="#475569" stroke-width="2"/>
+          <line x1="48" y1="68" x2="48" y2="80" stroke="#475569" stroke-width="2"/>
+          <line x1="54" y1="68" x2="54" y2="80" stroke="#475569" stroke-width="2"/>
+          <line x1="58" y1="68" x2="58" y2="80" stroke="#475569" stroke-width="2"/>
+        </svg>
+      `,
+
+      dark_wolf: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="25,45 15,10 40,28" fill="#1e1b4b" stroke="#312e81" stroke-width="2"/>
+          <polygon points="75,45 85,10 60,28" fill="#1e1b4b" stroke="#312e81" stroke-width="2"/>
+          <polygon points="25,35 50,15 75,35 80,65 50,90 20,65" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+          <polygon points="35,48 45,45 42,54" fill="#ef4444"/>
+          <polygon points="65,48 55,45 58,54" fill="#ef4444"/>
+          <polygon points="46,68 54,68 50,74" fill="#000"/>
+          <polygon points="42,75 45,82 47,75" fill="#fff"/>
+          <polygon points="53,75 55,82 58,75" fill="#fff"/>
+        </svg>
+      `,
+
+      bandit: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 50 12 Q 22 18 20 52 Q 20 85 50 92 Q 80 85 80 52 Q 78 18 50 12 Z" fill="#18181b" stroke="#3f3f46" stroke-width="2"/>
+          <path d="M 28 42 Q 50 38 72 42 L 70 56 Q 50 54 30 56 Z" fill="#71717a"/>
+          <ellipse cx="40" cy="48" rx="4" ry="2" fill="#fff"/>
+          <ellipse cx="60" cy="48" rx="4" ry="2" fill="#fff"/>
+          <circle cx="40" cy="48" r="1.8" fill="#ef4444"/>
+          <circle cx="60" cy="48" r="1.8" fill="#ef4444"/>
+          <path d="M 28 58 Q 50 62 72 58 L 68 85 Q 50 90 32 85 Z" fill="#27272a"/>
+        </svg>
+      `,
+
+      orc: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 25 35 Q 50 15 75 35 L 82 55 Q 50 95 18 55 Z" fill="#14532d" stroke="#052e16" stroke-width="2"/>
+          <polygon points="25,35 50,15 75,35 68,48 32,48" fill="#78350f" stroke="#451a03"/>
+          <ellipse cx="38" cy="50" rx="5" ry="4" fill="#facc15"/>
+          <ellipse cx="62" cy="50" rx="5" ry="4" fill="#facc15"/>
+          <circle cx="38" cy="50" r="2" fill="#000"/>
+          <circle cx="62" cy="50" r="2" fill="#000"/>
+          <polygon points="32,75 36,60 40,75" fill="#f8fafc"/>
+          <polygon points="68,75 64,60 60,75" fill="#f8fafc"/>
+          <line x1="30" y1="42" x2="45" y2="48" stroke="#991b1b" stroke-width="2.5"/>
+          <line x1="70" y1="42" x2="55" y2="48" stroke="#991b1b" stroke-width="2.5"/>
+        </svg>
+      `,
+
+      dark_knight: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,10 80,30 75,80 50,95 25,80 20,30" fill="#0f172a" stroke="#6366f1" stroke-width="2"/>
+          <polygon points="50,10 60,35 40,35" fill="#1e1b4b"/>
+          <path d="M 28 42 L 72 42 L 68 50 L 32 50 Z" fill="#a855f7"/>
+          <ellipse cx="42" cy="46" rx="3" ry="1.5" fill="#fff"/>
+          <ellipse cx="58" cy="46" rx="3" ry="1.5" fill="#fff"/>
+          <line x1="50" y1="50" x2="50" y2="82" stroke="#475569" stroke-width="3"/>
+          <line x1="36" y1="62" x2="64" y2="62" stroke="#475569" stroke-width="2"/>
+          <line x1="40" y1="72" x2="60" y2="72" stroke="#475569" stroke-width="2"/>
+        </svg>
+      `,
+
+      demon: `
+        <svg viewBox="0 0 100 100" width="85" height="85" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 25 35 Q 10 10 5 0 Q 25 15 35 30" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
+          <path d="M 75 35 Q 90 10 95 0 Q 75 15 65 30" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
+          <path d="M 25 35 Q 50 15 75 35 Q 85 75 50 92 Q 15 75 25 35 Z" fill="#450a0a" stroke="#b91c1c" stroke-width="2"/>
+          <ellipse cx="38" cy="48" rx="6" ry="4" fill="#facc15"/>
+          <ellipse cx="62" cy="48" rx="6" ry="4" fill="#facc15"/>
+          <circle cx="38" cy="48" r="2.5" fill="#dc2626"/>
+          <circle cx="62" cy="48" r="2.5" fill="#dc2626"/>
+          <polygon points="50,30 45,38 55,38" fill="#fbbf24"/>
+          <path d="M 38 68 Q 50 78 62 68" stroke="#991b1b" stroke-width="2" fill="none"/>
+        </svg>
+      `,
+
+      the_riddler: `
+        <svg viewBox="0 0 100 100" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="riddleGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#c084fc" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#3b0764" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <path d="M 50 10 Q 18 18 16 55 Q 16 90 50 96 Q 84 90 84 55 Q 82 18 50 10 Z" fill="#3b0764" stroke="#a855f7" stroke-width="2"/>
+          <path d="M 30 35 Q 50 30 70 35 L 68 62 Q 50 75 32 62 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+          <circle cx="58" cy="48" r="7" fill="none" stroke="#eab308" stroke-width="2"/>
+          <circle cx="58" cy="48" r="3" fill="#38bdf8"/>
+          <ellipse cx="42" cy="48" rx="4" ry="2" fill="#581c87"/>
+          <text x="50" y="85" font-family="Georgia" font-size="20" font-weight="bold" fill="#facc15" text-anchor="middle">?</text>
+        </svg>
+      `,
+
+      chrono_warden: `
+        <svg viewBox="0 0 100 100" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="6,4"/>
+          <polygon points="30,22 70,22 50,50" fill="#0369a1" stroke="#38bdf8" stroke-width="2"/>
+          <polygon points="30,78 70,78 50,50" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+          <circle cx="50" cy="50" r="3" fill="#fef08a"/>
+          <line x1="50" y1="50" x2="50" y2="72" stroke="#fef08a" stroke-width="1.5"/>
+          <polygon points="40,75 60,75 50,68" fill="#fef08a"/>
+          <polygon points="12,45 20,40 18,52" fill="#38bdf8" opacity="0.8"/>
+          <polygon points="88,45 80,40 82,52" fill="#38bdf8" opacity="0.8"/>
+        </svg>
+      `,
+
+      taking_and_giving: `
+        <svg viewBox="0 0 100 100" width="95" height="95" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="takingAura" cx="30%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="givingAura" cx="70%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fde047" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="35" cy="50" r="30" fill="url(#takingAura)"/>
+          <circle cx="65" cy="50" r="30" fill="url(#givingAura)"/>
+          <path d="M 25 90 Q 35 40 50 35 L 50 90 Z" fill="#1e1035" stroke="#9333ea" stroke-width="1.5"/>
+          <path d="M 75 90 Q 65 40 50 35 L 50 90 Z" fill="#713f12" stroke="#eab308" stroke-width="1.5"/>
+          <path d="M 50 18 Q 32 22 34 45 Q 40 65 50 70 Z" fill="#0f0728" stroke="#a855f7" stroke-width="2"/>
+          <ellipse cx="42" cy="42" rx="3.5" ry="1.5" fill="#c084fc"/>
+          <path d="M 38 20 Q 24 10 28 26" fill="none" stroke="#9333ea" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M 50 18 Q 68 22 66 45 Q 60 65 50 70 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <circle cx="58" cy="42" r="2.5" fill="#854d0e"/>
+          <circle cx="65" cy="20" r="6" fill="none" stroke="#facc15" stroke-width="1.5" stroke-dasharray="2,2"/>
+          <line x1="50" y1="12" x2="50" y2="75" stroke="#f8fafc" stroke-width="2"/>
+        </svg>
+      `,
+
+      boss_guardian: `
+        <svg viewBox="0 0 100 100" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,10 85,30 80,85 50,95 20,85 15,30" fill="#334155" stroke="#64748b" stroke-width="3"/>
+          <polygon points="50,22 72,35 68,75 50,82 32,75 28,35" fill="#1e293b"/>
+          <circle cx="50" cy="50" r="14" fill="#ea580c"/>
+          <circle cx="50" cy="50" r="8" fill="#facc15"/>
+          <line x1="50" y1="22" x2="50" y2="36" stroke="#f97316" stroke-width="2.5"/>
+          <line x1="28" y1="50" x2="36" y2="50" stroke="#f97316" stroke-width="2.5"/>
+          <line x1="72" y1="50" x2="64" y2="50" stroke="#f97316" stroke-width="2.5"/>
+        </svg>
+      `,
+
+      boss_dragon: `
+        <svg viewBox="0 0 100 100" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 30 30 Q 10 5 0 0 Q 20 20 30 35" fill="#450a0a" stroke="#ef4444" stroke-width="2"/>
+          <path d="M 70 30 Q 90 5 100 0 Q 80 20 70 35" fill="#450a0a" stroke="#ef4444" stroke-width="2"/>
+          <polygon points="50,15 80,45 65,85 50,95 35,85 20,45" fill="#18181b" stroke="#71717a" stroke-width="2"/>
+          <polygon points="35,48 45,45 42,54" fill="#a855f7"/>
+          <polygon points="65,48 55,45 58,54" fill="#a855f7"/>
+          <circle cx="39" cy="49" r="1.5" fill="#fff"/>
+          <circle cx="61" cy="49" r="1.5" fill="#fff"/>
+          <polygon points="45,78 50,88 55,78" fill="#ef4444"/>
+          <polygon points="38,72 42,80 44,72" fill="#fff"/>
+          <polygon points="62,72 58,80 56,72" fill="#fff"/>
+        </svg>
+      `
+    };
+
+    /* ============================================================
+       3. RARITIES, EQUIPMENT & ENEMY CONSTANTS
+       ============================================================ */
     const RARITIES = {
       common: { name: "Common", class: "rarity-common", multiplier: 1.0, chance: 0.55 },
       uncommon: { name: "Uncommon", class: "rarity-uncommon", multiplier: 1.5, chance: 0.25 },
@@ -1764,29 +2083,58 @@
     ];
 
     const ENEMY_TEMPLATES = [
-      { id: "slime", name: "Slime", hp: 45, atk: 7, def: 2, exp: 25, gold: 12, icon: "🟢" },
-      { id: "goblin", name: "Goblin", hp: 60, atk: 10, def: 3, exp: 38, gold: 20, icon: "👺" },
-      { id: "skeleton", name: "Skeleton", hp: 75, atk: 13, def: 5, exp: 52, gold: 28, icon: "💀" },
-      { id: "dark_wolf", name: "Dark Wolf", hp: 85, atk: 16, def: 4, exp: 65, gold: 35, icon: "🐺" },
-      { id: "bandit", name: "Bandit", hp: 95, atk: 18, def: 7, exp: 80, gold: 50, icon: "🥷" },
-      { id: "orc", name: "Orc", hp: 130, atk: 22, def: 9, exp: 110, gold: 65, icon: "👹" },
-      { id: "dark_knight", name: "Dark Knight", hp: 165, atk: 27, def: 14, exp: 155, gold: 95, icon: "🛡️" },
-      { id: "demon", name: "Demon", hp: 210, atk: 33, def: 17, exp: 210, gold: 140, icon: "👿" }
+      { id: "slime", name: "Slime", hp: 45, atk: 7, def: 2, exp: 25, gold: 12, svg: SVG_ILLUSTRATIONS.slime },
+      { id: "goblin", name: "Goblin", hp: 60, atk: 10, def: 3, exp: 38, gold: 20, svg: SVG_ILLUSTRATIONS.goblin },
+      { id: "skeleton", name: "Skeleton", hp: 75, atk: 13, def: 5, exp: 52, gold: 28, svg: SVG_ILLUSTRATIONS.skeleton },
+      { id: "dark_wolf", name: "Dark Wolf", hp: 85, atk: 16, def: 4, exp: 65, gold: 35, svg: SVG_ILLUSTRATIONS.dark_wolf },
+      { id: "bandit", name: "Bandit", hp: 95, atk: 18, def: 7, exp: 80, gold: 50, svg: SVG_ILLUSTRATIONS.bandit },
+      { id: "orc", name: "Orc", hp: 130, atk: 22, def: 9, exp: 110, gold: 65, svg: SVG_ILLUSTRATIONS.orc },
+      { id: "dark_knight", name: "Dark Knight", hp: 165, atk: 27, def: 14, exp: 155, gold: 95, svg: SVG_ILLUSTRATIONS.dark_knight },
+      { id: "demon", name: "Demon", hp: 210, atk: 33, def: 17, exp: 210, gold: 140, svg: SVG_ILLUSTRATIONS.demon }
     ];
 
     const BOSS_TEMPLATES = [
-      { id: "boss_guardian", name: "Dungeon Guardian", hp: 380, atk: 35, def: 20, exp: 450, gold: 350, icon: "🗿" },
-      { id: "boss_dragon", name: "Abyssal Shadow Dragon", hp: 550, atk: 48, def: 25, exp: 750, gold: 600, icon: "🐉" },
-      { id: "boss_demon_king", name: "Demon Overlord", hp: 850, atk: 62, def: 32, exp: 1200, gold: 1000, icon: "👑" }
+      { id: "boss_guardian", name: "Dungeon Guardian", hp: 380, atk: 35, def: 20, exp: 450, gold: 350, svg: SVG_ILLUSTRATIONS.boss_guardian },
+      { id: "boss_taking_giving", name: "Taking and Giving", hp: 480, atk: 38, def: 22, exp: 650, gold: 500, svg: SVG_ILLUSTRATIONS.taking_and_giving, isSpecialBoss: true },
+      { id: "boss_dragon", name: "Abyssal Shadow Dragon", hp: 650, atk: 52, def: 28, exp: 950, gold: 750, svg: SVG_ILLUSTRATIONS.boss_dragon }
     ];
 
+    /* ============================================================
+       4. RIDDLES DATABASE FOR THE RIDDLER
+       ============================================================ */
+    const RIDDLES_DB = [
+      {
+        q: "Aku tidak memiliki daging maupun tulang, tetapi memiliki lima jari. Apakah aku?",
+        options: ["Sarung Tangan", "Pedang Kuno", "Bayangan"],
+        correct: 0
+      },
+      {
+        q: "Semakin banyak yang kau ambil dariku, semakin besar jadinya aku. Apakah aku?",
+        options: ["Emas", "Sebuah Lubang", "Waktu"],
+        correct: 1
+      },
+      {
+        q: "Aku selalu berjalan tetapi tidak memiliki kaki. Aku memiliki tempat tidur tetapi tidak pernah tidur. Apakah aku?",
+        options: ["Angin Malam", "Sungai", "Kereta Kuda"],
+        correct: 1
+      },
+      {
+        q: "Aku bisa mengisi seluruh ruangan tanpa menghabiskan tempat sama sekali. Apakah aku?",
+        options: ["Cahaya", "Kabut Asap", "Emas Karun"],
+        correct: 0
+      }
+    ];
+
+    /* ============================================================
+       5. ITEM GENERATOR & STATE ENGINE
+       ============================================================ */
     function getRandomRarity() {
       const roll = Math.random();
-      if (roll <= 0.01) return "legendary";
-      if (roll <= 0.07) return "epic";
-      if (roll <= 0.20) return "rare";
-      if (roll <= 0.45) return "uncommon";
-      return "common";
+      if (roll <= 0.01) return "legendary"; // 1%
+      if (roll <= 0.07) return "epic";      // 6%
+      if (roll <= 0.20) return "rare";      // 13%
+      if (roll <= 0.45) return "uncommon";  // 25%
+      return "common";                      // 55%
     }
 
     function generateRandomEquipment(type = null, forceRarity = null, playerLevel = 1) {
@@ -1863,7 +2211,15 @@
           skills: {
             fireStrike: { unlocked: false, cooldown: 0, maxCooldown: 3 }
           },
-          activeQuests: []
+          activeQuests: [],
+          runBuffs: {
+            atk: 0,
+            def: 0,
+            takingGivingAtkBuff: 0,
+            takingGivingVulnerable: false,
+            skillSealedTurns: 0
+          },
+          companion: null
         };
 
         this.dungeon = {
@@ -1875,24 +2231,27 @@
           monsterWave: [],
           currentMonsterIndex: 0,
           dungeonShopItems: [],
-          currentQuestOffer: null
+          currentQuestOffer: null,
+          currentEvent: null
         };
 
         this.combat = {
           enemy: null,
           inCombat: false,
-          isBoss: false
+          isBoss: false,
+          turnCount: 0,
+          takingGivingMode: "taking"
         };
       }
 
       get atk() {
         const weaponBonus = this.player.equippedWeapon ? this.player.equippedWeapon.stat : 0;
-        return this.player.baseAtk + weaponBonus;
+        return this.player.baseAtk + weaponBonus + this.player.runBuffs.atk + this.player.runBuffs.takingGivingAtkBuff;
       }
 
       get def() {
         const armorBonus = this.player.equippedArmor ? this.player.equippedArmor.stat : 0;
-        return this.player.baseDef + armorBonus;
+        return this.player.baseDef + armorBonus + this.player.runBuffs.def;
       }
 
       getExpForLevel(lvl) {
@@ -1920,6 +2279,9 @@
           const parsed = JSON.parse(raw);
           if (parsed && parsed.player) {
             this.player = Object.assign(this.player, parsed.player);
+            if (!this.player.runBuffs) {
+              this.player.runBuffs = { atk: 0, def: 0, takingGivingAtkBuff: 0, takingGivingVulnerable: false, skillSealedTurns: 0 };
+            }
             if (this.player.level >= 3) {
               if (!this.player.skills.fireStrike) {
                 this.player.skills.fireStrike = { unlocked: true, cooldown: 0, maxCooldown: 3 };
@@ -1942,6 +2304,9 @@
 
     const state = new GameEngineState();
 
+    /* ============================================================
+       6. UI CONTROLLER
+       ============================================================ */
     const UI = {
       screens: {
         mainMenu: document.getElementById('screen-main-menu'),
@@ -1949,6 +2314,7 @@
         townHub: document.getElementById('screen-town-hub'),
         dungeonExplore: document.getElementById('screen-dungeon-explore'),
         combat: document.getElementById('screen-combat'),
+        dynamicEvent: document.getElementById('screen-dynamic-event'),
         chestRoom: document.getElementById('screen-chest-room'),
         dungeonShop: document.getElementById('screen-dungeon-shop'),
         questEncounter: document.getElementById('screen-quest-encounter')
@@ -2006,17 +2372,45 @@
         document.getElementById('hud-name').textContent = p.name;
         document.getElementById('hud-level').textContent = `LV ${p.level}`;
 
+        // HP Bar
         const hpPercent = Math.max(0, Math.min(100, (p.hp / p.maxHp) * 100));
         document.getElementById('hud-hp-display').textContent = `${p.hp} / ${p.maxHp}`;
         document.getElementById('hud-hp-bar').style.width = `${hpPercent}%`;
 
+        // EXP Bar
         const expPercent = Math.max(0, Math.min(100, (p.exp / p.maxExp) * 100));
         document.getElementById('hud-exp-display').textContent = `${p.exp} / ${p.maxExp}`;
         document.getElementById('hud-exp-bar').style.width = `${expPercent}%`;
 
+        // Stats & Buffs
         document.getElementById('hud-atk-val').textContent = state.atk;
         document.getElementById('hud-def-val').textContent = state.def;
         document.getElementById('hud-gold-val').textContent = p.gold.toLocaleString();
+
+        const atkBuffEl = document.getElementById('hud-atk-buff');
+        if (p.runBuffs.atk > 0) {
+          atkBuffEl.style.display = 'inline';
+          atkBuffEl.textContent = `(+${p.runBuffs.atk})`;
+        } else {
+          atkBuffEl.style.display = 'none';
+        }
+
+        const defBuffEl = document.getElementById('hud-def-buff');
+        if (p.runBuffs.def > 0) {
+          defBuffEl.style.display = 'inline';
+          defBuffEl.textContent = `(+${p.runBuffs.def})`;
+        } else {
+          defBuffEl.style.display = 'none';
+        }
+
+        // Companion Badge
+        const compBadge = document.getElementById('hud-companion-badge');
+        if (p.companion && p.companion.hp > 0) {
+          compBadge.style.display = 'flex';
+          document.getElementById('hud-companion-text').textContent = `${p.companion.name}: ${p.companion.hp}/${p.companion.maxHp} HP`;
+        } else {
+          compBadge.style.display = 'none';
+        }
 
         document.getElementById('hud-weapon-val').textContent = p.equippedWeapon ? p.equippedWeapon.name : "None";
         document.getElementById('hud-weapon-val').className = p.equippedWeapon ? `stat-number ${RARITIES[p.equippedWeapon.rarity].class}` : "stat-number";
@@ -2118,11 +2512,16 @@
       }
     };
 
+    /* ============================================================
+       7. COMBAT ENGINE
+       ============================================================ */
     function startCombatEncounter(enemyData, isBoss = false, waveInfo = null) {
       state.combat.inCombat = true;
       state.combat.enemy = JSON.parse(JSON.stringify(enemyData));
       state.combat.enemy.maxHp = state.combat.enemy.hp;
       state.combat.isBoss = isBoss;
+      state.combat.turnCount = 0;
+      state.combat.takingGivingMode = "taking";
 
       if (state.player.skills.fireStrike) {
         state.player.skills.fireStrike.cooldown = 0;
@@ -2137,6 +2536,21 @@
         document.getElementById('combat-wave-max').textContent = waveInfo.total;
       } else {
         waveBanner.style.display = 'none';
+      }
+
+      const bossSpecialBanner = document.getElementById('boss-special-banner');
+      if (enemyData.id === 'boss_taking_giving') {
+        bossSpecialBanner.style.display = 'block';
+      } else {
+        bossSpecialBanner.style.display = 'none';
+      }
+
+      const compCard = document.getElementById('companion-combat-card');
+      if (state.player.companion && state.player.companion.hp > 0) {
+        compCard.style.display = 'flex';
+        document.getElementById('companion-hp-text').textContent = `${state.player.companion.hp} / ${state.player.companion.maxHp}`;
+      } else {
+        compCard.style.display = 'none';
       }
 
       const log = document.getElementById('combat-log-console');
@@ -2163,7 +2577,11 @@
       const box = document.getElementById('combat-enemy-box');
       box.className = 'enemy-card-box';
 
-      if (state.combat.isBoss) {
+      if (e.id === 'boss_taking_giving') {
+        badge.className = 'enemy-badge badge-special';
+        badge.textContent = `Lv. ${state.player.level} DUAL ARBITER`;
+        box.classList.add('taking-giving');
+      } else if (state.combat.isBoss) {
         badge.className = 'enemy-badge badge-boss';
         badge.textContent = `Lv. ${state.player.level} BOSS`;
         box.classList.add('boss');
@@ -2176,13 +2594,16 @@
         badge.textContent = `Lv. ${state.player.level} Normal`;
       }
 
-      document.getElementById('combat-enemy-avatar').textContent = e.icon || '👾';
+      document.getElementById('combat-enemy-avatar').innerHTML = e.svg || SVG_ILLUSTRATIONS.goblin;
 
       const skillBtn = document.getElementById('btn-combat-act-skill');
       const skillText = document.getElementById('skill-cooldown-text');
       const skill = state.player.skills.fireStrike;
 
-      if (!skill || !skill.unlocked) {
+      if (state.player.runBuffs.skillSealedTurns > 0) {
+        skillText.textContent = `SEALED (${state.player.runBuffs.skillSealedTurns} turns)`;
+        skillBtn.disabled = true;
+      } else if (!skill || !skill.unlocked) {
         skillText.textContent = 'Unlocks at Level 3';
         skillBtn.disabled = true;
       } else if (skill.cooldown > 0) {
@@ -2226,16 +2647,30 @@
         return;
       }
 
-      if (state.player.skills.fireStrike && state.player.skills.fireStrike.cooldown > 0) {
-        state.player.skills.fireStrike.cooldown--;
+      if (p.companion && p.companion.hp > 0) {
+        const compDmg = Math.max(2, p.companion.atk - Math.floor(e.def * 0.5));
+        e.hp -= compDmg;
+        UI.logCombat(`🐺 ${p.companion.name} leaps and strikes for <strong>${compDmg} damage</strong>!`, 'log-companion-dmg');
+        if (e.hp <= 0) {
+          e.hp = 0;
+          updateCombatDisplay();
+          processEnemyDefeat();
+          return;
+        }
       }
 
+      advanceCombatCooldowns();
       updateCombatDisplay();
-      setTimeout(handleEnemyAttackTurn, 450);
+      setTimeout(handleEnemyAttackTurn, 500);
     }
 
     function handlePlayerSkillFireStrike() {
       if (!state.combat.inCombat) return;
+      if (state.player.runBuffs.skillSealedTurns > 0) {
+        UI.showToast("Skill is currently sealed!");
+        return;
+      }
+
       const skill = state.player.skills.fireStrike;
       if (!skill || !skill.unlocked || skill.cooldown > 0) return;
 
@@ -2259,8 +2694,31 @@
         return;
       }
 
+      if (state.player.companion && state.player.companion.hp > 0) {
+        const compDmg = Math.max(2, state.player.companion.atk - Math.floor(e.def * 0.5));
+        e.hp -= compDmg;
+        UI.logCombat(`🐺 ${state.player.companion.name} strikes for <strong>${compDmg} damage</strong>!`, 'log-companion-dmg');
+        if (e.hp <= 0) {
+          e.hp = 0;
+          updateCombatDisplay();
+          processEnemyDefeat();
+          return;
+        }
+      }
+
+      advanceCombatCooldowns();
       updateCombatDisplay();
-      setTimeout(handleEnemyAttackTurn, 450);
+      setTimeout(handleEnemyAttackTurn, 500);
+    }
+
+    function advanceCombatCooldowns() {
+      state.combat.turnCount++;
+      if (state.player.skills.fireStrike && state.player.skills.fireStrike.cooldown > 0) {
+        state.player.skills.fireStrike.cooldown--;
+      }
+      if (state.player.runBuffs.skillSealedTurns > 0) {
+        state.player.runBuffs.skillSealedTurns--;
+      }
     }
 
     function handleEnemyAttackTurn() {
@@ -2269,7 +2727,26 @@
       const e = state.combat.enemy;
       const p = state.player;
 
-      const enemyDmg = Math.max(1, e.atk - state.def);
+      if (e.id === 'boss_taking_giving') {
+        processTakingGivingBossTurn(e, p);
+        return;
+      }
+
+      let enemyDmg = Math.max(1, e.atk - state.def);
+
+      if (p.companion && p.companion.hp > 0 && Math.random() < 0.5) {
+        p.companion.hp -= enemyDmg;
+        UI.logCombat(`🛡️ <strong>${p.companion.name}</strong> absorbed the blow, taking ${enemyDmg} damage!`, 'log-companion-dmg');
+        if (p.companion.hp <= 0) {
+          p.companion.hp = 0;
+          UI.logCombat(`💀 ${p.companion.name} has fallen in battle!`, 'log-enemy-dmg');
+          document.getElementById('companion-combat-card').style.display = 'none';
+        } else {
+          document.getElementById('companion-hp-text').textContent = `${p.companion.hp} / ${p.companion.maxHp}`;
+        }
+        UI.updateHUD();
+        return;
+      }
 
       sfx.enemyHit();
       p.hp -= enemyDmg;
@@ -2279,6 +2756,60 @@
 
       if (p.hp <= 0) {
         p.hp = 0;
+        UI.updateHUD();
+        triggerPlayerDeath();
+      }
+    }
+
+    function processTakingGivingBossTurn(boss, player) {
+      if (state.combat.turnCount % 2 === 0) {
+        state.combat.takingGivingMode = state.combat.takingGivingMode === 'taking' ? 'giving' : 'taking';
+      }
+
+      const mode = state.combat.takingGivingMode;
+
+      if (mode === 'taking') {
+        const roll = Math.random();
+        if (roll < 0.4) {
+          boss.atk += 3;
+          player.runBuffs.atk = Math.max(-5, player.runBuffs.atk - 3);
+          UI.logCombat(`🌑 <strong>Taking and Giving (Taking Mode)</strong> casts <em>Stat Siphon</em>! Drained 3 ATK from you!`, 'log-boss-special');
+        } else if (roll < 0.7) {
+          const drain = Math.round(player.maxHp * 0.12);
+          player.hp = Math.max(1, player.hp - drain);
+          boss.hp = Math.min(boss.maxHp, boss.hp + drain);
+          sfx.enemyHit();
+          UI.logCombat(`🌑 <em>Soul Drain!</em> Siphoned ${drain} HP from your soul to heal itself!`, 'log-enemy-dmg');
+        } else {
+          const stolenGold = Math.min(player.gold, 25);
+          player.gold -= stolenGold;
+          const dmg = Math.max(1, boss.atk - state.def);
+          player.hp -= dmg;
+          sfx.enemyHit();
+          UI.logCombat(`🌑 Stole ${stolenGold} Gold and struck for ${dmg} damage!`, 'log-enemy-dmg');
+        }
+      } else {
+        const roll = Math.random();
+        if (roll < 0.5) {
+          player.runBuffs.takingGivingAtkBuff = 12;
+          UI.logCombat(`🌕 <strong>Taking and Giving (Giving Mode)</strong> bestows a <em>Dangerous Gift</em>! Granted +12 ATK to you for 1 turn!`, 'log-boss-special');
+        } else {
+          player.hp = Math.min(player.maxHp, player.hp + 25);
+          player.runBuffs.skillSealedTurns = 2;
+          sfx.potion();
+          UI.logCombat(`🌕 <em>Cursed Benevolence!</em> Healed +25 HP to you, but SEALED your skill for 2 turns!`, 'log-heal-effect');
+        }
+
+        const dmg = Math.max(1, Math.round((boss.atk * 0.75) - state.def));
+        player.hp -= dmg;
+        UI.logCombat(`🌕 Radiant pulse deals ${dmg} damage.`, 'log-enemy-dmg');
+      }
+
+      UI.updateHUD();
+      updateCombatDisplay();
+
+      if (player.hp <= 0) {
+        player.hp = 0;
         UI.updateHUD();
         triggerPlayerDeath();
       }
@@ -2341,12 +2872,13 @@
       if (state.combat.isBoss) {
         setTimeout(() => {
           UI.showToast("👑 Boss Cleared! Floor Complete!");
-          state.player.gold += 250;
+          state.player.gold += 300;
           const bossDrop = generateRandomEquipment(null, "epic", state.player.level);
           state.player.inventory.push(bossDrop);
           UI.showToast(`Received ${bossDrop.name}!`);
           state.dungeon.floor++;
           state.dungeon.room = 1;
+          state.player.runBuffs = { atk: 0, def: 0, takingGivingAtkBuff: 0, takingGivingVulnerable: false, skillSealedTurns: 0 };
           state.save();
           UI.showScreen('townHub');
         }, 1500);
@@ -2449,6 +2981,9 @@
       state.save();
     }
 
+    /* ============================================================
+       8. EXPANDED RANDOM ENCOUNTERS
+       ============================================================ */
     function startDungeonExploration() {
       sfx.click();
       state.dungeon.active = true;
@@ -2467,7 +3002,7 @@
       const desc = document.getElementById('scene-desc-paragraph');
 
       if (d.room >= d.maxRooms) {
-        icon.textContent = '🚪';
+        icon.innerHTML = `<span style="font-size:3.5rem;">🚪</span>`;
         title.textContent = 'The Boss Chamber Gates!';
         desc.textContent = 'Massive ironbound doors covered in dark runes block the hallway. Beyond waits the terrifying Boss of this dungeon floor!';
       } else {
@@ -2477,7 +3012,7 @@
           { icon: '🗝️', title: 'A subterranean crossway.', desc: 'Scratched weapon marks line the stone walls. Faint footsteps echo in the darkness.' }
         ];
         const chosen = crossroads[Math.floor(Math.random() * crossroads.length)];
-        icon.textContent = chosen.icon;
+        icon.innerHTML = `<span style="font-size:3.5rem;">${chosen.icon}</span>`;
         title.textContent = chosen.title;
         desc.textContent = chosen.desc;
       }
@@ -2493,19 +3028,285 @@
       }
 
       const roll = Math.random();
-      if (roll < 0.40) {
+      if (roll < 0.35) {
         createMonsterRoom();
-      } else if (roll < 0.58) {
+      } else if (roll < 0.50) {
         createEliteRoom();
-      } else if (roll < 0.76) {
+      } else if (roll < 0.65) {
         createChestRoom();
-      } else if (roll < 0.88) {
-        createDungeonShopRoom();
+      } else if (roll < 0.75) {
+        if (Math.random() < 0.5) createDungeonShopRoom();
+        else createQuestRoom();
       } else {
-        createQuestRoom();
+        triggerRandomDynamicEvent();
       }
     }
 
+    function triggerRandomDynamicEvent() {
+      const eventTypes = ["anvil", "riddler", "caged_beast", "fountain", "blood_shrine", "dimensional_rift", "gambler", "campfire"];
+      const chosen = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+      setupDynamicEvent(chosen);
+    }
+
+    function setupDynamicEvent(type) {
+      UI.showScreen('dynamicEvent');
+      const iconBox = document.getElementById('event-scene-svg');
+      const title = document.getElementById('event-title-display');
+      const desc = document.getElementById('event-desc-display');
+      const outcomeBox = document.getElementById('event-outcome-box');
+      const btnsContainer = document.getElementById('event-buttons-container');
+
+      outcomeBox.style.display = 'none';
+
+      if (type === 'anvil') {
+        iconBox.innerHTML = `<span style="font-size:4rem;">⚒️</span>`;
+        title.textContent = "Ancient Dwarven Anvil";
+        desc.textContent = "A glowing subterranean anvil hums with magical heat. For a small fee of 20 Gold, you can attempt to temper your gear for this run (85% success, 15% fail).";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-gold" onclick="handleAnvilTemper('atk')">Sharpen Weapon (+3 ATK Run Buff) - 20g ⚔️</button>
+          <button class="btn btn-gold" onclick="handleAnvilTemper('def')">Reinforce Armor (+2 DEF Run Buff) - 20g 🛡️</button>
+          <button class="btn" onclick="advanceDungeonStep()">Leave Anvil ➔</button>
+        `;
+      } else if (type === 'riddler') {
+        iconBox.innerHTML = SVG_ILLUSTRATIONS.the_riddler;
+        title.textContent = "The Riddler Appears!";
+        const riddle = RIDDLES_DB[Math.floor(Math.random() * RIDDLES_DB.length)];
+        desc.textContent = `The mysterious Riddler steps out from the shadows: "${riddle.q}"`;
+
+        btnsContainer.innerHTML = riddle.options.map((opt, idx) => `
+          <button class="btn btn-purple" onclick="handleRiddleAnswer(${idx === riddle.correct})">${opt}</button>
+        `).join('') + `<button class="btn" onclick="advanceDungeonStep()">Refuse Riddle & Leave ➔</button>`;
+      } else if (type === 'caged_beast') {
+        iconBox.innerHTML = SVG_ILLUSTRATIONS.dark_wolf;
+        title.textContent = "Caged Shadow Beast";
+        desc.textContent = "A wounded Shadow Wolf is trapped inside an iron dungeon cage. If you free it, it may accompany you as a loyal battle companion for this run!";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-gold" onclick="handleFreeCagedBeast()">Break Cage & Free Beast 🔓</button>
+          <button class="btn" onclick="advanceDungeonStep()">Leave Beast Alone ➔</button>
+        `;
+      } else if (type === 'fountain') {
+        iconBox.innerHTML = `<span style="font-size:4rem;">⛲</span>`;
+        title.textContent = "Fountain of Purity";
+        desc.textContent = "Crystal clear sacred water wells up from an ancient marble basin, radiating a soothing holy glow.";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-gold" onclick="handleFountainChoice('drink')">Drink Water (Restore 100% HP) 🍷</button>
+          <button class="btn btn-gold" onclick="handleFountainChoice('bottle')">Fill Bottle (Receive 1 Health Potion) 🧪</button>
+          <button class="btn" onclick="advanceDungeonStep()">Leave ➔</button>
+        `;
+      } else if (type === 'blood_shrine') {
+        iconBox.innerHTML = `<span style="font-size:4rem;">🩸</span>`;
+        title.textContent = "Altar of Blood Sacrifice";
+        desc.textContent = "A crimson obelisk whispers dark promises. You can sacrifice 25% of your current HP in exchange for permanent combat power.";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-danger" onclick="handleBloodAltarSacrifice()">Sacrifice 25% HP (+3 Permanent ATK) 🩸</button>
+          <button class="btn btn-gold" onclick="handleBloodAltarPray()">Offer Safe Prayer (Heal 15 HP) ✨</button>
+          <button class="btn" onclick="advanceDungeonStep()">Leave Altar ➔</button>
+        `;
+      } else if (type === 'dimensional_rift') {
+        iconBox.innerHTML = SVG_ILLUSTRATIONS.chrono_warden;
+        title.textContent = "Dimensional Rift";
+        desc.textContent = "A shimmering vortex tears open the fabric of time and space. Leap into the rift to jump 2 rooms forward, or risk confronting the Chrono Warden!";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-purple" onclick="handleDimensionalRiftLeap()">Leap into the Rift 🌀</button>
+          <button class="btn" onclick="advanceDungeonStep()">Step Away Carefully ➔</button>
+        `;
+      } else if (type === 'gambler') {
+        iconBox.innerHTML = SVG_ILLUSTRATIONS.goblin;
+        title.textContent = "Goblin Dice Gambler";
+        desc.textContent = "A jovial goblin in a velvet vest rattles two bone dice: 'Care for a wager, adventurer? Roll 4, 5, or 6 to DOUBLE your gold!'";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-gold" onclick="handleGoblinGamble(25)">Bet 25 Gold 🎲</button>
+          <button class="btn btn-gold" onclick="handleGoblinGamble(50)">Bet 50 Gold 🎲</button>
+          <button class="btn" onclick="advanceDungeonStep()">Decline & Walk Away ➔</button>
+        `;
+      } else if (type === 'campfire') {
+        iconBox.innerHTML = `<span style="font-size:4rem;">🔥</span>`;
+        title.textContent = "Abandoned Campfire";
+        desc.textContent = "The embers of a former explorer's campsite glow warmly in a secluded cavern.";
+
+        btnsContainer.innerHTML = `
+          <button class="btn btn-gold" onclick="handleCampfireRest()">Rest by the Fire (Heal 40% HP) 🪵</button>
+          <button class="btn btn-gold" onclick="handleCampfireScavenge()">Search Camp Supplies (Find Gold/Loot) 🎒</button>
+          <button class="btn" onclick="advanceDungeonStep()">Leave ➔</button>
+        `;
+      }
+    }
+
+    function showEventOutcome(title, bodyText, nextBtnText = "Continue Exploring ➔") {
+      const outcomeBox = document.getElementById('event-outcome-box');
+      const titleEl = document.getElementById('event-outcome-title');
+      const bodyEl = document.getElementById('event-outcome-body');
+      const btnsContainer = document.getElementById('event-buttons-container');
+
+      outcomeBox.style.display = 'block';
+      titleEl.textContent = title;
+      bodyEl.innerHTML = bodyText;
+
+      btnsContainer.innerHTML = `
+        <button class="btn btn-gold" onclick="advanceDungeonStep()">${nextBtnText}</button>
+      `;
+      UI.updateHUD();
+      state.save();
+    }
+
+    function handleAnvilTemper(type) {
+      if (state.player.gold < 20) {
+        UI.showToast("Requires 20 Gold!");
+        return;
+      }
+      state.player.gold -= 20;
+      sfx.click();
+
+      const success = Math.random() < 0.85;
+      if (success) {
+        sfx.fanfare();
+        if (type === 'atk') {
+          state.player.runBuffs.atk += 3;
+          showEventOutcome("✨ Tempering Succeeded!", "Sparks fly in harmony! Your weapon gains <strong>+3 ATK (Run Buff)</strong> for the remainder of this delve.");
+        } else {
+          state.player.runBuffs.def += 2;
+          showEventOutcome("✨ Tempering Succeeded!", "The metal hardens perfectly! Your armor gains <strong>+2 DEF (Run Buff)</strong> for the remainder of this delve.");
+        }
+      } else {
+        sfx.trap();
+        showEventOutcome("💨 Tempering Failed!", "The flame sputtered and the metal warped slightly. The gold was lost, but your equipment remains undamaged.");
+      }
+    }
+
+    function handleRiddleAnswer(isCorrect) {
+      if (isCorrect) {
+        sfx.fanfare();
+        gainExp(80);
+        const pot = createPotion("pot_med");
+        state.player.inventory.push(pot);
+        showEventOutcome("🎉 Brilliant Mind!", `The Riddler bows with delight: <em>"A mind sharper than steel!"</em><br>Received <strong>+80 EXP</strong> and <strong>${pot.name}</strong>!`);
+      } else {
+        sfx.trap();
+        const lightningDmg = 12;
+        state.player.hp = Math.max(1, state.player.hp - lightningDmg);
+        showEventOutcome("⚡ Incorrect Answer!", `The Riddler shakes his head as a small shock zaps you for <strong>${lightningDmg} damage</strong>!`);
+      }
+    }
+
+    function handleFreeCagedBeast() {
+      sfx.fanfare();
+      const roll = Math.random();
+      if (roll < 0.65) {
+        state.player.companion = {
+          name: "Tamed Shadow Wolf",
+          hp: 40,
+          maxHp: 40,
+          atk: 7
+        };
+        showEventOutcome("🐺 Companion Recruited!", "The Shadow Wolf bows gratefully and pledges its loyalty! It will fight alongside you as a companion for this dungeon run!");
+      } else if (roll < 0.85) {
+        state.player.gold += 50;
+        showEventOutcome("🪙 Grateful Beast!", "The beast bounds out of the cage, nuzzling a hidden pouch containing <strong>50 Gold</strong> toward you before vanishing into the shadows.");
+      } else {
+        showEventOutcome("⚠️ The Beast Panicked!", "Terrified by its captivity, the wild beast lunges at you!", "Engage Battle! ⚔️");
+        document.getElementById('event-buttons-container').innerHTML = `
+          <button class="btn btn-danger" onclick="startCombatEncounter(scaleMonsterStats(ENEMY_TEMPLATES[3], false))">Fight Shadow Wolf! ⚔️</button>
+        `;
+      }
+    }
+
+    function handleFountainChoice(choice) {
+      if (choice === 'drink') {
+        sfx.potion();
+        state.player.hp = state.player.maxHp;
+        showEventOutcome("❤️ Rejuvenated!", "The sacred water washes away all fatigue. Your HP has been <strong>fully restored to 100%</strong>!");
+      } else {
+        sfx.fanfare();
+        const pot = createPotion("pot_med");
+        state.player.inventory.push(pot);
+        showEventOutcome("🧪 Potion Bottled!", `You carefully fill a flask with the holy water, adding <strong>${pot.name}</strong> to your inventory.`);
+      }
+    }
+
+    function handleBloodAltarSacrifice() {
+      sfx.trap();
+      const hpCost = Math.max(15, Math.round(state.player.hp * 0.25));
+      state.player.hp -= hpCost;
+      state.player.baseAtk += 3;
+      sfx.fanfare();
+      showEventOutcome("🩸 Blood Pact Sealed!", `You sacrifice ${hpCost} HP upon the dark stone. Dark power surges through your veins, permanently granting <strong>+3 Base ATK</strong>!`);
+    }
+
+    function handleBloodAltarPray() {
+      sfx.potion();
+      state.player.hp = Math.min(state.player.maxHp, state.player.hp + 15);
+      showEventOutcome("✨ Quiet Reverence", "You offer a safe prayer. A gentle warmth soothes your wounds for <strong>+15 HP</strong>.");
+    }
+
+    function handleDimensionalRiftLeap() {
+      const roll = Math.random();
+      if (roll < 0.60) {
+        sfx.fanfare();
+        state.dungeon.room = Math.min(state.dungeon.maxRooms - 1, state.dungeon.room + 2);
+        state.player.gold += 60;
+        showEventOutcome("🌀 Spatial Warp Successful!", `You warped through the space-time rift and bypassed 2 dangerous rooms, emerging with <strong>+60 Gold</strong> found along the vortex!`);
+      } else {
+        sfx.trap();
+        const chronoWarden = {
+          id: "mini_chrono_warden",
+          name: "Chrono Warden",
+          hp: Math.round(180 * (1 + (state.player.level - 1) * 0.22)),
+          atk: Math.round(24 * (1 + (state.player.level - 1) * 0.20)),
+          def: Math.round(12 * (1 + (state.player.level - 1) * 0.18)),
+          exp: 280,
+          gold: 200,
+          svg: SVG_ILLUSTRATIONS.chrono_warden,
+          isElite: true
+        };
+        showEventOutcome("⏳ Temporal Rupture!", "The rift collapses! You are pulled into the domain of the <strong>Chrono Warden</strong>!", "Fight Chrono Warden! ⚔️");
+        document.getElementById('event-buttons-container').innerHTML = `
+          <button class="btn btn-purple" onclick="startCombatEncounter(scaleMonsterStats(${JSON.stringify(chronoWarden)}, true))">Duel Chrono Warden ⚔️</button>
+        `;
+      }
+    }
+
+    function handleGoblinGamble(bet) {
+      if (state.player.gold < bet) {
+        UI.showToast("Not enough gold to bet!");
+        return;
+      }
+      state.player.gold -= bet;
+      const diceRoll = Math.floor(Math.random() * 6) + 1;
+
+      if (diceRoll >= 4) {
+        sfx.gold();
+        const winnings = bet * 2;
+        state.player.gold += winnings;
+        showEventOutcome(`🎲 Rolled a ${diceRoll}! (YOU WON!)`, `The dice land on ${diceRoll}! The goblin grumbles and hands you <strong>${winnings} Gold</strong>!`);
+      } else {
+        sfx.trap();
+        showEventOutcome(`🎲 Rolled a ${diceRoll} (Loss)`, `The dice land on ${diceRoll}. The goblin sweeps your ${bet} Gold with a mischievous cackle!`);
+      }
+    }
+
+    function handleCampfireRest() {
+      sfx.potion();
+      const healAmount = Math.round(state.player.maxHp * 0.40);
+      state.player.hp = Math.min(state.player.maxHp, state.player.hp + healAmount);
+      showEventOutcome("🔥 Warm Rest", `You rest quietly by the fire, recovering <strong>+${healAmount} HP</strong>.`);
+    }
+
+    function handleCampfireScavenge() {
+      sfx.fanfare();
+      const goldFound = Math.round(25 + Math.random() * 40);
+      state.player.gold += goldFound;
+      showEventOutcome("🎒 Supplies Scavenged!", `You found <strong>🪙 ${goldFound} Gold</strong> and rations in the abandoned pack!`);
+    }
+
+    /* ============================================================
+       9. DUNGEON GENERATORS
+       ============================================================ */
     function scaleMonsterStats(template, isElite = false) {
       const lvl = state.player.level;
       const eliteMult = isElite ? 1.9 : 1.0;
@@ -2521,7 +3322,7 @@
         def: Math.round(template.def * lvlDef * (isElite ? 1.3 : 1.0)),
         exp: Math.round(template.exp * (1 + (lvl - 1) * 0.22) * (isElite ? 2.5 : 1.0)),
         gold: Math.round(template.gold * (1 + (lvl - 1) * 0.25) * (isElite ? 2.5 : 1.0)),
-        icon: template.icon,
+        svg: template.svg,
         isElite: isElite
       };
     }
@@ -2550,7 +3351,7 @@
 
     function createBossRoom() {
       state.dungeon.currentRoomType = 'boss';
-      const bossIdx = Math.min(BOSS_TEMPLATES.length - 1, state.dungeon.floor - 1);
+      let bossIdx = (state.dungeon.floor - 1) % BOSS_TEMPLATES.length;
       const template = BOSS_TEMPLATES[bossIdx];
 
       const lvl = state.player.level;
@@ -2562,7 +3363,7 @@
         def: Math.round(template.def * (1 + (lvl - 1) * 0.20)),
         exp: Math.round(template.exp * (1 + (lvl - 1) * 0.25)),
         gold: Math.round(template.gold * (1 + (lvl - 1) * 0.3)),
-        icon: template.icon,
+        svg: template.svg,
         isBoss: true
       };
 
@@ -2882,6 +3683,9 @@
       state.save();
     }
 
+    /* ============================================================
+       10. TOWN SHOP
+       ============================================================ */
     let townStock = [];
 
     function generateTownStock() {
@@ -2995,11 +3799,15 @@
       state.dungeon.active = false;
 
       state.player.hp = state.player.maxHp;
+      state.player.runBuffs = { atk: 0, def: 0, takingGivingAtkBuff: 0, takingGivingVulnerable: false, skillSealedTurns: 0 };
 
       UI.openModal('death');
       state.save();
     }
 
+    /* ============================================================
+       11. EVENT WIRING & INITIALIZATION
+       ============================================================ */
     function initGameEventListeners() {
       document.getElementById('btn-menu-new-game').addEventListener('click', () => {
         sfx.click();
@@ -3118,6 +3926,7 @@
       document.getElementById('btn-escape-dungeon').addEventListener('click', () => {
         sfx.click();
         state.dungeon.active = false;
+        state.player.runBuffs = { atk: 0, def: 0, takingGivingAtkBuff: 0, takingGivingVulnerable: false, skillSealedTurns: 0 };
         state.save();
         UI.showScreen('townHub');
         UI.showToast("Safely returned to Sanctuary.");
@@ -3249,6 +4058,19 @@
     window.handleSellTownShopItem = handleSellTownShopItem;
     window.handleBuyDungeonMerchantItem = handleBuyDungeonMerchantItem;
     window.handleClaimQuest = handleClaimQuest;
+    window.advanceDungeonStep = advanceDungeonStep;
+    window.handleAnvilTemper = handleAnvilTemper;
+    window.handleRiddleAnswer = handleRiddleAnswer;
+    window.handleFreeCagedBeast = handleFreeCagedBeast;
+    window.handleFountainChoice = handleFountainChoice;
+    window.handleBloodAltarSacrifice = handleBloodAltarSacrifice;
+    window.handleBloodAltarPray = handleBloodAltarPray;
+    window.handleDimensionalRiftLeap = handleDimensionalRiftLeap;
+    window.handleGoblinGamble = handleGoblinGamble;
+    window.handleCampfireRest = handleCampfireRest;
+    window.handleCampfireScavenge = handleCampfireScavenge;
+    window.startCombatEncounter = startCombatEncounter;
+    window.scaleMonsterStats = scaleMonsterStats;
 
     window.addEventListener('DOMContentLoaded', () => {
       initGameEventListeners();
