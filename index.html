@@ -383,12 +383,15 @@
       font-size: 1.6rem;
       color: #fff;
       margin-bottom: 4px;
+      text-align: center;
     }
 
     .hub-desc-head {
       font-size: 0.88rem;
       color: var(--text-muted);
-      margin-bottom: 18px;
+      margin: 0 auto 18px auto;
+      text-align: center;
+      max-width: 620px;
     }
 
     .hub-cards-grid {
@@ -1166,7 +1169,7 @@
 
     <!-- SCREEN 3: TOWN HUB -->
     <section id="screen-town-hub" class="game-screen">
-      <div class="panel-box">
+      <div class="panel-box" style="text-align: center;">
         <h2 class="hub-title-head">🏰 Sanctuary of Oakhaven</h2>
         <p class="hub-desc-head">The safe sanctuary before entering the Abyss. Rest, upgrade your equipment, buy potions, accept bounties, and delve into the dungeon.</p>
 
@@ -1439,26 +1442,27 @@
     </div>
   </div>
 
-    <!-- TAVERN FEAST MODAL -->
+  
+  <!-- TAVERN FEAST MODAL -->
   <div class="modal-overlay" id="modal-tavern-feast">
-    <div class="modal-window" style="max-width: 560px;">
-      <div class="modal-top-bar" style="background: #261706;">
-        <div class="modal-heading" style="color: var(--gold);">🍺 Tavern Hearth & Feast</div>
+    <div class="modal-window" style="max-width:540px;">
+      <div class="modal-top-bar" style="background:#261706;">
+        <div class="modal-heading" style="color:var(--gold);">🍺 Kedai & Ransum Penjelajah</div>
         <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
       </div>
 
       <div class="modal-content-area">
-        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 14px;">
+        <p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:12px;">
           Pilih hidangan hangat di kedai sebelum berangkat (Biaya: <strong style="color:var(--gold);">20 Gold</strong>). Memulihkan HP 100% penuh dan memberikan buff penjelajahan:
         </p>
 
-        <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
           <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('hp')">
             <div class="item-left-block">
               <div class="item-icon-tile">🍲</div>
               <div class="item-meta-col">
                 <span class="item-title-text" style="color:#4ade80;">Sup Daging Pemburu (20 Gold)</span>
-                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> selama run</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> selama run</span>
               </div>
             </div>
             <button class="btn btn-gold btn-item-sm">Beli 20g 🍲</button>
@@ -1469,7 +1473,7 @@
               <div class="item-icon-tile">🍺</div>
               <div class="item-meta-col">
                 <span class="item-title-text" style="color:#f87171;">Bir Rempah Petualang (20 Gold)</span>
-                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#f87171;">+1 ATK</strong> selama run</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#f87171;">+1 ATK</strong> selama run</span>
               </div>
             </div>
             <button class="btn btn-gold btn-item-sm">Beli 20g 🍺</button>
@@ -1480,7 +1484,7 @@
               <div class="item-icon-tile">🍵</div>
               <div class="item-meta-col">
                 <span class="item-title-text" style="color:#60a5fa;">Teh Seduh Kulit Besi (20 Gold)</span>
-                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> selama run</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> selama run</span>
               </div>
             </div>
             <button class="btn btn-gold btn-item-sm">Beli 20g 🍵</button>
@@ -1491,7 +1495,7 @@
               <div class="item-icon-tile">📜</div>
               <div class="item-meta-col">
                 <span class="item-title-text" style="color:#facc15;">Kopi & Peta Rumor (20 Gold)</span>
-                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> selama run</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> selama run</span>
               </div>
             </div>
             <button class="btn btn-gold btn-item-sm">Beli 20g 📜</button>
@@ -1502,7 +1506,7 @@
               <div class="item-icon-tile">🪑</div>
               <div class="item-meta-col">
                 <span class="item-title-text" style="color:#cbd5e1;">Istirahat di Bangku Kedai (Gratis)</span>
-                <span style="font-size:0.78rem; color:#94a3b8;">Pulihkan 100% HP saja tanpa buff</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Pulihkan 100% HP saja (tanpa buff)</span>
               </div>
             </div>
             <button class="btn btn-item-sm">Istirahat 🪑</button>
@@ -1511,7 +1515,7 @@
       </div>
 
       <div class="modal-bottom-bar">
-        <button class="btn" id="btn-close-tavern-btn">Done</button>
+        <button class="btn" id="btn-close-tavern-btn">Tutup</button>
       </div>
     </div>
   </div>
@@ -2162,11 +2166,27 @@
           return;
         }
 
-        container.innerHTML = filtered.map((item) => {
+        // Stack items properly so multiple potions appear as 1 single card with x2, x3
+        const groups = [];
+        const seen = new Set();
+
+        filtered.forEach(item => {
+          if (item.type === 'potion') {
+            if (!seen.has(item.name)) {
+              seen.add(item.name);
+              const count = filtered.filter(x => x.name === item.name).length;
+              groups.push({ item: item, count: count });
+            }
+          } else {
+            groups.push({ item: item, count: 1 });
+          }
+        });
+
+        container.innerHTML = groups.map(g => {
+          const item = g.item;
           const rarity = RARITIES[item.rarity] || RARITIES.common;
           const isEquipped = (p.equippedWeapon && p.equippedWeapon.id === item.id) || (p.equippedArmor && p.equippedArmor.id === item.id);
-          const totalSame = allItems.filter(i => i.name === item.name).length;
-          const countBadge = totalSame > 1 ? `<span style="background:#312e81; color:#c7d2fe; font-size:0.72rem; padding:1px 6px; border-radius:4px; font-weight:bold; margin-left:4px;">x${totalSame}</span>` : '';
+          const countBadge = g.count > 1 ? `<span style="background:#312e81; color:#c7d2fe; font-size:0.72rem; padding:1px 6px; border-radius:4px; font-weight:bold; margin-left:4px;">x${g.count}</span>` : '';
 
           return `
             <div class="item-row-card">
@@ -2177,7 +2197,7 @@
                     <span class="item-title-text ${rarity.class}">${item.name}</span>
                     ${countBadge}
                     <span class="item-category-tag">${item.type}</span>
-                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700;">EQUIPPED</span>' : ''}
+                    ${isEquipped ? '<span style="background:#065f46; color:#a7f3d0; font-size:0.65rem; padding:1px 5px; border-radius:3px; font-weight:700;">DIPAKAI</span>' : ''}
                   </div>
                   <div class="item-stat-highlight">${item.statLabel} | Nilai: ${item.value}g</div>
                 </div>
@@ -2283,7 +2303,9 @@
       const p = state.player;
       const e = state.combat.enemy;
 
-      const rawDmg = Math.max(Math.round(state.atk * 0.40), state.atk - Math.floor(e.def * 0.75));
+      const minPenetration = Math.max(2, Math.round(state.atk * 0.40));
+      const calculatedDmg = state.atk - Math.floor(e.def * 0.65);
+      const rawDmg = Math.max(minPenetration, calculatedDmg);
       const isCrit = Math.random() < 0.12;
       let finalDamage = isCrit ? Math.round(rawDmg * 1.5) : rawDmg;
 
@@ -2586,40 +2608,22 @@
       }
     }
 
-        function getFloorMonsterTemplates() {
-      const floor = state.dungeon.floor || 1;
-      if (floor <= 1) {
-        // Floor 1: Slime, Goblin, Skeleton, Dark Wolf
-        return ENEMY_TEMPLATES.slice(0, 4);
-      } else if (floor <= 2) {
-        // Floor 2: + Bandit, Orc
-        return ENEMY_TEMPLATES.slice(0, 6);
-      } else {
-        // Floor 3+: All monsters
-        return ENEMY_TEMPLATES;
-      }
-    }
-
     function scaleMonsterStats(template, isElite = false) {
       const lvl = state.player.level;
-      const floor = state.dungeon.floor || 1;
-      const eliteHpMult = isElite ? (floor === 1 ? 1.30 : (floor === 2 ? 1.45 : 1.60)) : 1.0;
-      const eliteAtkMult = isElite ? (floor === 1 ? 1.10 : 1.20) : 1.0;
-      const eliteDefMult = isElite ? 1.10 : 1.0;
-
-      const lvlHp = 1 + (lvl - 1) * 0.12;
-      const lvlAtk = 1 + (lvl - 1) * 0.10;
-      const lvlDef = 1 + (lvl - 1) * 0.08;
+      const eliteMult = isElite ? 1.9 : 1.0;
+      const lvlHp = 1 + (lvl - 1) * 0.25;
+      const lvlAtk = 1 + (lvl - 1) * 0.22;
+      const lvlDef = 1 + (lvl - 1) * 0.20;
 
       return {
         id: template.id,
         name: isElite ? `Elite ${template.name}` : template.name,
-        hp: Math.round(template.hp * lvlHp * eliteHpMult),
-        atk: Math.round(template.atk * lvlAtk * eliteAtkMult),
-        def: Math.round(template.def * lvlDef * eliteDefMult),
-        exp: Math.round(template.exp * (1 + (lvl - 1) * 0.18) * (isElite ? 2.0 : 1.0)),
-        gold: Math.round(template.gold * (1 + (lvl - 1) * 0.20) * (isElite ? 2.0 : 1.0)),
-        svg: template.svg,
+        hp: Math.round(template.hp * lvlHp * eliteMult),
+        atk: Math.round(template.atk * lvlAtk * (isElite ? 1.3 : 1.0)),
+        def: Math.round(template.def * lvlDef * (isElite ? 1.3 : 1.0)),
+        exp: Math.round(template.exp * (1 + (lvl - 1) * 0.22) * (isElite ? 2.5 : 1.0)),
+        gold: Math.round(template.gold * (1 + (lvl - 1) * 0.25) * (isElite ? 2.5 : 1.0)),
+        icon: template.icon,
         isElite: isElite
       };
     }
@@ -2631,8 +2635,7 @@
 
       const waveSize = 3;
       for (let i = 0; i < waveSize; i++) {
-        const pool = getFloorMonsterTemplates();
-        const randTemplate = pool[Math.floor(Math.random() * pool.length)];
+        const randTemplate = ENEMY_TEMPLATES[Math.floor(Math.random() * ENEMY_TEMPLATES.length)];
         state.dungeon.monsterWave.push(scaleMonsterStats(randTemplate, false));
       }
 
@@ -2641,8 +2644,7 @@
 
     function createEliteRoom() {
       state.dungeon.currentRoomType = 'elite';
-      const pool = getFloorMonsterTemplates();
-        const randTemplate = pool[Math.floor(Math.random() * pool.length)];
+      const randTemplate = ENEMY_TEMPLATES[Math.floor(Math.random() * ENEMY_TEMPLATES.length)];
       const elite = scaleMonsterStats(randTemplate, true);
 
       startCombatEncounter(elite, false);
@@ -2903,6 +2905,50 @@
       state.save();
     }
 
+    
+    function handleSelectTavernMeal(type) {
+      if (type === 'free') {
+        sfx.potion();
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Istirahat di bangku kedai. HP pulih 100%!");
+        UI.closeModal('tavernFeast');
+        UI.updateHUD();
+        state.save();
+        return;
+      }
+
+      if (state.player.gold < 20) {
+        UI.showToast("Dibutuhkan 20 Gold untuk memesan hidangan kedai!");
+        return;
+      }
+
+      state.player.gold -= 20;
+      sfx.potion();
+
+      if (type === 'hp') {
+        state.player.runBuffs.extraMaxHp = 10;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Sup Daging disantap (-20g)! HP Pulih 100% & +10 Max HP run ini!");
+      } else if (type === 'atk') {
+        state.player.runBuffs.atk = 1;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Bir Rempah diminum (-20g)! HP Pulih 100% & +1 ATK run ini!");
+      } else if (type === 'def') {
+        state.player.runBuffs.def = 1;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Teh Kulit Besi diminum (-20g)! HP Pulih 100% & +1 DEF run ini!");
+      } else if (type === 'luck') {
+        state.player.runBuffs.luckBoost = 0.10;
+        state.player.hp = state.totalMaxHp;
+        UI.showToast("Kopi & Peta disimak (-20g)! HP Pulih 100% & +10% Gold/Luck run ini!");
+      }
+
+      UI.closeModal('tavernFeast');
+      UI.updateHUD();
+      state.save();
+    }
+    window.handleSelectTavernMeal = handleSelectTavernMeal;
+
     function advanceDungeonStep() {
       state.dungeon.room++;
       state.save();
@@ -2944,7 +2990,7 @@
     }
 
     function handleUsePotion(itemId) {
-      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      const idx = state.player.inventory.findIndex(i => i.id === itemId || (i.type === 'potion' && i.name === itemId));
       if (idx === -1) return;
 
       const pot = state.player.inventory[idx];
@@ -2971,7 +3017,7 @@
     }
 
     function handleDropItem(itemId) {
-      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      const idx = state.player.inventory.findIndex(i => i.id === itemId || (i.type === 'potion' && i.name === itemId));
       if (idx === -1) return;
 
       sfx.click();
@@ -3074,7 +3120,7 @@
     }
 
     function handleSellTownShopItem(itemId) {
-      const idx = state.player.inventory.findIndex(i => i.id === itemId);
+      const idx = state.player.inventory.findIndex(i => i.id === itemId || (i.type === 'potion' && i.name === itemId));
       if (idx === -1) return;
 
       const item = state.player.inventory[idx];
@@ -3261,6 +3307,8 @@
       document.getElementById('btn-close-inventory-btn').addEventListener('click', () => UI.closeModal('inventory'));
       document.getElementById('btn-close-town-shop-x').addEventListener('click', () => UI.closeModal('townShop'));
       document.getElementById('btn-close-town-shop-btn').addEventListener('click', () => UI.closeModal('townShop'));
+      document.getElementById('btn-close-tavern-x').addEventListener('click', () => UI.closeModal('tavernFeast'));
+      document.getElementById('btn-close-tavern-btn').addEventListener('click', () => UI.closeModal('tavernFeast'));
       document.getElementById('btn-close-how-x').addEventListener('click', () => UI.closeModal('howToPlay'));
       document.getElementById('btn-close-how-btn').addEventListener('click', () => UI.closeModal('howToPlay'));
       document.getElementById('btn-close-settings-x').addEventListener('click', () => UI.closeModal('settings'));
