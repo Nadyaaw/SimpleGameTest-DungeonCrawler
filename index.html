@@ -1443,88 +1443,88 @@
   </div>
 
   
-<!-- 3. TAVERN FEAST (PAID 20G & REST) -->
-<div class="modal-overlay" id="modal-tavern-feast">
-  <div class="modal-window" style="max-width: 520px;">
-    <div class="modal-top-bar" style="background: #261706;">
-      <div class="modal-heading" style="color: var(--gold);">🍺 Tavern Hearth & Feast</div>
-      <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
-    </div>
-
-    <div class="modal-content-area">
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#090a10; border:1px solid #282d42; border-radius:8px; padding:8px 12px; margin-bottom:12px;">
-        <span style="font-size:0.85rem; color:#cbd5e1;">Select a pre-run meal (Cost: <strong style="color:var(--gold);">20 Gold</strong>)</span>
-        <span style="font-size:0.85rem; color:var(--gold); font-weight:700;">🪙 <span id="tavern-gold-num">0</span> Gold</span>
+  <!-- 3. TAVERN FEAST (PAID 20G & REST) -->
+  <div class="modal-overlay" id="modal-tavern-feast">
+    <div class="modal-window" style="max-width: 520px;">
+      <div class="modal-top-bar" style="background: #261706;">
+        <div class="modal-heading" style="color: var(--gold);">🍺 Tavern Hearth & Feast</div>
+        <button class="modal-close-icon" id="btn-close-tavern-x">&times;</button>
       </div>
-
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <!-- Hunter's Meat Stew -->
-        <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('hp')">
-          <div class="item-left-block">
-            <div class="item-icon-tile">🍲</div>
-            <div class="item-meta-col">
-              <span class="item-title-text" style="color:#4ade80;">Hunter's Meat Stew (20 Gold)</span>
-              <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> for this delve</span>
-            </div>
-          </div>
-          <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('hp');">Order 20g 🍲</button>
+  
+      <div class="modal-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#090a10; border:1px solid #282d42; border-radius:8px; padding:8px 12px; margin-bottom:12px;">
+          <span style="font-size:0.85rem; color:#cbd5e1;">Select a pre-run meal (Cost: <strong style="color:var(--gold);">20 Gold</strong>)</span>
+          <span style="font-size:0.85rem; color:var(--gold); font-weight:700;">🪙 <span id="tavern-gold-num">0</span> Gold</span>
         </div>
-
-        <!-- Spiced Adventurer's Ale -->
-        <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('atk')">
-          <div class="item-left-block">
-            <div class="item-icon-tile">🍺</div>
-            <div class="item-meta-col">
-              <span class="item-title-text" style="color:#f87171;">Spiced Adventurer's Ale (20 Gold)</span>
-              <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#f87171;">+1 ATK</strong> for this delve</span>
+  
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Hunter's Meat Stew -->
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('hp')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍲</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#4ade80;">Hunter's Meat Stew (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#4ade80;">+10 Max HP</strong> for this delve</span>
+              </div>
             </div>
+            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('hp');">Order 20g 🍲</button>
           </div>
-          <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('atk');">Order 20g 🍺</button>
-        </div>
-
-        <!-- Ironbark Herbal Tea -->
-        <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('def')">
-          <div class="item-left-block">
-            <div class="item-icon-tile">🍵</div>
-            <div class="item-meta-col">
-              <span class="item-title-text" style="color:#60a5fa;">Ironbark Herbal Tea (20 Gold)</span>
-              <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> for this delve</span>
+  
+          <!-- Spiced Adventurer's Ale -->
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('atk')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍺</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#f87171;">Spiced Adventurer's Ale (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#f87171;">+1 ATK</strong> for this delve</span>
+              </div>
             </div>
+            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('atk');">Order 20g 🍺</button>
           </div>
-          <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('def');">Order 20g 🍵</button>
-        </div>
-
-        <!-- Scout Coffee & Rumors -->
-        <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('luck')">
-          <div class="item-left-block">
-            <div class="item-icon-tile">📜</div>
-            <div class="item-meta-col">
-              <span class="item-title-text" style="color:#facc15;">Scout Coffee & Rumors (20 Gold)</span>
-              <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> for this delve</span>
+  
+          <!-- Ironbark Herbal Tea -->
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('def')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🍵</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#60a5fa;">Ironbark Herbal Tea (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#60a5fa;">+1 DEF</strong> for this delve</span>
+              </div>
             </div>
+            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('def');">Order 20g 🍵</button>
           </div>
-          <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('luck');">Order 20g 📜</button>
-        </div>
-
-        <!-- Free Rest on Bench -->
-        <div class="item-row-card" style="cursor:pointer; border-style:dashed;" onclick="handleSelectTavernMeal('free')">
-          <div class="item-left-block">
-            <div class="item-icon-tile">🪑</div>
-            <div class="item-meta-col">
-              <span class="item-title-text" style="color:#cbd5e1;">Rest on Hearth Bench (Free)</span>
-              <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP only (no buff)</span>
+  
+          <!-- Scout Coffee & Rumors -->
+          <div class="item-row-card" style="cursor:pointer;" onclick="handleSelectTavernMeal('luck')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">📜</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#facc15;">Scout Coffee & Rumors (20 Gold)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP + <strong style="color:#facc15;">+10% Gold Drop & Luck</strong> for this delve</span>
+              </div>
             </div>
+            <button type="button" class="btn btn-gold btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('luck');">Order 20g 📜</button>
           </div>
-          <button type="button" class="btn btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('free');">Rest Free 🪑</button>
+  
+          <!-- Free Rest on Bench -->
+          <div class="item-row-card" style="cursor:pointer; border-style:dashed;" onclick="handleSelectTavernMeal('free')">
+            <div class="item-left-block">
+              <div class="item-icon-tile">🪑</div>
+              <div class="item-meta-col">
+                <span class="item-title-text" style="color:#cbd5e1;">Rest on Hearth Bench (Free)</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">Restore 100% HP only (no buff)</span>
+              </div>
+            </div>
+            <button type="button" class="btn btn-item-sm" onclick="event.stopPropagation(); handleSelectTavernMeal('free');">Rest Free 🪑</button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="modal-bottom-bar">
-      <button class="btn" id="btn-close-tavern-btn">Close</button>
+  
+      <div class="modal-bottom-bar">
+        <button class="btn" id="btn-close-tavern-btn">Close</button>
+      </div>
     </div>
   </div>
-</div>
     <!-- 4. MILESTONE REWARD -->
     <div class="modal-overlay" id="modal-milestone-reward">
       <div class="modal-window" style="text-align: center; border-color: #a855f7;">
